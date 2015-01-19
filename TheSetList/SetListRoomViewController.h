@@ -16,7 +16,10 @@
 @property (strong, nonatomic) IBOutlet UILabel *currentArtistLabel;
 @property (strong, nonatomic) IBOutlet UILabel *nameSpaceLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
+@property (strong, nonatomic) IBOutlet UIView *nextSongListView;
+@property (strong, nonatomic) IBOutlet UILabel *nextLabel;
 
-@property (strong,nonatomic) NSArray *tracks; 
+@property (strong, nonatomic) NSDictionary *nextSongDic;
+@property (strong, nonatomic) NSArray *tracks;
 
 @end

@@ -44,6 +44,8 @@
     
 }
 
+
+
 #pragma mark - Notification Center
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
@@ -57,29 +59,22 @@
     //If there is no current track, set the label to inform the user.
     if ([track isEqual:[NSNull null]]) {
         self.currentSongLabel.text = @"No current song";
+        self.currentArtistLabel.text = @"";
     }
     
     //else, display the current songs info
     else
     {
-        
         self.currentSongLabel.text = [track objectForKey:@"title"];
-        
         self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
         
         //If there is no picture available. Adds a Custom picture.
-        if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
-            
-            self.currentAlbumArtImage.image = [UIImage imageNamed:@"SoundCloudLogo"];
-            
-        }
         
-        else
-        {
-            //Init the cell image with the track's artwork.
-            UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
-            self.currentAlbumArtImage.image = cellImage;
-        }
+        //Init the cell image with the track's artwork.
+        NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
+        NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
+        UIImage *cellImage = [UIImage imageWithData:imageData];
+        self.currentAlbumArtImage.image = cellImage;
         
     }
     
@@ -87,8 +82,43 @@
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
 {
-    NSArray *tracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
-    self.tracks = tracks;
+    NSArray *recievedtracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+    
+    //If there are recieved tracks set up the next-song and queue accordingly. 
+    if ([recievedtracks count]) {
+        
+        //Set the next song equal to the first object in the queue. 
+        self.nextSongDic = [recievedtracks objectAtIndex:0];
+        
+        //set the queue equal to the tracks from indexes 1+
+        NSRange range;
+        range.location = 1;
+        range.length = [recievedtracks count]-1;
+        self.tracks = [recievedtracks subarrayWithRange:range];
+        
+        //If there are recieved tracks, make sure the next-views are not hidden.
+        self.nextLabel.hidden = NO;
+        self.nextSongListView.hidden = NO;
+        self.nextSongAlbumArtImage.hidden = NO;
+        
+        NSString *songTitle = [self.nextSongDic objectForKey:@"title"];
+        NSString *artist = [[self.nextSongDic objectForKey:@"user"]objectForKey:@"username"];
+        
+        self.nextSongLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
+        
+        //Init the cell image with the track's artwork.
+        UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[self.nextSongDic objectForKey:@"artwork_url"]]]];
+        self.nextSongAlbumArtImage.image = cellImage;
+
+    }
+    else {
+        //If there are no recived tracks, make sure to hide the next-views.
+        self.nextLabel.hidden = YES;
+        self.nextSongListView.hidden = YES;
+        self.nextSongAlbumArtImage.hidden = YES;
+    }
+    
+    
     [self.tableView reloadData];
     
 }

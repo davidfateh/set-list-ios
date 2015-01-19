@@ -10,7 +10,7 @@
 #import "SocketKeeperSingleton.h"
 #import <SIOSocket/SIOSocket.h>
 
-#define HOST_URL @"https://the-set-list.herokuapp.com"
+#define HOST_URL @"http://192.168.1.4:5000"
 
 @interface NameCreationViewController ()
 
