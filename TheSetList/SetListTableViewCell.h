@@ -10,5 +10,6 @@
 
 @interface SetListTableViewCell : UITableViewCell
 @property (strong, nonatomic) IBOutlet UILabel *songLabel;
+@property (strong, nonatomic) IBOutlet UIView *userSelectedQueueIndicator;
 
 @end

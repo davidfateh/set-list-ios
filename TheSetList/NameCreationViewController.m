@@ -9,8 +9,9 @@
 #import "NameCreationViewController.h"
 #import "SocketKeeperSingleton.h"
 #import <SIOSocket/SIOSocket.h>
+#import "SetListRoomViewController.h"
 
-#define HOST_URL @"http://192.168.1.4:5000"
+#define HOST_URL @"http://149.152.101.2:5000"
 
 @interface NameCreationViewController ()
 
@@ -126,6 +127,14 @@
     }
     
     return YES;
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"toSetListRoomVC"]) {
+        SetListRoomViewController *setListVC = segue.destinationViewController;
+        setListVC.roomCode = self.roomCodeTextField.text;
+    }
 }
 
 @end

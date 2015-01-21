@@ -10,9 +10,10 @@
 #import "SetListTableViewCell.h"
 #import <SIOSocket/SIOSocket.h>
 #import "SocketKeeperSingleton.h"
+#import "SearchViewController.h"
 
 @interface SetListRoomViewController ()
-
+@property (strong, nonatomic) NSString *socketID;
 @end
 
 @implementation SetListRoomViewController
@@ -23,6 +24,10 @@
     self.tableView.dataSource = self;
     
     self.tableView.layoutMargins = UIEdgeInsetsZero;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    //Set the number of the namespace/roomCode; 
+    self.nameSpaceLabel.text = self.roomCode;
     
     //Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -40,7 +45,7 @@
                                                object:nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"currentArtistB" object:nil];
 
-    
+    self.socketID =[[SocketKeeperSingleton sharedInstance]socketID];
     
 }
 
@@ -60,6 +65,7 @@
     if ([track isEqual:[NSNull null]]) {
         self.currentSongLabel.text = @"No current song";
         self.currentArtistLabel.text = @"";
+        
     }
     
     //else, display the current songs info
@@ -96,10 +102,21 @@
         range.length = [recievedtracks count]-1;
         self.tracks = [recievedtracks subarrayWithRange:range];
         
+        
+        
         //If there are recieved tracks, make sure the next-views are not hidden.
         self.nextLabel.hidden = NO;
         self.nextSongListView.hidden = NO;
         self.nextSongAlbumArtImage.hidden = NO;
+        
+        
+        if ([[self.nextSongDic objectForKey:@"socket"]isEqualToString:self.socketID]) {
+            self.userSelectedNextIndicator.hidden = NO;
+        }
+        else
+        {
+            self.userSelectedNextIndicator.hidden = YES;
+        }
         
         NSString *songTitle = [self.nextSongDic objectForKey:@"title"];
         NSString *artist = [[self.nextSongDic objectForKey:@"user"]objectForKey:@"username"];
@@ -107,8 +124,18 @@
         self.nextSongLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
         
         //Init the cell image with the track's artwork.
-        UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[self.nextSongDic objectForKey:@"artwork_url"]]]];
-        self.nextSongAlbumArtImage.image = cellImage;
+        
+        //If the imageURL sent to the app is null, then catch it. If not, display the image.
+        if ([[self.nextSongDic objectForKey:@"artwork_url"] isEqual:[NSNull null]]) {
+            //image is null
+        }
+        else
+        {
+            NSURL *imageURL = [NSURL URLWithString:[self.nextSongDic objectForKey:@"artwork_url"]];
+            NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
+            UIImage *cellImage = [UIImage imageWithData:imageData];
+                self.nextSongAlbumArtImage.image = cellImage;
+        }
 
     }
     else {
@@ -130,12 +157,21 @@
     static NSString *ReusableIdentifier = @"Cell";
     SetListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReusableIdentifier forIndexPath:indexPath];
     
+    
     NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
     NSString *songTitle = [track objectForKey:@"title"];
     NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
     
     cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
     
+    
+    if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+        cell.userSelectedQueueIndicator.hidden = NO;
+    }
+    else
+    {
+        cell.userSelectedQueueIndicator.hidden = YES;
+    }
     
     
     return cell;
@@ -149,6 +185,14 @@
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"toSearchVC"]) {
+        SearchViewController *searchVC = segue.destinationViewController;
+        searchVC.roomCode = self.roomCode;
+    }
 }
 
 @end

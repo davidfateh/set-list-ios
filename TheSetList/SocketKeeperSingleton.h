@@ -14,6 +14,7 @@
 @property (nonatomic, strong) SIOSocket *socket;
 @property (strong, nonatomic) NSArray *setListTracks;
 @property (strong, nonatomic) NSDictionary *currentArtist;
+@property (strong, nonatomic) NSString *socketID;
 
 @property (strong, nonatomic) NSString *roomCode;
 @property (nonatomic) BOOL socketIsConnected;

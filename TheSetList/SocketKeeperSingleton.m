@@ -37,6 +37,9 @@
         //Send a message to RoomCode controler to notify the reciever that the user has enetered a correct code and can enter the specific setList room.
         [self.socket on:@"initialize" callback:^(NSArray *args) {
             
+            NSDictionary *socketIdDict = [args objectAtIndex:0];
+            NSString *socketID = [socketIdDict objectForKey:@"socket"];
+            self.socketID = socketID;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"initialize" object:nil];
             
         }];

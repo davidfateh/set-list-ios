@@ -21,5 +21,8 @@
 
 @property (strong, nonatomic) NSDictionary *nextSongDic;
 @property (strong, nonatomic) NSArray *tracks;
+@property (strong, nonatomic) NSString *roomCode; 
+@property (strong, nonatomic) IBOutlet UIView *userSelectedNextIndicator;
+
 
 @end
