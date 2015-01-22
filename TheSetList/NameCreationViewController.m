@@ -10,8 +10,9 @@
 #import "SocketKeeperSingleton.h"
 #import <SIOSocket/SIOSocket.h>
 #import "SetListRoomViewController.h"
+#import "RadialGradiantView.h"
 
-#define HOST_URL @"http://149.152.101.2:5000"
+#define HOST_URL @"http://149.152.98.211:5000"
 
 @interface NameCreationViewController ()
 
@@ -21,6 +22,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //Add the radial gradient subview to the background.
+    RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
+    [self.backgroundView addSubview:radiantBackgroundView];
+    
+    
+    self.roomCodeTextField.returnKeyType = UIReturnKeyJoin;
+    
+    self.roomCodeTextField.alpha = 0;
     
     self.nameTextField.delegate = self;
     self.roomCodeTextField.delegate = self;
@@ -34,7 +44,7 @@
     self.theSetListLabel.font = [UIFont fontWithName:@"Lobster" size:42.0];
     
     self.nameTextField.alpha = 0.0;
-    [UIView animateWithDuration:.6 animations:^{
+    [UIView animateWithDuration:1.2 animations:^{
         self.nameTextField.alpha = 1.0;
     }];
 
@@ -43,10 +53,44 @@
                                                  name:@"initialize"
                                                object:nil];
     
+   
+        
+        UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
+        numberToolbar.barStyle = UIBarStyleBlackTranslucent;
+        UIBarButtonItem *joinButton = [[UIBarButtonItem alloc]initWithTitle:@"\u279e" style:UIBarButtonItemStyleDone target:self action:@selector(doneWithNumberPad)];
+    
+        numberToolbar.items = [NSArray arrayWithObjects:
+                               [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                               joinButton, [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                               nil];
+        [numberToolbar sizeToFit];
+        self.roomCodeTextField.inputAccessoryView = numberToolbar;
+    
+        self.nameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    
+}
+
+//When the user hits the arrow key, connect to the host and resign the keyboard.
+-(void)doneWithNumberPad{
+    NSString *numberFromTheKeyboard = self.roomCodeTextField.text;
+    
+    if (self.roomCodeTextField.tag == 2 ) {
+        
+        //When the user enters the code on the textField, start the socket with the correct host and room code.
+        SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
+        
+        NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@/%@",HOST_URL, numberFromTheKeyboard];
+        [socketSingleton startSocketWithHost:hostURLwithRoomCode];
+        [self.roomCodeTextField resignFirstResponder];
+        
+    }
+    
+    [self.roomCodeTextField resignFirstResponder];
 }
 
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
+    //Upon recieving a notification that we have connected to the host, emit the user's name to the socket and perform the segue to the set list view controller.
     NSString *guestName = self.nameTextField.text;
     NSMutableDictionary *nameDict = [[NSMutableDictionary alloc]init];
     [nameDict setObject:guestName forKey:@"name"];
@@ -70,45 +114,38 @@
         [prefs setObject:usernameString forKey:@"usernameString"];
         [prefs synchronize];
         
-        [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^
+        
+        //The textfields will animate out of view and in to view.
+        [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^
          {
              //move the login view up 50 points so that the keyboard does not hide views
-             self.nameHorizontalConst.constant = -197;
+             self.nameVertConst.constant = +170;
+             self.nameTextField.alpha = 0;
              [self.view layoutIfNeeded];
              
          }
                          completion:^(BOOL finished)
          {
-             [UIView animateWithDuration:.2 delay:.5 options:UIViewAnimationOptionCurveEaseOut animations:^
-              {
-                  //move the login view up 50 points so that the keyboard does not hide views
-                  self.roomCodeHorizConst.constant = +54;
-                  [self.view layoutIfNeeded];
-                  
-              }
-                              completion:^(BOOL finished)
-              {
-                  //Animation completed
-              }];
-             
+                //completed animation
          }];
         
-        
-        [textField resignFirstResponder];
+        //Animation on the room code, fade in with delay.
+        [UIView animateWithDuration:1.0 delay:.5 options:UIViewAnimationOptionCurveEaseOut animations:^
+         {
+             //move the login view up 50 points so that the keyboard does not hide views
+             self.roomCodeTextField.alpha = 1.0;
+             
+             [self.view layoutIfNeeded];
+             
+         }
+                         completion:^(BOOL finished)
+         {
+             [self.roomCodeTextField becomeFirstResponder];
+         }];
 
     }
     
-    if (textField.tag == 2 ) {
-        
-        //When the user enters the code on the textField, start the socket with the correct host and room code.
-        SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
-        
-        NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@/%@",HOST_URL, self.roomCodeTextField.text];
-        [socketSingleton startSocketWithHost:hostURLwithRoomCode];
-        [textField resignFirstResponder];
-
-    }
-    return YES;
+       return YES;
 }
 
 //The user should not be allowed to enter more than 5 digits.
@@ -131,6 +168,7 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    //Send the room code to be displayed on the respective view controllers. 
     if ([segue.identifier isEqualToString:@"toSetListRoomVC"]) {
         SetListRoomViewController *setListVC = segue.destinationViewController;
         setListVC.roomCode = self.roomCodeTextField.text;

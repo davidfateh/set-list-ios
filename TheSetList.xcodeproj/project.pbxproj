@@ -31,6 +31,8 @@
 		18EC3D101A6CAD4F00AFD97F /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3D0F1A6CAD4F00AFD97F /* SearchViewController.m */; };
 		18EC3D121A6CC59200AFD97F /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC3D111A6CC59200AFD97F /* CoreImage.framework */; };
 		18EC3D151A6EF82700AFD97F /* SearchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3D141A6EF82600AFD97F /* SearchTableViewCell.m */; };
+		18EC3D191A70535600AFD97F /* RadialGradiantView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3D181A70535600AFD97F /* RadialGradiantView.m */; };
+		18EC3D1F1A7069B400AFD97F /* SetListLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 18EC3D1E1A7069B400AFD97F /* SetListLogo.png */; };
 		CAF0D48BB6C043B495E885D0 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E745CD09AABC4F2F8EBCDB86 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +82,9 @@
 		18EC3D111A6CC59200AFD97F /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		18EC3D131A6EF82600AFD97F /* SearchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchTableViewCell.h; sourceTree = "<group>"; };
 		18EC3D141A6EF82600AFD97F /* SearchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchTableViewCell.m; sourceTree = "<group>"; };
+		18EC3D171A70535500AFD97F /* RadialGradiantView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadialGradiantView.h; sourceTree = "<group>"; };
+		18EC3D181A70535600AFD97F /* RadialGradiantView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadialGradiantView.m; sourceTree = "<group>"; };
+		18EC3D1E1A7069B400AFD97F /* SetListLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SetListLogo.png; sourceTree = "<group>"; };
 		607F341F35CA4F98B365C0AC /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		E745CD09AABC4F2F8EBCDB86 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -137,6 +142,7 @@
 				18EC3CBD1A65F64B00AFD97F /* AppDelegate.h */,
 				18EC3CBE1A65F64B00AFD97F /* AppDelegate.m */,
 				18EC3CC61A65F64C00AFD97F /* Main.storyboard */,
+				18EC3D1A1A70536E00AFD97F /* Subviews */,
 				18EC3CF11A66047200AFD97F /* NameCreationViewController.h */,
 				18EC3CF21A66047200AFD97F /* NameCreationViewController.m */,
 				18EC3D081A6C68B500AFD97F /* SetList View Controller */,
@@ -154,9 +160,10 @@
 		18EC3CB91A65F64B00AFD97F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				18EC3CF51A672C4100AFD97F /* set-list_Load up.png */,
+				18EC3D1E1A7069B400AFD97F /* SetListLogo.png */,
 				18EC3D031A6B135B00AFD97F /* ironAndWineShepardArt.jpg */,
 				18EC3D011A6B10FF00AFD97F /* ironAndWineCoverArt.jpg */,
-				18EC3CF51A672C4100AFD97F /* set-list_Load up.png */,
 				18EC3CBA1A65F64B00AFD97F /* Info.plist */,
 				18EC3CBB1A65F64B00AFD97F /* main.m */,
 			);
@@ -223,6 +230,15 @@
 				18EC3D141A6EF82600AFD97F /* SearchTableViewCell.m */,
 			);
 			name = "Search View Controllers";
+			sourceTree = "<group>";
+		};
+		18EC3D1A1A70536E00AFD97F /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				18EC3D171A70535500AFD97F /* RadialGradiantView.h */,
+				18EC3D181A70535600AFD97F /* RadialGradiantView.m */,
+			);
+			name = Subviews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -310,6 +326,7 @@
 				18EC3D021A6B10FF00AFD97F /* ironAndWineCoverArt.jpg in Resources */,
 				18EC3CF41A660AF900AFD97F /* Lobster-Regular.ttf in Resources */,
 				18EC3CC81A65F64C00AFD97F /* Main.storyboard in Resources */,
+				18EC3D1F1A7069B400AFD97F /* SetListLogo.png in Resources */,
 				18EC3CCD1A65F64C00AFD97F /* LaunchScreen.xib in Resources */,
 				18EC3CF61A672C4100AFD97F /* set-list_Load up.png in Resources */,
 				18EC3CCA1A65F64C00AFD97F /* Images.xcassets in Resources */,
@@ -365,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18EC3CF31A66047200AFD97F /* NameCreationViewController.m in Sources */,
+				18EC3D191A70535600AFD97F /* RadialGradiantView.m in Sources */,
 				18EC3CBF1A65F64B00AFD97F /* AppDelegate.m in Sources */,
 				18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */,
 				18EC3CBC1A65F64B00AFD97F /* main.m in Sources */,

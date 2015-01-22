@@ -10,8 +10,8 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="set-list_Load up.png" translatesAutoresizingMaskIntoConstraints="NO" id="O50-5g-FZt">
-                    <rect key="frame" x="-51" y="-152" width="405" height="728"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="SetListLogo.png" translatesAutoresizingMaskIntoConstraints="NO" id="SB3-a2-RRT">
+                    <rect key="frame" x="70" y="187" width="181" height="53"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -21,6 +21,6 @@
         </view>
     </objects>
     <resources>
-        <image name="set-list_Load up.png" width="640" height="1136"/>
+        <image name="SetListLogo.png" width="181" height="53"/>
     </resources>
 </document>

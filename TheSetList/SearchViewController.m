@@ -13,6 +13,7 @@
 #import <SIOSocket/SIOSocket.h>
 #import "SocketKeeperSingleton.h"
 #import <SCAPI.h>
+#import "RadialGradiantView.h"
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
@@ -24,6 +25,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
+    [self.backgroundView addSubview:radiantBackgroundView];
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;

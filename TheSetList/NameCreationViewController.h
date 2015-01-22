@@ -12,7 +12,7 @@
 @property (strong, nonatomic) IBOutlet UITextField *nameTextField;
 @property (strong, nonatomic) IBOutlet UILabel *theSetListLabel;
 @property (strong, nonatomic) IBOutlet UITextField *roomCodeTextField;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *nameHorizontalConst;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *roomCodeHorizConst;
+@property (strong, nonatomic) IBOutlet UIView *backgroundView;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *nameVertConst;
 
 @end

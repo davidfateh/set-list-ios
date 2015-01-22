@@ -11,6 +11,7 @@
 #import <SIOSocket/SIOSocket.h>
 #import "SocketKeeperSingleton.h"
 #import "SearchViewController.h"
+#import "RadialGradiantView.h"
 
 @interface SetListRoomViewController ()
 @property (strong, nonatomic) NSString *socketID;
@@ -20,6 +21,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
+    [self.backgroundView addSubview:radiantBackgroundView];
+
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     

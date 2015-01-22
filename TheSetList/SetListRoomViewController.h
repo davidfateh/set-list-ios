@@ -23,6 +23,7 @@
 @property (strong, nonatomic) NSArray *tracks;
 @property (strong, nonatomic) NSString *roomCode; 
 @property (strong, nonatomic) IBOutlet UIView *userSelectedNextIndicator;
+@property (strong, nonatomic) IBOutlet UIView *backgroundView;
 
 
 @end
