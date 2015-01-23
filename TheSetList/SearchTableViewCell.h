@@ -14,4 +14,13 @@
 @property (strong, nonatomic) IBOutlet UILabel *artistLabel;
 @property (strong, nonatomic) IBOutlet UILabel *songDurationLabel;
 
+
+
+
+
+
+
+
+
+
 @end

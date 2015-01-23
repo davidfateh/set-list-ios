@@ -12,4 +12,15 @@
 @property (strong, nonatomic) IBOutlet UILabel *songLabel;
 @property (strong, nonatomic) IBOutlet UIView *userSelectedQueueIndicator;
 
+
+
+//SearchTableViewCell properties
+@property (strong, nonatomic) IBOutlet UIImageView *searchAlbumArtImage;
+@property (strong, nonatomic) IBOutlet UILabel *searchSongTitle;
+@property (strong, nonatomic) IBOutlet UILabel *searchArtist;
+@property (strong, nonatomic) IBOutlet UILabel *searchDurationLabel;
+
+
+
+
 @end

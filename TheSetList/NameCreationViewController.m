@@ -12,7 +12,7 @@
 #import "SetListRoomViewController.h"
 #import "RadialGradiantView.h"
 
-#define HOST_URL @"http://149.152.98.211:5000"
+#define HOST_URL @"http://the-set-list.herokuapp.com"
 
 @interface NameCreationViewController ()
 
@@ -27,14 +27,14 @@
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.backgroundView addSubview:radiantBackgroundView];
     
-    
-    self.roomCodeTextField.returnKeyType = UIReturnKeyJoin;
-    
+    //Set the roomCodeTextField's aplha to 0 so that it can fade in upon request.
     self.roomCodeTextField.alpha = 0;
     
+    //Set delegates
     self.nameTextField.delegate = self;
     self.roomCodeTextField.delegate = self;
     
+    //Modify text attributes.
     [self.nameTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
     self.nameTextField.tintColor = [UIColor whiteColor];
     
@@ -43,6 +43,7 @@
     
     self.theSetListLabel.font = [UIFont fontWithName:@"Lobster" size:42.0];
     
+    //Animate the name textField upon the view loading, to fade in.
     self.nameTextField.alpha = 0.0;
     [UIView animateWithDuration:1.2 animations:^{
         self.nameTextField.alpha = 1.0;
@@ -72,8 +73,8 @@
 
 //When the user hits the arrow key, connect to the host and resign the keyboard.
 -(void)doneWithNumberPad{
-    NSString *numberFromTheKeyboard = self.roomCodeTextField.text;
     
+    NSString *numberFromTheKeyboard = self.roomCodeTextField.text;
     if (self.roomCodeTextField.tag == 2 ) {
         
         //When the user enters the code on the textField, start the socket with the correct host and room code.
@@ -134,7 +135,6 @@
          {
              //move the login view up 50 points so that the keyboard does not hide views
              self.roomCodeTextField.alpha = 1.0;
-             
              [self.view layoutIfNeeded];
              
          }
@@ -148,10 +148,24 @@
        return YES;
 }
 
-//The user should not be allowed to enter more than 5 digits.
+//The user should not be allowed to enter more than 4 digits.
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 
 {
+    //User is only allowed to have a name of 12 characters or less.
+    if (textField.tag == 1) {
+        // Prevent crashing undo bug – see note below.
+        if(range.length + range.location > textField.text.length)
+        {
+            return NO;
+        }
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        return (newLength > 12) ? NO : YES;
+
+    }
+    
+    //Room Codes are only 4 digits.
     if (textField.tag == 2) {
         // Prevent crashing undo bug – see note below.
         if(range.length + range.location > textField.text.length)
@@ -165,6 +179,8 @@
     
     return YES;
 }
+
+#pragma mark - Navigation
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {

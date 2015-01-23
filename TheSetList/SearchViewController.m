@@ -54,28 +54,31 @@
 {
     static NSString *ReusableIdentifier = @"Cell";
     SearchTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReusableIdentifier forIndexPath:indexPath];
+
     
-    // Configure the cell...
     
-    NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
-    cell.songTitleLabel.text = [track objectForKey:@"title"];
-    cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-    
-    //If there is no picture available. Adds a Custom picture.
-    if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
         
-        cell.albumArtImage.image = [UIImage imageNamed:@"SoundCloudLogo"];
+        // Configure the cell...
         
-    }
+        NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
+        cell.songTitleLabel.text = [track objectForKey:@"title"];
+        cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+        
+        //If there is no picture available. Adds a Custom picture.
+        if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
+            
+            cell.albumArtImage.image = [UIImage imageNamed:@"SoundCloudLogo"];
+            
+        }
+        
     
-    else
-    {
-        //Init the cell image with the track's artwork.
-        UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
-        cell.albumArtImage.image = cellImage;
-    }
+    
+            //Init the cell image with the track's artwork.
+            UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
+            cell.albumArtImage.image = cellImage;
     
     
+
     return cell;
     
 }

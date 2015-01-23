@@ -12,9 +12,13 @@
 #import "SocketKeeperSingleton.h"
 #import "SearchViewController.h"
 #import "RadialGradiantView.h"
+#import <SCAPI.h>
+
+#define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
 @interface SetListRoomViewController ()
 @property (strong, nonatomic) NSString *socketID;
+@property (nonatomic) BOOL plusButtonIsSelected;
 @end
 
 @implementation SetListRoomViewController
@@ -24,8 +28,17 @@
     
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.backgroundView addSubview:radiantBackgroundView];
-
     
+    //Set the text on the search bar to white.
+    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
+    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
+    
+    //Set the delegates for the search view.
+    self.searchBar.delegate = self;
+    self.searchTableView.delegate = self;
+    self.searchTableView.dataSource = self;
+    
+    //set the delegates for the set list view. 
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
@@ -163,35 +176,127 @@
     static NSString *ReusableIdentifier = @"Cell";
     SetListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReusableIdentifier forIndexPath:indexPath];
     
-    
-    NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
-    NSString *songTitle = [track objectForKey:@"title"];
-    NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
-    
-    cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
-    
-    
-    if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
-        cell.userSelectedQueueIndicator.hidden = NO;
+    if (tableView.tag == 1) {
+        NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
+        NSString *songTitle = [track objectForKey:@"title"];
+        NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
+        
+        cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
+        
+        
+        if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+            cell.userSelectedQueueIndicator.hidden = NO;
+        }
+        else
+        {
+            cell.userSelectedQueueIndicator.hidden = YES;
+        }
+        
+
     }
-    else
+    else if (tableView.tag == 2)
     {
-        cell.userSelectedQueueIndicator.hidden = YES;
+        // Configure the cell...
+        
+        NSDictionary *track = [self.searchTracks objectAtIndex:indexPath.row];
+        cell.searchSongTitle.text = [track objectForKey:@"title"];
+        cell.searchArtist.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+        
+        //If there is no picture available. Adds a Custom picture.
+        if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
+            
+            cell.searchAlbumArtImage.image = [UIImage imageNamed:@"SoundCloudLogo"];
+            
+        }
+        else{
+        //Init the cell image with the track's artwork.
+        UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
+        cell.searchAlbumArtImage.image = cellImage;
+        }
     }
-    
     
     return cell;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.tracks count];
+    if (tableView.tag == 1) {
+        return [self.tracks count];
+    }
+    else return [self.searchTracks count];
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView.tag == 2) {
+        NSDictionary *track = [self.searchTracks objectAtIndex:indexPath.row];
+        //Deselect the row animated so that the grey disappears
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
+        
+        //Send the data to the server/socket.
+        SIOSocket *socket = [[SocketKeeperSingleton sharedInstance]socket];
+        [socket emit:@"q_add_request" args:argsArray];
+
+    }
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self.searchBar resignFirstResponder];
+}
+
+#pragma mark - Search Bar Configuration
+
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    
+    
+    [searchBar resignFirstResponder];
+    
+    NSString *search = [self.searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+    
+    [SCRequest performMethod:SCRequestMethodGET
+                  onResource:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.soundcloud.com/tracks?client_id=%@&q=%@&format=json",CLIENT_ID, search]]
+             usingParameters:nil
+                 withAccount:nil
+      sendingProgressHandler:nil
+             responseHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+     {
+         
+         NSError *jsonError;
+         NSJSONSerialization *jsonResponse = [NSJSONSerialization
+                                              JSONObjectWithData:data
+                                              options:0
+                                              error:&jsonError];
+         
+         if (!jsonError && [jsonResponse isKindOfClass:[NSArray class]])
+         {
+             
+             self.searchTracks = (NSArray *)jsonResponse;
+             [self.searchTableView reloadData];
+             
+         }
+     }];
+    
+    
+}
+
+-(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    self.searchBar.text = nil;
+    self.searchTracks = nil;
+    [self.searchTableView reloadData];
+    [searchBar resignFirstResponder];
+}
+
+#pragma mark - Navigation
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -201,4 +306,36 @@
     }
 }
 
+- (IBAction)addSongButtonPressed:(UIButton *)sender
+{
+    UIImage *xImage = [UIImage imageNamed:@"xButtonThick"];
+    UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
+    
+    if (!self.plusButtonIsSelected) {
+        [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            self.searchViewVertConst.constant = +10;
+            [self.plusButton setBackgroundImage:xImage forState:UIControlStateNormal];
+            
+            self.plusButtonIsSelected = YES;
+            [self.view layoutIfNeeded];
+        }
+                         completion:^(BOOL finished) {
+                             
+                         }];
+
+    }
+    else //if plusbutton is selected
+        [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            self.searchViewVertConst.constant = 528;
+            [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
+            
+            self.plusButtonIsSelected = NO;
+            [self.view layoutIfNeeded];
+        }
+                         completion:^(BOOL finished) {
+            
+                         }];
+
+    
+}
 @end

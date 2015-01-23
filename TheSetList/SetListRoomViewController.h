@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIImageView *nextSongAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UILabel *nextSongLabel;
@@ -24,6 +24,17 @@
 @property (strong, nonatomic) NSString *roomCode; 
 @property (strong, nonatomic) IBOutlet UIView *userSelectedNextIndicator;
 @property (strong, nonatomic) IBOutlet UIView *backgroundView;
+
+
+
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *searchViewVertConst;
+@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (strong, nonatomic) IBOutlet UIButton *plusButton;
+@property (strong, nonatomic) IBOutlet UITableView *searchTableView;
+@property (strong, nonatomic) NSArray *searchTracks;
+
+
+- (IBAction)addSongButtonPressed:(UIButton *)sender;
 
 
 @end
