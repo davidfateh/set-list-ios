@@ -33,8 +33,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *searchTableView;
 @property (strong, nonatomic) NSArray *searchTracks;
 
-
-- (IBAction)addSongButtonPressed:(UIButton *)sender;
-
+- (IBAction)displaySearchViewButtonPressed:(UIButton *)sender;
+- (IBAction)cellPlusButtonPressed:(id)sender;
 
 @end

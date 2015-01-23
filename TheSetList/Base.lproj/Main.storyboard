@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="q9E-CL-jM1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="QpO-yN-51j">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -340,11 +340,11 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLu-PF-rGY">
-                                        <rect key="frame" x="20" y="151" width="280" height="1"/>
+                                        <rect key="frame" x="20" y="149" width="280" height="1"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="hol-ib-kNV"/>
-                                            <constraint firstAttribute="width" constant="280" id="sXe-VO-eny"/>
+                                            <constraint firstAttribute="height" constant="1" id="PGk-uS-WH5"/>
+                                            <constraint firstAttribute="width" constant="280" id="dgm-n5-YA4"/>
                                         </constraints>
                                     </view>
                                     <tableView clipsSubviews="YES" tag="2" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="98" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Z6A-MA-WkI">
@@ -416,6 +416,9 @@
                                                             <state key="normal" backgroundImage="plusButton">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="cellPlusButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="nmm-0g-4Sj"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
@@ -438,6 +441,7 @@
                                                 <color key="backgroundColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="tintColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
+                                                    <outlet property="plusButton" destination="HAQ-nc-9oB" id="shh-P0-cGg"/>
                                                     <outlet property="searchAlbumArtImage" destination="VeD-Pz-A9a" id="adL-5b-N3Z"/>
                                                     <outlet property="searchArtist" destination="qfg-iF-u2o" id="qlM-Md-lSv"/>
                                                     <outlet property="searchDurationLabel" destination="FTO-Ow-mFq" id="u0c-I7-KCm"/>
@@ -470,7 +474,7 @@
                                         </state>
                                         <state key="selected" image="xButtonThick"/>
                                         <connections>
-                                            <action selector="addSongButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="scM-7n-GyX"/>
+                                            <action selector="displaySearchViewButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="Uz9-i3-IHe"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -479,15 +483,14 @@
                                     <constraint firstItem="Z6A-MA-WkI" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" constant="18" id="4QA-Rc-XFu"/>
                                     <constraint firstAttribute="width" constant="320" id="9az-g6-9lX"/>
                                     <constraint firstAttribute="trailing" secondItem="Efp-0W-ly7" secondAttribute="trailing" constant="39" id="Ja4-a6-CPr"/>
+                                    <constraint firstItem="PLu-PF-rGY" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" constant="20" id="MmS-3R-fBa"/>
                                     <constraint firstAttribute="height" constant="568" id="TQC-iV-KJs"/>
+                                    <constraint firstItem="PLu-PF-rGY" firstAttribute="top" secondItem="YXq-UI-Cxq" secondAttribute="top" constant="149" id="YHr-cC-Vxm"/>
                                     <constraint firstItem="Efp-0W-ly7" firstAttribute="top" secondItem="YXq-UI-Cxq" secondAttribute="top" constant="75" id="bQq-nb-Ozg"/>
                                     <constraint firstAttribute="trailing" secondItem="umd-Uh-BeV" secondAttribute="trailing" constant="147" id="d56-Vu-zov"/>
-                                    <constraint firstItem="PLu-PF-rGY" firstAttribute="top" secondItem="YXq-UI-Cxq" secondAttribute="top" constant="151" id="erU-f0-hqW"/>
                                     <constraint firstItem="umd-Uh-BeV" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" constant="148" id="fmO-Ln-f9E"/>
-                                    <constraint firstAttribute="trailing" secondItem="PLu-PF-rGY" secondAttribute="trailing" constant="20" id="gXu-gu-LVI"/>
                                     <constraint firstItem="Efp-0W-ly7" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" constant="39" id="gqj-Nh-KBv"/>
                                     <constraint firstItem="umd-Uh-BeV" firstAttribute="top" secondItem="YXq-UI-Cxq" secondAttribute="top" constant="10" id="hEc-R6-vga"/>
-                                    <constraint firstItem="PLu-PF-rGY" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" constant="20" id="oid-kW-8Am"/>
                                     <constraint firstItem="Z6A-MA-WkI" firstAttribute="top" secondItem="YXq-UI-Cxq" secondAttribute="top" constant="151" id="rlr-pn-IXO"/>
                                 </constraints>
                             </view>

@@ -212,7 +212,10 @@
         //Init the cell image with the track's artwork.
         UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
         cell.searchAlbumArtImage.image = cellImage;
+            
         }
+        
+        cell.plusButton.tag = indexPath.row;
     }
     
     return cell;
@@ -231,23 +234,7 @@
     return 1;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (tableView.tag == 2) {
-        NSDictionary *track = [self.searchTracks objectAtIndex:indexPath.row];
-        //Deselect the row animated so that the grey disappears
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
-        
-        //Send the data to the server/socket.
-        SIOSocket *socket = [[SocketKeeperSingleton sharedInstance]socket];
-        [socket emit:@"q_add_request" args:argsArray];
-
-    }
-}
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     [self.searchBar resignFirstResponder];
 }
@@ -306,8 +293,8 @@
     }
 }
 
-- (IBAction)addSongButtonPressed:(UIButton *)sender
-{
+- (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
+    
     UIImage *xImage = [UIImage imageNamed:@"xButtonThick"];
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     
@@ -322,7 +309,7 @@
                          completion:^(BOOL finished) {
                              
                          }];
-
+        
     }
     else //if plusbutton is selected
         [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -333,9 +320,23 @@
             [self.view layoutIfNeeded];
         }
                          completion:^(BOOL finished) {
-            
+                             
                          }];
 
-    
 }
+
+- (IBAction)cellPlusButtonPressed:(id)sender
+{
+    int index =  (long)((UIButton *)sender).tag;
+    
+    NSDictionary *track = [self.searchTracks objectAtIndex:index];
+    NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
+    //Send the data to the server/socket.
+    SIOSocket *socket = [[SocketKeeperSingleton sharedInstance]socket];
+    [socket emit:@"q_add_request" args:argsArray];
+    
+
+}
+
+
 @end

@@ -19,6 +19,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *searchSongTitle;
 @property (strong, nonatomic) IBOutlet UILabel *searchArtist;
 @property (strong, nonatomic) IBOutlet UILabel *searchDurationLabel;
+@property (strong, nonatomic) IBOutlet UIButton *plusButton;
 
 
 
