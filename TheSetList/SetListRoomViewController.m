@@ -14,12 +14,14 @@
 #import "SetListTableViewCell.h"
 #import <SCAPI.h>
 
+
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
 @interface SetListRoomViewController ()
 @property (strong, nonatomic) NSString *socketID;
 @property (nonatomic) BOOL plusButtonIsSelected;
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
+@property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 
 @end
 
@@ -51,6 +53,17 @@
     
     //Set the number of the namespace/roomCode; 
     self.nameSpaceLabel.text = self.roomCode;
+    
+    
+    UIVisualEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    UIVisualEffectView *visualEffectView;
+    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    visualEffectView.frame = self.searchBackgroundView.bounds;
+    visualEffectView.alpha = 0;
+    [self.setListView addSubview:visualEffectView];
+    self.blurEffectView = visualEffectView;
+    
     
     //Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -314,30 +327,31 @@
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     
     if (!self.plusButtonIsSelected) {
-        [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        
+        [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.searchViewVertConst.constant = +10;
             [self.plusButton setBackgroundImage:xImage forState:UIControlStateNormal];
-            
-            self.plusButtonIsSelected = YES;
+            self.searchBackgroundView.alpha = 1;
+            self.blurEffectView.alpha = 1;
             [self.view layoutIfNeeded];
         }
                          completion:^(BOOL finished) {
-                             
+                             self.plusButtonIsSelected = YES;
                          }];
         
     }
-    else //if plusbutton is selected
-        [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+    else {//if plusbutton is selected
+        [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.searchViewVertConst.constant = 528;
             [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
-            
-            self.plusButtonIsSelected = NO;
+            self.searchBackgroundView.alpha = 0;
+            self.blurEffectView.alpha = 0;
             [self.view layoutIfNeeded];
         }
                          completion:^(BOOL finished) {
-                             
+                            self.plusButtonIsSelected = NO;
                          }];
-
+    }
 }
 
 -(void)addSongButtonPressedOnCell:(id)sender
@@ -354,6 +368,5 @@
     [socket emit:@"q_add_request" args:argsArray];
     
 }
-
 
 @end

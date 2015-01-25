@@ -334,6 +334,7 @@
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LrO-4T-FYi">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                        <color key="backgroundColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLu-PF-rGY">
                                         <rect key="frame" x="20" y="149" width="280" height="1"/>
@@ -475,7 +476,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="deviceRGB"/>
                                 <constraints>
                                     <constraint firstItem="Z6A-MA-WkI" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" constant="18" id="4QA-Rc-XFu"/>
                                     <constraint firstAttribute="width" constant="320" id="9az-g6-9lX"/>
@@ -513,9 +514,11 @@
                         <outlet property="nextSongLabel" destination="4yr-od-w6G" id="lz2-6w-iXW"/>
                         <outlet property="nextSongListView" destination="rX5-kA-Rad" id="K7O-mI-eHh"/>
                         <outlet property="plusButton" destination="umd-Uh-BeV" id="yUh-rI-34n"/>
+                        <outlet property="searchBackgroundView" destination="LrO-4T-FYi" id="EBO-Ex-Ymt"/>
                         <outlet property="searchBar" destination="Efp-0W-ly7" id="VsY-rJ-7yD"/>
                         <outlet property="searchTableView" destination="Z6A-MA-WkI" id="gqh-nX-nWw"/>
                         <outlet property="searchViewVertConst" destination="bdP-Op-HdD" id="WSm-lf-gzt"/>
+                        <outlet property="setListView" destination="6aW-cm-ATO" id="XdU-94-VpJ"/>
                         <outlet property="tableView" destination="ddj-u0-EjL" id="p1w-Cx-Jlc"/>
                         <outlet property="userSelectedNextIndicator" destination="51J-E6-ouI" id="0pG-oe-dfS"/>
                     </connections>

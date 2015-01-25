@@ -19,6 +19,7 @@
 @property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UIView *nextSongListView;
 @property (strong, nonatomic) IBOutlet UILabel *nextLabel;
+@property (strong, nonatomic) IBOutlet UIView *setListView;
 
 @property (strong, nonatomic) NSDictionary *nextSongDic;
 @property (strong, nonatomic) NSArray *tracks;
@@ -28,6 +29,7 @@
 
 
 
+@property (strong, nonatomic) IBOutlet UIView *searchBackgroundView;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *searchViewVertConst;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (strong, nonatomic) IBOutlet UIButton *plusButton;

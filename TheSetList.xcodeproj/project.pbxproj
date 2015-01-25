@@ -46,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1838799C1A75810200244B3E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		1873CDA11A7305A100D8CBC0 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		18EC3CB61A65F64B00AFD97F /* TheSetList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSetList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC3CBA1A65F64B00AFD97F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -186,6 +187,7 @@
 		18EC3CEC1A65F89100AFD97F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1838799C1A75810200244B3E /* Accelerate.framework */,
 				18EC3D111A6CC59200AFD97F /* CoreImage.framework */,
 				18EC3D0C1A6CAC6500AFD97F /* QuartzCore.framework */,
 				18EC3CEA1A65F84C00AFD97F /* CoreFoundation.framework */,
