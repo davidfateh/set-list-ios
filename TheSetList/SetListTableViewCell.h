@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol SetListCellDelegate <NSObject>
+@optional
+-(void)addSongButtonPressedOnCell:(id)sender;
+@end
+
 @interface SetListTableViewCell : UITableViewCell
+
+@property (strong, nonatomic) id delegate;
 @property (strong, nonatomic) IBOutlet UILabel *songLabel;
 @property (strong, nonatomic) IBOutlet UIView *userSelectedQueueIndicator;
 
@@ -20,8 +27,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *searchArtist;
 @property (strong, nonatomic) IBOutlet UILabel *searchDurationLabel;
 @property (strong, nonatomic) IBOutlet UIButton *plusButton;
+@property (strong, nonatomic) NSMutableDictionary *track;
 
 
+
+- (IBAction)addSongButtonPressed:(UIButton *)sender;
 
 
 @end

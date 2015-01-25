@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SetListTableViewCell.h"
 
-@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
+@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate>
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIImageView *nextSongAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UILabel *nextSongLabel;
@@ -34,6 +35,5 @@
 @property (strong, nonatomic) NSArray *searchTracks;
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender;
-- (IBAction)cellPlusButtonPressed:(id)sender;
 
 @end

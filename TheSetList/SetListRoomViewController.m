@@ -10,8 +10,8 @@
 #import "SetListTableViewCell.h"
 #import <SIOSocket/SIOSocket.h>
 #import "SocketKeeperSingleton.h"
-#import "SearchViewController.h"
 #import "RadialGradiantView.h"
+#import "SetListTableViewCell.h"
 #import <SCAPI.h>
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
@@ -19,12 +19,16 @@
 @interface SetListRoomViewController ()
 @property (strong, nonatomic) NSString *socketID;
 @property (nonatomic) BOOL plusButtonIsSelected;
+@property (strong, nonatomic) NSMutableIndexSet *selectedRows;
+
 @end
 
 @implementation SetListRoomViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.selectedRows =[NSMutableIndexSet new];
     
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.backgroundView addSubview:radiantBackgroundView];
@@ -176,50 +180,67 @@
     static NSString *ReusableIdentifier = @"Cell";
     SetListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReusableIdentifier forIndexPath:indexPath];
     
-    if (tableView.tag == 1) {
-        NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
-        NSString *songTitle = [track objectForKey:@"title"];
-        NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
-        
-        cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
-        
-        
-        if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
-            cell.userSelectedQueueIndicator.hidden = NO;
+    
+    cell.delegate = self;
+    
+        if (tableView.tag == 1) {
+            NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
+            NSString *songTitle = [track objectForKey:@"title"];
+            NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
+            
+           
+            if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+                cell.userSelectedQueueIndicator.hidden = NO;
+            }
+            else
+            {
+                cell.userSelectedQueueIndicator.hidden = YES;
+            }
+            
+            
         }
-        else
+        else if (tableView.tag == 2)
         {
-            cell.userSelectedQueueIndicator.hidden = YES;
+            // Configure the cell...
+            
+            NSMutableDictionary *track = [[self.searchTracks objectAtIndex:indexPath.row]mutableCopy];
+            cell.searchSongTitle.text = [track objectForKey:@"title"];
+            cell.searchArtist.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            //If there is no picture available. Adds a Custom picture.
+            if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
+                
+                cell.searchAlbumArtImage.image = [UIImage imageNamed:@"SoundCloudLogo"];
+                
+            }
+            else{
+                //Init the cell image with the track's artwork.
+                UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
+                cell.searchAlbumArtImage.image = cellImage;
+                
+            }
+            
+            //if the row is selected make sure the check mark is the background image. 
+            UIImage *checkImage = [UIImage imageNamed:@"check.png"];
+            UIImage *plusImage  = [UIImage imageNamed:@"plusButton"];
+            
+            if ([self.selectedRows containsIndex:indexPath.row]) {
+                [cell.plusButton setBackgroundImage:checkImage forState:UIControlStateNormal];
+            }
+            else {
+                [cell.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
+            }
+            cell.tag = indexPath.row;
         }
-        
 
-    }
-    else if (tableView.tag == 2)
-    {
-        // Configure the cell...
-        
-        NSDictionary *track = [self.searchTracks objectAtIndex:indexPath.row];
-        cell.searchSongTitle.text = [track objectForKey:@"title"];
-        cell.searchArtist.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-        
-        //If there is no picture available. Adds a Custom picture.
-        if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
-            
-            cell.searchAlbumArtImage.image = [UIImage imageNamed:@"SoundCloudLogo"];
-            
-        }
-        else{
-        //Init the cell image with the track's artwork.
-        UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
-        cell.searchAlbumArtImage.image = cellImage;
-            
-        }
-        
-        cell.plusButton.tag = indexPath.row;
-    }
+    
+    
     
     return cell;
 }
+
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -268,6 +289,9 @@
              
              self.searchTracks = (NSArray *)jsonResponse;
              [self.searchTableView reloadData];
+             //create a new indexset so that the tableview displays new plus images.
+             self.selectedRows =[NSMutableIndexSet new];
+
              
          }
      }];
@@ -283,15 +307,6 @@
     [searchBar resignFirstResponder];
 }
 
-#pragma mark - Navigation
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"toSearchVC"]) {
-        SearchViewController *searchVC = segue.destinationViewController;
-        searchVC.roomCode = self.roomCode;
-    }
-}
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
     
@@ -325,17 +340,19 @@
 
 }
 
-- (IBAction)cellPlusButtonPressed:(id)sender
+-(void)addSongButtonPressedOnCell:(id)sender
 {
-    int index =  (long)((UIButton *)sender).tag;
+    //Get the index from the sender's tag.
+    NSInteger index =  ((UITableViewCell *)sender).tag;
+    NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
     
-    NSDictionary *track = [self.searchTracks objectAtIndex:index];
+    [self.selectedRows addIndex:index];
+    
     NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
     //Send the data to the server/socket.
     SIOSocket *socket = [[SocketKeeperSingleton sharedInstance]socket];
     [socket emit:@"q_add_request" args:argsArray];
     
-
 }
 
 
