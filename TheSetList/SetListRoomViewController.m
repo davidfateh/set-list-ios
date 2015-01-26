@@ -13,6 +13,7 @@
 #import "RadialGradiantView.h"
 #import "SetListTableViewCell.h"
 #import <SCAPI.h>
+#import "PurpleGradientView.h"
 
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
@@ -30,10 +31,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.selectedRows =[NSMutableIndexSet new];
-    
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
-    [self.backgroundView addSubview:radiantBackgroundView];
+    [self.setListBackgroundView addSubview:radiantBackgroundView];
     
     //Set the text on the search bar to white.
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
@@ -55,6 +54,7 @@
     self.nameSpaceLabel.text = self.roomCode;
     
     
+    //Add a blur effect view in order to blur the background upon opening the search view.
     UIVisualEffect *blurEffect;
     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     UIVisualEffectView *visualEffectView;
@@ -126,62 +126,7 @@
 {
     NSArray *recievedtracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
     
-    //If there are recieved tracks set up the next-song and queue accordingly. 
-    if ([recievedtracks count]) {
-        
-        //Set the next song equal to the first object in the queue. 
-        self.nextSongDic = [recievedtracks objectAtIndex:0];
-        
-        //set the queue equal to the tracks from indexes 1+
-        NSRange range;
-        range.location = 1;
-        range.length = [recievedtracks count]-1;
-        self.tracks = [recievedtracks subarrayWithRange:range];
-        
-        
-        
-        //If there are recieved tracks, make sure the next-views are not hidden.
-        self.nextLabel.hidden = NO;
-        self.nextSongListView.hidden = NO;
-        self.nextSongAlbumArtImage.hidden = NO;
-        
-        
-        if ([[self.nextSongDic objectForKey:@"socket"]isEqualToString:self.socketID]) {
-            self.userSelectedNextIndicator.hidden = NO;
-        }
-        else
-        {
-            self.userSelectedNextIndicator.hidden = YES;
-        }
-        
-        NSString *songTitle = [self.nextSongDic objectForKey:@"title"];
-        NSString *artist = [[self.nextSongDic objectForKey:@"user"]objectForKey:@"username"];
-        
-        self.nextSongLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
-        
-        //Init the cell image with the track's artwork.
-        
-        //If the imageURL sent to the app is null, then catch it. If not, display the image.
-        if ([[self.nextSongDic objectForKey:@"artwork_url"] isEqual:[NSNull null]]) {
-            //image is null
-        }
-        else
-        {
-            NSURL *imageURL = [NSURL URLWithString:[self.nextSongDic objectForKey:@"artwork_url"]];
-            NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
-            UIImage *cellImage = [UIImage imageWithData:imageData];
-                self.nextSongAlbumArtImage.image = cellImage;
-        }
-
-    }
-    else {
-        //If there are no recived tracks, make sure to hide the next-views.
-        self.nextLabel.hidden = YES;
-        self.nextSongListView.hidden = YES;
-        self.nextSongAlbumArtImage.hidden = YES;
-    }
-    
-    
+    self.tracks = recievedtracks;
     [self.tableView reloadData];
     
 }
@@ -336,7 +281,7 @@
     if (!self.plusButtonIsSelected) {
         
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            self.searchViewVertConst.constant = +10;
+            self.searchViewVertConst.constant = 0;
             [self.plusButton setBackgroundImage:xImage forState:UIControlStateNormal];
             self.searchBackgroundView.alpha = 1;
             self.blurEffectView.alpha = 1;
@@ -349,7 +294,7 @@
     }
     else {//if plusbutton is selected
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            self.searchViewVertConst.constant = 528;
+            self.searchViewVertConst.constant = 509;
             [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
             self.searchBackgroundView.alpha = 0;
             self.blurEffectView.alpha = 0;
