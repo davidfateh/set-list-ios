@@ -222,6 +222,12 @@
             cell.searchSongTitle.text = [track objectForKey:@"title"];
             cell.searchArtist.text = [[track objectForKey:@"user"]objectForKey:@"username"];
             
+            //Format the tracks duration into a string and set the label.
+            int duration = [[track objectForKey:@"duration"]intValue];
+            NSString *durationString = [self timeFormatted:duration];
+            cell.searchDurationLabel.text = durationString;
+            
+            
             //If there is no picture available. Adds a Custom picture.
             if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
                 
@@ -320,6 +326,7 @@
     [searchBar resignFirstResponder];
 }
 
+#pragma mark - Custom Buttons
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
     
@@ -352,6 +359,8 @@
                             self.plusButtonIsSelected = NO;
                          }];
     }
+    
+    [self.searchBar resignFirstResponder];
 }
 
 -(void)addSongButtonPressedOnCell:(id)sender
@@ -359,7 +368,6 @@
     //Get the index from the sender's tag.
     NSInteger index =  ((UITableViewCell *)sender).tag;
     NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
-    
     [self.selectedRows addIndex:index];
     
     NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
@@ -367,6 +375,21 @@
     SIOSocket *socket = [[SocketKeeperSingleton sharedInstance]socket];
     [socket emit:@"q_add_request" args:argsArray];
     
+    
 }
 
+#pragma mark - Helper Methods
+
+//for formating the tracks durations.
+- (NSString *)timeFormatted:(int)totalSeconds
+{
+    int temp = (int)totalSeconds / 1000;
+    int seconds = temp % 60;
+    int minutes = temp / 60;
+    
+    if (seconds < 10) {
+        return [NSString stringWithFormat:@"%i:0%i", minutes, seconds];
+    }else
+        return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
+}
 @end
