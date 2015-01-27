@@ -39,7 +39,7 @@
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
     
-    self.remoteExitButton.transform = CGAffineTransformMakeRotation(M_PI/4);
+    self.exitSettingsViewButton.transform = CGAffineTransformMakeRotation(M_PI/4);
     
     //Set the remotePasswords textfield font colors etc.
     [self.remotePasswordTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
@@ -65,7 +65,7 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     //Set the number of the namespace/roomCode; 
-    self.nameSpaceLabel.text = self.roomCode;
+    self.roomCodeLabel.text = self.roomCode;
     
     
     //Add a blur effect view in order to blur the background upon opening the search view.
@@ -215,9 +215,6 @@
             }
             cell.tag = indexPath.row;
         }
-
-    
-    
     
     return cell;
 }
@@ -344,32 +341,6 @@
 
 #pragma mark - Remote Host Methods
 
-- (IBAction)remoteExitButtonPressed:(UIButton *)sender
-{
-    //Return to the set list view. Renew the search view.
-    self.blurEffectView.alpha = 0;
-    self.remoteConnectView.hidden = YES;
-    self.searchView.hidden = NO;
-    [self.remotePasswordTextField resignFirstResponder];
-}
-
-- (IBAction)remoteButtonPressed:(UIButton *)sender
-{
-    
-    //Bring up the remote view with an animation, and blur the background. Hide the search view.
-    self.remoteConnectView.hidden = NO;
-    self.remotePasswordTextField.transform = CGAffineTransformMakeScale(.7,.7);
-    self.searchView.hidden = YES;
-    self.blurEffectView.alpha = 1;
-    self.remoteExitButton.alpha = 1;
-    [UIView animateWithDuration:.1 animations:^{
-        self.remotePasswordTextField.alpha = 1;
-        self.remotePasswordTextField.transform = CGAffineTransformMakeScale(1,1);    } completion:^(BOOL finished) {
-        
-    }];
-    
-    
-}
 
 - (IBAction)playPauseButtonPressed:(UIButton *)sender
 {
@@ -424,10 +395,8 @@
             
             self.blurEffectView.alpha = 0;
             self.searchView.hidden = NO;
-            self.remoteConnectView.hidden = YES;
             self.playPauseButton.hidden = NO;
             self.skipButton.hidden = NO;
-            self.remoteButton.selected = YES;
             
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 304;
@@ -439,7 +408,6 @@
         }
         if ([key objectForKey:@"error"]) {
             NSLog(@"Error logging in");
-            self.remoteConnectionStatusLabel.text = @"Error Connecting To Host";
         }
 
     }];
@@ -447,6 +415,51 @@
     return YES;
 }
 
+- (IBAction)setListlogoPressed:(UIButton *)sender
+{
+    //Bring up the remote view with an animation, and blur the background. Hide the search view.
+    self.settingsView.hidden = NO;
+    self.searchView.hidden = YES;
+    [UIView animateWithDuration:.3 animations:^{
+        self.blurEffectView.alpha = 1;
+        self.roomCodeLabel.alpha = 1;
+        self.roomCodeTextLabel.alpha = 1;
+        self.whiteBorderView1.alpha  = 1;
+        self.whiteBorderView2.alpha = 1;
+        self.remotePasswordInfoLabel.alpha = 1;
+        self.leaveRoomButton.alpha = 1;
+        self.remoteImageView.alpha = 1;
+        self.exitSettingsViewButton.alpha = 1;
+        self.remotePasswordTextField.alpha = 1;
+        }];
+    
+}
+- (IBAction)exitSettingsButtonPressed:(UIButton *)sender
+{
+    self.settingsView.hidden = YES;
+    self.searchView.hidden = NO;
+    
+    [UIView animateWithDuration:.3 animations:^{
+        self.blurEffectView.alpha = 0;
+        self.roomCodeLabel.alpha = 0;
+        self.roomCodeTextLabel.alpha = 0;
+        self.whiteBorderView1.alpha  = 0;
+        self.whiteBorderView2.alpha = 0;
+        self.remotePasswordInfoLabel.alpha = 0;
+        self.leaveRoomButton.alpha = 0;
+        self.remoteImageView.alpha = 0;
+        self.exitSettingsViewButton.alpha = 0;
+        self.remotePasswordTextField.alpha = 0;
+    }];
+
+    [self.remotePasswordTextField resignFirstResponder];
+}
+
+- (IBAction)leaveRoomButtonPressed:(UIButton *)sender
+{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.socket close];
+}
 
 #pragma mark - Helper Methods
 
@@ -462,5 +475,8 @@
     }else
         return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
 }
+
+
+
 
 @end

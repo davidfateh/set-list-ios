@@ -100,19 +100,6 @@
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p6E-to-1mq">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                        <subviews>
-                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1xR-U8-lzH">
-                                                <rect key="frame" x="172" y="262" width="46" height="30"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <state key="normal" title="Skip">
-                                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="oXp-xX-sd1"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ironAndWineCoverArt.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Rpy-ls-d7e">
@@ -127,7 +114,7 @@
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.58999999999999997" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-zn-Exh">
-                                        <rect key="frame" x="101" y="262" width="46" height="30"/>
+                                        <rect key="frame" x="109" y="262" width="46" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <state key="normal" title="Play">
                                             <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -136,6 +123,35 @@
                                         <state key="selected" title="Pause"/>
                                         <connections>
                                             <action selector="playPauseButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="7Rx-wQ-Hkl"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SeR-Zn-aCc">
+                                        <rect key="frame" x="106" y="21" width="108" height="32"/>
+                                        <fontDescription key="fontDescription" name="Lobster-Regular" family="Lobster" pointSize="24"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="remote-enabled.png" translatesAutoresizingMaskIntoConstraints="NO" id="uTA-sr-VNi">
+                                        <rect key="frame" x="285" y="30" width="25" height="18"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk7-qf-x4X">
+                                        <rect key="frame" x="106" y="21" width="108" height="30"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="setListlogoPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="Vga-b4-o7w"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1xR-U8-lzH">
+                                        <rect key="frame" x="165" y="262" width="46" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <state key="normal" title="Skip">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="oXp-xX-sd1"/>
                                         </connections>
                                     </button>
                                     <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="42" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ddj-u0-EjL">
@@ -210,49 +226,6 @@
                                         </prototypes>
                                         <sections/>
                                     </tableView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="/" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jFh-JH-Lic">
-                                        <rect key="frame" x="198" y="28" width="16" height="26"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="16" id="OaI-g2-ID9"/>
-                                            <constraint firstAttribute="height" constant="26" id="xHH-b5-eNF"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SeR-Zn-aCc">
-                                        <rect key="frame" x="75" y="20" width="121" height="35"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="35" id="H7g-s8-5YN"/>
-                                            <constraint firstAttribute="width" constant="121" id="iLu-sy-OFe"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="Lobster-Regular" family="Lobster" pointSize="28"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dNn-4L-ebV">
-                                        <rect key="frame" x="285" y="31" width="23" height="18"/>
-                                        <state key="normal" backgroundImage="remote.png">
-                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <state key="selected">
-                                            <color key="titleColor" red="0.38431376218795776" green="0.37254902720451355" blue="0.63921570777893066" alpha="1" colorSpace="deviceRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="remoteButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="Mh3-oc-A49"/>
-                                        </connections>
-                                    </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejR-cI-1RV">
-                                        <rect key="frame" x="206" y="31" width="39" height="21"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="21" id="Wp4-LA-nXz"/>
-                                            <constraint firstAttribute="width" constant="39" id="zTt-ja-lh4"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="15"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Iron And Wine" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7J-l7-Cmn">
                                         <rect key="frame" x="29" y="231" width="262" height="12"/>
                                         <constraints>
@@ -279,49 +252,74 @@
                                     <constraint firstItem="ddj-u0-EjL" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="304" id="2vL-Lt-h9L"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="231" id="3e6-fQ-CSa"/>
                                     <constraint firstAttribute="width" constant="320" id="4rv-Vl-FcV"/>
-                                    <constraint firstItem="jFh-JH-Lic" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="28" id="L9B-bc-u26"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="216" id="MOk-54-a4e"/>
-                                    <constraint firstItem="SeR-Zn-aCc" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="75" id="Mqp-yN-bkl"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="18" id="Qfr-po-DDI"/>
-                                    <constraint firstItem="ejR-cI-1RV" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="31" id="WPg-yP-ZXz"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="XBF-1d-B9r"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="60" id="YQn-Xy-DpS"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="29" id="aSm-qz-G2J"/>
-                                    <constraint firstItem="SeR-Zn-aCc" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="20" id="k4s-2y-9oD"/>
-                                    <constraint firstItem="ejR-cI-1RV" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="206" id="lc7-8i-1Wi"/>
                                     <constraint firstItem="ddj-u0-EjL" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="9" id="qZL-uY-RgK"/>
-                                    <constraint firstItem="jFh-JH-Lic" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="198" id="wGp-iZ-30q"/>
                                     <constraint firstAttribute="height" constant="568" id="xKx-cB-yz7"/>
                                 </constraints>
                             </view>
-                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IAQ-vr-7FO" userLabel="Remote Connect View">
-                                <rect key="frame" x="0.0" y="20" width="320" height="320"/>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wWG-NW-vCz" userLabel="Settings View">
+                                <rect key="frame" x="0.0" y="12" width="320" height="490"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Remote Password" textAlignment="center" minimumFontSize="17" background="TextBoxBorder" translatesAutoresizingMaskIntoConstraints="NO" id="ZiX-av-Ztm">
-                                        <rect key="frame" x="58" y="178" width="205" height="30"/>
-                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <textField opaque="NO" clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" background="TextBoxBorder" translatesAutoresizingMaskIntoConstraints="NO" id="UMZ-gG-6Qe">
+                                        <rect key="frame" x="74" y="192" width="172" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="join"/>
                                     </textField>
-                                    <button opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HVY-oL-jzB">
-                                        <rect key="frame" x="284" y="8" width="25" height="25"/>
+                                    <button opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DZT-1t-Rze">
+                                        <rect key="frame" x="286" y="13" width="25" height="25"/>
                                         <state key="normal" backgroundImage="plusButton">
-                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.31" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="selected" title="In"/>
                                         <connections>
-                                            <action selector="remoteExitButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="72H-ce-HqB"/>
+                                            <action selector="exitSettingsButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="ybL-yG-BV5"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEK-4k-bwf" userLabel="Connection Status Label">
-                                        <rect key="frame" x="67" y="218" width="185" height="21"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enter the remote password to connect as host." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uhk-DG-jFR">
+                                        <rect key="frame" x="34" y="230" width="252" height="14"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <imageView userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="remote.png" translatesAutoresizingMaskIntoConstraints="NO" id="9wE-xP-O11">
+                                        <rect key="frame" x="148" y="161" width="25" height="18"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1743" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lei-CJ-7q1">
+                                        <rect key="frame" x="134" y="90" width="52" height="25"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="21"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Room Code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bku-Xw-h7V">
+                                        <rect key="frame" x="114" y="73" width="92" height="20"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gnn-PE-c1r">
+                                        <rect key="frame" x="38" y="135" width="244" height="1"/>
+                                        <color key="backgroundColor" white="1" alpha="0.46999999999999997" colorSpace="calibratedWhite"/>
+                                    </view>
+                                    <view alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HgJ-rE-qhq">
+                                        <rect key="frame" x="38" y="274" width="244" height="1"/>
+                                        <color key="backgroundColor" white="1" alpha="0.46999999999999997" colorSpace="calibratedWhite"/>
+                                    </view>
+                                    <button opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HWh-Mc-EGE">
+                                        <rect key="frame" x="74" y="305" width="172" height="30"/>
+                                        <state key="normal" title="Leave Room" backgroundImage="ExitButtonBackground">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.71999999999999997" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" red="0.67119109630584717" green="0.5864253044128418" blue="0.58480453491210938" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="leaveRoomButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="ila-J9-R2F"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="0.02" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YXq-UI-Cxq" userLabel="Search View">
                                 <rect key="frame" x="0.0" y="529" width="320" height="568"/>
@@ -484,16 +482,17 @@
                         <outlet property="currentAlbumArtImage" destination="Rpy-ls-d7e" id="N5D-zf-8iR"/>
                         <outlet property="currentArtistLabel" destination="G7J-l7-Cmn" id="vay-4s-LA9"/>
                         <outlet property="currentSongLabel" destination="QRe-J8-h5x" id="tUC-U9-1Cg"/>
-                        <outlet property="nameSpaceLabel" destination="ejR-cI-1RV" id="gAs-xA-PgJ"/>
+                        <outlet property="exitSettingsViewButton" destination="DZT-1t-Rze" id="KwG-GY-wYB"/>
+                        <outlet property="leaveRoomButton" destination="HWh-Mc-EGE" id="9Mo-LF-V1N"/>
                         <outlet property="playPauseButton" destination="KH9-zn-Exh" id="tKz-rJ-e0h"/>
                         <outlet property="plusButton" destination="umd-Uh-BeV" id="yUh-rI-34n"/>
                         <outlet property="purpleGlowImageView" destination="8Xb-Vu-eG3" id="pRg-S4-ZFL"/>
                         <outlet property="purpleGlowVertConst" destination="SNS-uk-ZJM" id="88a-91-nJS"/>
-                        <outlet property="remoteButton" destination="dNn-4L-ebV" id="kYR-Pk-Q4K"/>
-                        <outlet property="remoteConnectView" destination="IAQ-vr-7FO" id="MwU-ou-3l4"/>
-                        <outlet property="remoteConnectionStatusLabel" destination="vEK-4k-bwf" id="Huq-xL-2H3"/>
-                        <outlet property="remoteExitButton" destination="HVY-oL-jzB" id="N7V-MD-j4y"/>
-                        <outlet property="remotePasswordTextField" destination="ZiX-av-Ztm" id="JIx-VZ-NlA"/>
+                        <outlet property="remoteImageView" destination="9wE-xP-O11" id="JBh-pS-uxM"/>
+                        <outlet property="remotePasswordInfoLabel" destination="Uhk-DG-jFR" id="a6j-ag-ecv"/>
+                        <outlet property="remotePasswordTextField" destination="UMZ-gG-6Qe" id="40i-GG-Pec"/>
+                        <outlet property="roomCodeLabel" destination="lei-CJ-7q1" id="dTw-E8-T86"/>
+                        <outlet property="roomCodeTextLabel" destination="Bku-Xw-h7V" id="YQo-pZ-RYU"/>
                         <outlet property="searchBackgroundView" destination="LrO-4T-FYi" id="EBO-Ex-Ymt"/>
                         <outlet property="searchBar" destination="Efp-0W-ly7" id="VsY-rJ-7yD"/>
                         <outlet property="searchTableView" destination="Z6A-MA-WkI" id="gqh-nX-nWw"/>
@@ -503,13 +502,91 @@
                         <outlet property="setListTableViewHeightConst" destination="0Yv-Zt-T52" id="GSq-Bo-WU8"/>
                         <outlet property="setListTableViewVertConst" destination="2vL-Lt-h9L" id="aEn-8G-2nA"/>
                         <outlet property="setListView" destination="6aW-cm-ATO" id="XdU-94-VpJ"/>
+                        <outlet property="settingsView" destination="wWG-NW-vCz" id="wV8-bX-O4R"/>
                         <outlet property="skipButton" destination="1xR-U8-lzH" id="a8a-mR-H6D"/>
                         <outlet property="tableView" destination="ddj-u0-EjL" id="p1w-Cx-Jlc"/>
+                        <outlet property="whiteBorderView1" destination="gnn-PE-c1r" id="GYT-xB-JdA"/>
+                        <outlet property="whiteBorderView2" destination="HgJ-rE-qhq" id="Ibr-cE-oKW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R4a-eb-EFL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1384" y="136"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="RLP-d0-fDw">
+            <objects>
+                <viewController id="wSv-Ic-SqG" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ylR-0k-epi"/>
+                        <viewControllerLayoutGuide type="bottom" id="fdF-4d-dsG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="4Fw-nv-3hv">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yhv-Tw-VLl" userLabel="Settings View">
+                                <rect key="frame" x="0.0" y="14" width="320" height="490"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q4z-19-COP">
+                                        <rect key="frame" x="287" y="14" width="25" height="25"/>
+                                        <state key="normal" backgroundImage="plusButton">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.31" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fbc-iO-u2h">
+                                        <rect key="frame" x="74" y="305" width="172" height="30"/>
+                                        <state key="normal" title="Leave Room" backgroundImage="ExitButtonBackground">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.71999999999999997" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" red="0.67119109630584717" green="0.5864253044128418" blue="0.58480453491210938" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                    </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" background="TextBoxBorder" translatesAutoresizingMaskIntoConstraints="NO" id="tyq-w4-BvC">
+                                        <rect key="frame" x="74" y="192" width="172" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enter the remote password to connect as host." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LHJ-Hb-APX">
+                                        <rect key="frame" x="34" y="230" width="252" height="14"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="remote.png" translatesAutoresizingMaskIntoConstraints="NO" id="JAR-8g-Xv2">
+                                        <rect key="frame" x="148" y="161" width="25" height="18"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1743" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CWn-my-cCH">
+                                        <rect key="frame" x="134" y="90" width="52" height="25"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="21"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Room Code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jmc-Qw-gHH">
+                                        <rect key="frame" x="114" y="73" width="92" height="20"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="owC-Np-rri">
+                                        <rect key="frame" x="38" y="135" width="244" height="1"/>
+                                        <color key="backgroundColor" white="1" alpha="0.47000000000000003" colorSpace="calibratedWhite"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yhl-PK-vAG">
+                                        <rect key="frame" x="38" y="274" width="244" height="1"/>
+                                        <color key="backgroundColor" white="1" alpha="0.46999999999999997" colorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="0.02" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mNa-uQ-q74" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1880" y="158"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zDW-MG-o0y">
@@ -532,12 +609,14 @@
         </scene>
     </scenes>
     <resources>
+        <image name="ExitButtonBackground" width="97" height="20"/>
         <image name="TextBoxBorder" width="170" height="37"/>
         <image name="check.png" width="29" height="27"/>
         <image name="dot.png" width="9" height="9"/>
         <image name="ironAndWineCoverArt.jpg" width="500" height="494"/>
         <image name="plusButton" width="26" height="26"/>
         <image name="purple-glow.png" width="607" height="128"/>
+        <image name="remote-enabled.png" width="25" height="18"/>
         <image name="remote.png" width="25" height="18"/>
         <image name="searchBoxThin" width="151" height="25"/>
         <image name="xButtonThick" width="23" height="22"/>
