@@ -18,6 +18,7 @@
 @property (strong, nonatomic) id delegate;
 @property (strong, nonatomic) IBOutlet UILabel *songLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *userSelectedSongImageView;
+@property (strong, nonatomic) IBOutlet UILabel *artistLabel;
 
 
 

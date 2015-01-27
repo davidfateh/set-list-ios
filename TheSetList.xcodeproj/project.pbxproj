@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1873CDA21A7305A100D8CBC0 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 1873CDA11A7305A100D8CBC0 /* check.png */; };
 		18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B881A76D0FC00C388B5 /* purple-glow.png */; };
-		18956B8E1A7705A100C388B5 /* black-gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8D1A7705A000C388B5 /* black-gradient.png */; };
 		18956B901A770B8E00C388B5 /* dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8F1A770B8E00C388B5 /* dot.png */; };
 		18EC3CBC1A65F64B00AFD97F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBB1A65F64B00AFD97F /* main.m */; };
 		18EC3CBF1A65F64B00AFD97F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBE1A65F64B00AFD97F /* AppDelegate.m */; };
@@ -52,7 +51,6 @@
 		1838799C1A75810200244B3E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		1873CDA11A7305A100D8CBC0 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		18956B881A76D0FC00C388B5 /* purple-glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-glow.png"; sourceTree = "<group>"; };
-		18956B8D1A7705A000C388B5 /* black-gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "black-gradient.png"; sourceTree = "<group>"; };
 		18956B8F1A770B8E00C388B5 /* dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot.png; sourceTree = "<group>"; };
 		18EC3CB61A65F64B00AFD97F /* TheSetList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSetList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC3CBA1A65F64B00AFD97F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 			isa = PBXGroup;
 			children = (
 				18956B8F1A770B8E00C388B5 /* dot.png */,
-				18956B8D1A7705A000C388B5 /* black-gradient.png */,
 				18956B881A76D0FC00C388B5 /* purple-glow.png */,
 				1873CDA11A7305A100D8CBC0 /* check.png */,
 				18EC3CF51A672C4100AFD97F /* set-list_Load up.png */,
@@ -327,7 +324,6 @@
 				18EC3CCD1A65F64C00AFD97F /* LaunchScreen.xib in Resources */,
 				18EC3CF61A672C4100AFD97F /* set-list_Load up.png in Resources */,
 				18EC3CCA1A65F64C00AFD97F /* Images.xcassets in Resources */,
-				18956B8E1A7705A100C388B5 /* black-gradient.png in Resources */,
 				18956B901A770B8E00C388B5 /* dot.png in Resources */,
 				18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */,
 				18EC3D041A6B135B00AFD97F /* ironAndWineShepardArt.jpg in Resources */,

@@ -13,9 +13,6 @@
 #import "RadialGradiantView.h"
 #import "SetListTableViewCell.h"
 #import <SCAPI.h>
-#import "BlackHeaderGradient.h"
-
-
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
@@ -151,8 +148,8 @@
             NSString *songTitle = [track objectForKey:@"title"];
             NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
             
-            cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", songTitle, artist];
-            
+            cell.artistLabel.text = artist;
+            cell.songLabel.text = songTitle;
            
             if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
                 cell.userSelectedSongImageView.hidden = NO;
