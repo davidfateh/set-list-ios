@@ -100,6 +100,24 @@
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p6E-to-1mq">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7B9-PH-A05">
+                                                <rect key="frame" x="258" y="16" width="46" height="30"/>
+                                                <state key="normal">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dNn-4L-ebV">
+                                                <rect key="frame" x="258" y="22" width="46" height="30"/>
+                                                <state key="normal" title="Button">
+                                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <segue destination="j1J-G0-a1G" kind="show" identifier="toRemoteVC" id="vNH-Ok-xVT"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ironAndWineCoverArt.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Rpy-ls-d7e">
@@ -435,6 +453,73 @@
             </objects>
             <point key="canvasLocation" x="1384" y="136"/>
         </scene>
+        <!--Remote Test View Controller-->
+        <scene sceneID="Afu-cg-Wcs">
+            <objects>
+                <viewController id="j1J-G0-a1G" customClass="RemoteTestViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="X4L-dU-aIU"/>
+                        <viewControllerLayoutGuide type="bottom" id="YrC-vV-5Ci"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8Qk-Wf-y14">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Remote Password" textAlignment="center" minimumFontSize="17" background="TextBoxBorder" translatesAutoresizingMaskIntoConstraints="NO" id="yBj-gw-4eb">
+                                <rect key="frame" x="58" y="215" width="205" height="30"/>
+                                <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SbC-bk-Fao">
+                                <rect key="frame" x="131" y="253" width="59" height="30"/>
+                                <state key="normal" title="Connect">
+                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="connectButtonPressed:" destination="j1J-G0-a1G" eventType="touchUpInside" id="cCv-7c-HBU"/>
+                                </connections>
+                            </button>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="remote.png" translatesAutoresizingMaskIntoConstraints="NO" id="KUS-fY-tdg">
+                                <rect key="frame" x="153" y="122" width="15" height="15"/>
+                            </imageView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7qg-lK-fok">
+                                <rect key="frame" x="58" y="302" width="59" height="30"/>
+                                <state key="normal" title="Play">
+                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" title="Pause"/>
+                                <connections>
+                                    <action selector="playPauseButtonPressed:" destination="j1J-G0-a1G" eventType="touchUpInside" id="Mv9-eB-p1e"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zm2-ba-LVC">
+                                <rect key="frame" x="205" y="302" width="46" height="30"/>
+                                <state key="normal" title="Skip">
+                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="skipButtonPressed:" destination="j1J-G0-a1G" eventType="touchUpInside" id="Kyo-Cg-sI0"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="passwordTextField" destination="yBj-gw-4eb" id="sxg-gS-XSf"/>
+                        <outlet property="playPauseButton" destination="7qg-lK-fok" id="9Y2-R8-DFu"/>
+                        <outlet property="remoteLogoImageView" destination="KUS-fY-tdg" id="v6C-kv-o20"/>
+                        <outlet property="skipButton" destination="zm2-ba-LVC" id="gML-h8-TI1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DPe-7i-Qpe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1799" y="136"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="zDW-MG-o0y">
             <objects>
@@ -462,6 +547,7 @@
         <image name="ironAndWineCoverArt.jpg" width="500" height="494"/>
         <image name="plusButton" width="26" height="26"/>
         <image name="purple-glow.png" width="607" height="128"/>
+        <image name="remote.png" width="25" height="18"/>
         <image name="searchBoxThin" width="151" height="25"/>
         <image name="xButtonThick" width="23" height="22"/>
     </resources>

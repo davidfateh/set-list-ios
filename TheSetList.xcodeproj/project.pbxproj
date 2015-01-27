@@ -10,6 +10,8 @@
 		1873CDA21A7305A100D8CBC0 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 1873CDA11A7305A100D8CBC0 /* check.png */; };
 		18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B881A76D0FC00C388B5 /* purple-glow.png */; };
 		18956B901A770B8E00C388B5 /* dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8F1A770B8E00C388B5 /* dot.png */; };
+		18956B921A7734C200C388B5 /* remote.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B911A7734C200C388B5 /* remote.png */; };
+		18956B951A77352A00C388B5 /* RemoteTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18956B941A77352A00C388B5 /* RemoteTestViewController.m */; };
 		18EC3CBC1A65F64B00AFD97F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBB1A65F64B00AFD97F /* main.m */; };
 		18EC3CBF1A65F64B00AFD97F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBE1A65F64B00AFD97F /* AppDelegate.m */; };
 		18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CC01A65F64C00AFD97F /* TheSetList.xcdatamodeld */; };
@@ -52,6 +54,9 @@
 		1873CDA11A7305A100D8CBC0 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		18956B881A76D0FC00C388B5 /* purple-glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-glow.png"; sourceTree = "<group>"; };
 		18956B8F1A770B8E00C388B5 /* dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot.png; sourceTree = "<group>"; };
+		18956B911A7734C200C388B5 /* remote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remote.png; sourceTree = "<group>"; };
+		18956B931A77352A00C388B5 /* RemoteTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteTestViewController.h; sourceTree = "<group>"; };
+		18956B941A77352A00C388B5 /* RemoteTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteTestViewController.m; sourceTree = "<group>"; };
 		18EC3CB61A65F64B00AFD97F /* TheSetList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSetList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC3CBA1A65F64B00AFD97F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18EC3CBB1A65F64B00AFD97F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -146,6 +151,8 @@
 				18EC3D1A1A70536E00AFD97F /* Subviews */,
 				18EC3CF11A66047200AFD97F /* NameCreationViewController.h */,
 				18EC3CF21A66047200AFD97F /* NameCreationViewController.m */,
+				18956B931A77352A00C388B5 /* RemoteTestViewController.h */,
+				18956B941A77352A00C388B5 /* RemoteTestViewController.m */,
 				18EC3D081A6C68B500AFD97F /* SetList View Controller */,
 				18EC3D091A6C699400AFD97F /* SocketKeeperSingleton.h */,
 				18EC3D0A1A6C699400AFD97F /* SocketKeeperSingleton.m */,
@@ -160,6 +167,7 @@
 		18EC3CB91A65F64B00AFD97F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				18956B911A7734C200C388B5 /* remote.png */,
 				18956B8F1A770B8E00C388B5 /* dot.png */,
 				18956B881A76D0FC00C388B5 /* purple-glow.png */,
 				1873CDA11A7305A100D8CBC0 /* check.png */,
@@ -317,6 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1873CDA21A7305A100D8CBC0 /* check.png in Resources */,
+				18956B921A7734C200C388B5 /* remote.png in Resources */,
 				18EC3D021A6B10FF00AFD97F /* ironAndWineCoverArt.jpg in Resources */,
 				18EC3CF41A660AF900AFD97F /* Lobster-Regular.ttf in Resources */,
 				18EC3CC81A65F64C00AFD97F /* Main.storyboard in Resources */,
@@ -379,6 +388,7 @@
 			files = (
 				18EC3CF31A66047200AFD97F /* NameCreationViewController.m in Sources */,
 				18EC3D191A70535600AFD97F /* RadialGradiantView.m in Sources */,
+				18956B951A77352A00C388B5 /* RemoteTestViewController.m in Sources */,
 				18EC3CBF1A65F64B00AFD97F /* AppDelegate.m in Sources */,
 				18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */,
 				18EC3CBC1A65F64B00AFD97F /* main.m in Sources */,
