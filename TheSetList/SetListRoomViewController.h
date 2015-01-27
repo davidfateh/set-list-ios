@@ -15,11 +15,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *currentArtistLabel;
 @property (strong, nonatomic) IBOutlet UILabel *nameSpaceLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
-@property (strong, nonatomic) IBOutlet UILabel *nextLabel;
 @property (strong, nonatomic) IBOutlet UIView *setListView;
 @property (strong, nonatomic) NSArray *tracks;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;
+
 
 @property (strong, nonatomic) IBOutlet UIView *searchBackgroundView;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *searchViewVertConst;
@@ -28,6 +28,8 @@
 @property (strong, nonatomic) IBOutlet UITableView *searchTableView;
 @property (strong, nonatomic) NSArray *searchTracks;
 @property (strong, nonatomic) IBOutlet UIView *searchView;
+@property (strong, nonatomic) IBOutlet UIImageView *purpleGlowImageView;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *purpleGlowVertConst;
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender;
 

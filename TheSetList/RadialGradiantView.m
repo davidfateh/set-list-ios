@@ -10,8 +10,6 @@
 
 @implementation RadialGradiantView
 
-
-
 - (void)drawRect:(CGRect)rect {
     
     //// General Declarations

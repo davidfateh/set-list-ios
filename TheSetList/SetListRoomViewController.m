@@ -13,7 +13,8 @@
 #import "RadialGradiantView.h"
 #import "SetListTableViewCell.h"
 #import <SCAPI.h>
-#import "PurpleGradientView.h"
+#import "BlackHeaderGradient.h"
+
 
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
@@ -31,8 +32,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
-    [self.setListBackgroundView addSubview:radiantBackgroundView];
+    
+    
+    [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
     
     //Set the text on the search bar to white.
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
@@ -63,6 +65,9 @@
     visualEffectView.alpha = 0;
     [self.setListView addSubview:visualEffectView];
     self.blurEffectView = visualEffectView;
+    
+    UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
+    [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
     
     
     //Add a notifcation observer and postNotification name for updating the tracks.
@@ -146,15 +151,15 @@
             NSString *songTitle = [track objectForKey:@"title"];
             NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
             
-            cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", artist, songTitle];
+            cell.songLabel.text = [NSString stringWithFormat:@"%@ - %@", songTitle, artist];
             
            
             if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
-                cell.userSelectedQueueIndicator.hidden = NO;
+                cell.userSelectedSongImageView.hidden = NO;
             }
             else
             {
-                cell.userSelectedQueueIndicator.hidden = YES;
+                cell.userSelectedSongImageView.hidden = YES;
             }
             
             
@@ -275,14 +280,13 @@
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
     
-    UIImage *xImage = [UIImage imageNamed:@"xButtonThick"];
-    UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
-    
     if (!self.plusButtonIsSelected) {
-        
+        [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(1, -1)];
+        self.purpleGlowVertConst.constant = 0;
+        self.plusButton.transform = CGAffineTransformMakeRotation(M_PI/4);
+        [[UIApplication sharedApplication]setStatusBarHidden:YES];
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.searchViewVertConst.constant = 0;
-            [self.plusButton setBackgroundImage:xImage forState:UIControlStateNormal];
             self.searchBackgroundView.alpha = 1;
             self.blurEffectView.alpha = 1;
             [self.view layoutIfNeeded];
@@ -293,9 +297,12 @@
         
     }
     else {//if plusbutton is selected
+        [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(-1, 1)];
+        self.purpleGlowVertConst.constant = -149;
+        self.plusButton.transform = CGAffineTransformMakeRotation(-M_PI / 2);
+        [[UIApplication sharedApplication]setStatusBarHidden:NO];
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.searchViewVertConst.constant = 509;
-            [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
             self.searchBackgroundView.alpha = 0;
             self.blurEffectView.alpha = 0;
             [self.view layoutIfNeeded];
@@ -307,6 +314,7 @@
     
     [self.searchBar resignFirstResponder];
 }
+
 
 -(void)addSongButtonPressedOnCell:(id)sender
 {
