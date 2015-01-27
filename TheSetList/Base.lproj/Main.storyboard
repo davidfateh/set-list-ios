@@ -101,20 +101,15 @@
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p6E-to-1mq">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7B9-PH-A05">
-                                                <rect key="frame" x="258" y="16" width="46" height="30"/>
-                                                <state key="normal">
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dNn-4L-ebV">
-                                                <rect key="frame" x="258" y="22" width="46" height="30"/>
-                                                <state key="normal" title="Button">
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1xR-U8-lzH">
+                                                <rect key="frame" x="172" y="262" width="46" height="30"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                <state key="normal" title="Skip">
                                                     <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
-                                                    <segue destination="j1J-G0-a1G" kind="show" identifier="toRemoteVC" id="vNH-Ok-xVT"/>
+                                                    <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="oXp-xX-sd1"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -131,11 +126,23 @@
                                         <rect key="frame" x="0.0" y="204" width="326" height="46"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.58999999999999997" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-zn-Exh">
+                                        <rect key="frame" x="101" y="262" width="46" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <state key="normal" title="Play">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" title="Pause"/>
+                                        <connections>
+                                            <action selector="playPauseButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="7Rx-wQ-Hkl"/>
+                                        </connections>
+                                    </button>
                                     <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="42" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ddj-u0-EjL">
-                                        <rect key="frame" x="9" y="282" width="302" height="286"/>
+                                        <rect key="frame" x="9" y="304" width="302" height="264"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="deviceRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="286" id="0Yv-Zt-T52"/>
+                                            <constraint firstAttribute="height" constant="264" id="0Yv-Zt-T52"/>
                                             <constraint firstAttribute="width" constant="302" id="Aj3-WW-qW0"/>
                                         </constraints>
                                         <prototypes>
@@ -204,7 +211,7 @@
                                         <sections/>
                                     </tableView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="/" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jFh-JH-Lic">
-                                        <rect key="frame" x="138" y="28" width="16" height="26"/>
+                                        <rect key="frame" x="198" y="28" width="16" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="16" id="OaI-g2-ID9"/>
                                             <constraint firstAttribute="height" constant="26" id="xHH-b5-eNF"/>
@@ -214,7 +221,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SeR-Zn-aCc">
-                                        <rect key="frame" x="15" y="20" width="121" height="35"/>
+                                        <rect key="frame" x="75" y="20" width="121" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="35" id="H7g-s8-5YN"/>
                                             <constraint firstAttribute="width" constant="121" id="iLu-sy-OFe"/>
@@ -223,8 +230,21 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dNn-4L-ebV">
+                                        <rect key="frame" x="285" y="31" width="23" height="18"/>
+                                        <state key="normal" backgroundImage="remote.png">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected">
+                                            <color key="titleColor" red="0.38431376218795776" green="0.37254902720451355" blue="0.63921570777893066" alpha="1" colorSpace="deviceRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="remoteButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="Mh3-oc-A49"/>
+                                        </connections>
+                                    </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejR-cI-1RV">
-                                        <rect key="frame" x="146" y="31" width="39" height="21"/>
+                                        <rect key="frame" x="206" y="31" width="39" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="Wp4-LA-nXz"/>
                                             <constraint firstAttribute="width" constant="39" id="zTt-ja-lh4"/>
@@ -256,23 +276,52 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="ddj-u0-EjL" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="282" id="2vL-Lt-h9L"/>
+                                    <constraint firstItem="ddj-u0-EjL" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="304" id="2vL-Lt-h9L"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="231" id="3e6-fQ-CSa"/>
                                     <constraint firstAttribute="width" constant="320" id="4rv-Vl-FcV"/>
                                     <constraint firstItem="jFh-JH-Lic" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="28" id="L9B-bc-u26"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="216" id="MOk-54-a4e"/>
-                                    <constraint firstItem="SeR-Zn-aCc" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="15" id="Mqp-yN-bkl"/>
+                                    <constraint firstItem="SeR-Zn-aCc" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="75" id="Mqp-yN-bkl"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="18" id="Qfr-po-DDI"/>
                                     <constraint firstItem="ejR-cI-1RV" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="31" id="WPg-yP-ZXz"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="XBF-1d-B9r"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="60" id="YQn-Xy-DpS"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="29" id="aSm-qz-G2J"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="20" id="k4s-2y-9oD"/>
-                                    <constraint firstItem="ejR-cI-1RV" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="146" id="lc7-8i-1Wi"/>
+                                    <constraint firstItem="ejR-cI-1RV" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="206" id="lc7-8i-1Wi"/>
                                     <constraint firstItem="ddj-u0-EjL" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="9" id="qZL-uY-RgK"/>
-                                    <constraint firstItem="jFh-JH-Lic" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="138" id="wGp-iZ-30q"/>
+                                    <constraint firstItem="jFh-JH-Lic" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="198" id="wGp-iZ-30q"/>
                                     <constraint firstAttribute="height" constant="568" id="xKx-cB-yz7"/>
                                 </constraints>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IAQ-vr-7FO" userLabel="Remote Connect View">
+                                <rect key="frame" x="0.0" y="20" width="320" height="320"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Remote Password" textAlignment="center" minimumFontSize="17" background="TextBoxBorder" translatesAutoresizingMaskIntoConstraints="NO" id="ZiX-av-Ztm">
+                                        <rect key="frame" x="58" y="178" width="205" height="30"/>
+                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="join"/>
+                                    </textField>
+                                    <button opaque="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HVY-oL-jzB">
+                                        <rect key="frame" x="284" y="8" width="25" height="25"/>
+                                        <state key="normal" backgroundImage="plusButton">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="selected" title="In"/>
+                                        <connections>
+                                            <action selector="remoteExitButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="72H-ce-HqB"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEK-4k-bwf" userLabel="Connection Status Label">
+                                        <rect key="frame" x="67" y="218" width="185" height="21"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YXq-UI-Cxq" userLabel="Search View">
                                 <rect key="frame" x="0.0" y="529" width="320" height="568"/>
@@ -436,89 +485,31 @@
                         <outlet property="currentArtistLabel" destination="G7J-l7-Cmn" id="vay-4s-LA9"/>
                         <outlet property="currentSongLabel" destination="QRe-J8-h5x" id="tUC-U9-1Cg"/>
                         <outlet property="nameSpaceLabel" destination="ejR-cI-1RV" id="gAs-xA-PgJ"/>
+                        <outlet property="playPauseButton" destination="KH9-zn-Exh" id="tKz-rJ-e0h"/>
                         <outlet property="plusButton" destination="umd-Uh-BeV" id="yUh-rI-34n"/>
                         <outlet property="purpleGlowImageView" destination="8Xb-Vu-eG3" id="pRg-S4-ZFL"/>
                         <outlet property="purpleGlowVertConst" destination="SNS-uk-ZJM" id="88a-91-nJS"/>
+                        <outlet property="remoteButton" destination="dNn-4L-ebV" id="kYR-Pk-Q4K"/>
+                        <outlet property="remoteConnectView" destination="IAQ-vr-7FO" id="MwU-ou-3l4"/>
+                        <outlet property="remoteConnectionStatusLabel" destination="vEK-4k-bwf" id="Huq-xL-2H3"/>
+                        <outlet property="remoteExitButton" destination="HVY-oL-jzB" id="N7V-MD-j4y"/>
+                        <outlet property="remotePasswordTextField" destination="ZiX-av-Ztm" id="JIx-VZ-NlA"/>
                         <outlet property="searchBackgroundView" destination="LrO-4T-FYi" id="EBO-Ex-Ymt"/>
                         <outlet property="searchBar" destination="Efp-0W-ly7" id="VsY-rJ-7yD"/>
                         <outlet property="searchTableView" destination="Z6A-MA-WkI" id="gqh-nX-nWw"/>
                         <outlet property="searchView" destination="YXq-UI-Cxq" id="4fe-Dl-Nks"/>
                         <outlet property="searchViewVertConst" destination="P3E-kh-QyO" id="P0Q-9A-vZL"/>
                         <outlet property="setListBackgroundView" destination="p6E-to-1mq" id="7Gg-6v-hEP"/>
+                        <outlet property="setListTableViewHeightConst" destination="0Yv-Zt-T52" id="GSq-Bo-WU8"/>
+                        <outlet property="setListTableViewVertConst" destination="2vL-Lt-h9L" id="aEn-8G-2nA"/>
                         <outlet property="setListView" destination="6aW-cm-ATO" id="XdU-94-VpJ"/>
+                        <outlet property="skipButton" destination="1xR-U8-lzH" id="a8a-mR-H6D"/>
                         <outlet property="tableView" destination="ddj-u0-EjL" id="p1w-Cx-Jlc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R4a-eb-EFL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1384" y="136"/>
-        </scene>
-        <!--Remote Test View Controller-->
-        <scene sceneID="Afu-cg-Wcs">
-            <objects>
-                <viewController id="j1J-G0-a1G" customClass="RemoteTestViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="X4L-dU-aIU"/>
-                        <viewControllerLayoutGuide type="bottom" id="YrC-vV-5Ci"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8Qk-Wf-y14">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Remote Password" textAlignment="center" minimumFontSize="17" background="TextBoxBorder" translatesAutoresizingMaskIntoConstraints="NO" id="yBj-gw-4eb">
-                                <rect key="frame" x="58" y="215" width="205" height="30"/>
-                                <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SbC-bk-Fao">
-                                <rect key="frame" x="131" y="253" width="59" height="30"/>
-                                <state key="normal" title="Connect">
-                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="connectButtonPressed:" destination="j1J-G0-a1G" eventType="touchUpInside" id="cCv-7c-HBU"/>
-                                </connections>
-                            </button>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="remote.png" translatesAutoresizingMaskIntoConstraints="NO" id="KUS-fY-tdg">
-                                <rect key="frame" x="153" y="122" width="15" height="15"/>
-                            </imageView>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7qg-lK-fok">
-                                <rect key="frame" x="58" y="302" width="59" height="30"/>
-                                <state key="normal" title="Play">
-                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="selected" title="Pause"/>
-                                <connections>
-                                    <action selector="playPauseButtonPressed:" destination="j1J-G0-a1G" eventType="touchUpInside" id="Mv9-eB-p1e"/>
-                                </connections>
-                            </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zm2-ba-LVC">
-                                <rect key="frame" x="205" y="302" width="46" height="30"/>
-                                <state key="normal" title="Skip">
-                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="skipButtonPressed:" destination="j1J-G0-a1G" eventType="touchUpInside" id="Kyo-Cg-sI0"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <outlet property="passwordTextField" destination="yBj-gw-4eb" id="sxg-gS-XSf"/>
-                        <outlet property="playPauseButton" destination="7qg-lK-fok" id="9Y2-R8-DFu"/>
-                        <outlet property="remoteLogoImageView" destination="KUS-fY-tdg" id="v6C-kv-o20"/>
-                        <outlet property="skipButton" destination="zm2-ba-LVC" id="gML-h8-TI1"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="DPe-7i-Qpe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1799" y="136"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zDW-MG-o0y">
