@@ -21,6 +21,8 @@
 @property (nonatomic) BOOL plusButtonIsSelected;
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
+@property (strong, nonatomic) SIOSocket *socket;
+@property (nonatomic) BOOL ishost;
 
 @end
 
@@ -29,7 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
+    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -37,10 +39,23 @@
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
     
+    self.remoteExitButton.transform = CGAffineTransformMakeRotation(M_PI/4);
+    
+    //Set the remotePasswords textfield font colors etc.
+    [self.remotePasswordTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
+    self.remotePasswordTextField.tintColor = [UIColor whiteColor];
+    self.remotePasswordTextField.delegate = self;
+    self.remotePasswordTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    
     //Set the delegates for the search view.
     self.searchBar.delegate = self;
     self.searchTableView.delegate = self;
     self.searchTableView.dataSource = self;
+    
+    //Set the tableview position for if the user is not the host. No space between header and tableView. 
+    self.setListTableViewHeightConst.constant = 218;
+    self.setListTableViewVertConst.constant = 274;
+
     
     //set the delegates for the set list view. 
     self.tableView.delegate = self;
@@ -322,11 +337,116 @@
     
     NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
     //Send the data to the server/socket.
-    SIOSocket *socket = [[SocketKeeperSingleton sharedInstance]socket];
-    [socket emit:@"q_add_request" args:argsArray];
+    [self.socket emit:@"q_add_request" args:argsArray];
     
     
 }
+
+#pragma mark - Remote Host Methods
+
+- (IBAction)remoteExitButtonPressed:(UIButton *)sender
+{
+    //Return to the set list view. Renew the search view.
+    self.blurEffectView.alpha = 0;
+    self.remoteConnectView.hidden = YES;
+    self.searchView.hidden = NO;
+    [self.remotePasswordTextField resignFirstResponder];
+}
+
+- (IBAction)remoteButtonPressed:(UIButton *)sender
+{
+    
+    //Bring up the remote view with an animation, and blur the background. Hide the search view.
+    self.remoteConnectView.hidden = NO;
+    self.remotePasswordTextField.transform = CGAffineTransformMakeScale(.7,.7);
+    self.searchView.hidden = YES;
+    self.blurEffectView.alpha = 1;
+    self.remoteExitButton.alpha = 1;
+    [UIView animateWithDuration:.1 animations:^{
+        self.remotePasswordTextField.alpha = 1;
+        self.remotePasswordTextField.transform = CGAffineTransformMakeScale(1,1);    } completion:^(BOOL finished) {
+        
+    }];
+    
+    
+}
+
+- (IBAction)playPauseButtonPressed:(UIButton *)sender
+{
+    //If the user is the host, allow them to togglepause the songs.
+    if (self.ishost) {
+        NSMutableDictionary *togglePauseDic = [[NSMutableDictionary alloc]init];
+        [togglePauseDic setObject:@"togglePause" forKey:@"action"];
+        NSArray *argsArray = [[NSArray alloc]initWithObjects:togglePauseDic, nil];
+        [self.socket emit:@"remote" args:argsArray];
+    }
+}
+
+- (IBAction)skipButtonPressed:(UIButton *)sender
+{
+    //if the user is the host, allow them to skip songs.
+    if (self.ishost) {
+        NSMutableDictionary *skipDic = [[NSMutableDictionary alloc]init];
+        [skipDic setObject:@"skip" forKey:@"action"];
+        NSArray *argsArray = [[NSArray alloc]initWithObjects:skipDic, nil];
+        [self.socket emit:@"remote" args:argsArray];
+    }
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    //Joing to the remote host, emit the password, if correct password allow the user to be the host and pause, play and skip songs.
+    NSString *remotePassword = self.remotePasswordTextField.text;
+    NSMutableDictionary *passwordDick = [[NSMutableDictionary alloc]init];
+    [passwordDick setObject:remotePassword forKey:@"password"];
+    NSArray *argsArray = [[NSArray alloc]initWithObjects:passwordDick, nil];
+    [self.socket emit:@"add remote" args:argsArray];
+    [self.socket on:@"add remote" callback:^(NSArray *args) {
+        
+        NSMutableDictionary *key = [[NSMutableDictionary alloc]init];
+        key = (NSMutableDictionary *)[args objectAtIndex:0];
+        //if the password is a correct, and connection is successful, make the host view appear.
+        if ([key objectForKey:@"success"]) {
+            NSLog(@"Host Connection Succesful");
+            self.ishost = YES;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.remotePasswordTextField resignFirstResponder];
+            });
+            
+            
+            [self.socket on:@"playing" callback:^(NSArray *args) {
+                self.playPauseButton.selected = YES;
+            }];
+            [self.socket on:@"paused" callback:^(NSArray *args) {
+                self.playPauseButton.selected = NO;
+            }];
+            
+            self.blurEffectView.alpha = 0;
+            self.searchView.hidden = NO;
+            self.remoteConnectView.hidden = YES;
+            self.playPauseButton.hidden = NO;
+            self.skipButton.hidden = NO;
+            self.remoteButton.selected = YES;
+            
+            [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                self.setListTableViewVertConst.constant = 304;
+                self.setListTableViewHeightConst.constant = 238;
+            } completion:^(BOOL finished) {
+                
+            }];
+            
+        }
+        if ([key objectForKey:@"error"]) {
+            NSLog(@"Error logging in");
+            self.remoteConnectionStatusLabel.text = @"Error Connecting To Host";
+        }
+
+    }];
+
+    return YES;
+}
+
 
 #pragma mark - Helper Methods
 
@@ -342,4 +462,5 @@
     }else
         return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
 }
+
 @end
