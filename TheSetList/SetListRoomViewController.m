@@ -97,6 +97,12 @@
                                                  name:@"currentArtistB"
                                                object:nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"currentArtistB" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveHostDisconnectNotification:)
+                                                 name:@"host disconnect"
+                                               object:nil];
+
 
     self.socketID =[[SocketKeeperSingleton sharedInstance]socketID];
     
@@ -105,6 +111,11 @@
 
 
 #pragma mark - Notification Center
+
+-(void)receiveHostDisconnectNotification:(NSNotification *)notification
+{
+    [self disconnectSocketAndPopOut];
+}
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
 {
@@ -393,7 +404,6 @@
                 self.playPauseButton.selected = NO;
             }];
             
-            self.hostIconIndicatorImage.hidden = NO;
             self.searchView.hidden = NO;
             self.playPauseButton.hidden = NO;
             self.skipButton.hidden = NO;
@@ -415,10 +425,9 @@
             self.remotePasswordTextField.hidden = YES;
             self.remoteImageVertConst.constant = 181;
             self.remoteLabelVertConst.constant = 210;
-            UIImage *purpleIndicator = [UIImage imageNamed:@"remote-enabled.png"];
-            self.remoteImageView.image = purpleIndicator;
-            self.remotePasswordInfoLabel.text = @"You are a remote host";
-
+            self.remotePasswordInfoLabel.text = @"Remote connected";
+            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
+            self.remoteImageView.image = purpleHostIndicator;
             
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 304;
@@ -479,8 +488,7 @@
 
 - (IBAction)leaveRoomButtonPressed:(UIButton *)sender
 {
-    [self.navigationController popToRootViewControllerAnimated:YES];
-    [self.socket close];
+    [self disconnectSocketAndPopOut];
 }
 
 #pragma mark - Helper Methods
@@ -498,7 +506,12 @@
         return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
 }
 
+-(void)disconnectSocketAndPopOut
+{
+    [self.socket close];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 
+}
 
 
 @end

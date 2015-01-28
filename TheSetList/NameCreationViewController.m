@@ -27,16 +27,7 @@
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.backgroundView addSubview:radiantBackgroundView];
     
-    //Set the roomCodeTextField's aplha to 0 so that it can fade in upon request.
-    self.roomCodeTextField.alpha = 0;
-    
-    //Set delegates
-    self.nameTextField.delegate = self;
     self.roomCodeTextField.delegate = self;
-    
-    //Modify text attributes.
-    [self.nameTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
-    self.nameTextField.tintColor = [UIColor whiteColor];
     
     [self.roomCodeTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
     self.roomCodeTextField.tintColor = [UIColor whiteColor];
@@ -44,9 +35,9 @@
     self.theSetListLabel.font = [UIFont fontWithName:@"Lobster" size:42.0];
     
     //Animate the name textField upon the view loading, to fade in.
-    self.nameTextField.alpha = 0.0;
+    self.roomCodeTextField.alpha = 0;
     [UIView animateWithDuration:1.2 animations:^{
-        self.nameTextField.alpha = 1.0;
+        self.roomCodeTextField.alpha = 1.0;
     }];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -66,9 +57,6 @@
                                nil];
         [numberToolbar sizeToFit];
         self.roomCodeTextField.inputAccessoryView = numberToolbar;
-    
-        self.nameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    
 }
 
 //When the user hits the arrow key, connect to the host and resign the keyboard.
@@ -92,7 +80,7 @@
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
     //Upon recieving a notification that we have connected to the host, emit the user's name to the socket and perform the segue to the set list view controller.
-    NSString *guestName = self.nameTextField.text;
+    NSString *guestName = @"";
     NSMutableDictionary *nameDict = [[NSMutableDictionary alloc]init];
     [nameDict setObject:guestName forKey:@"name"];
     NSArray *argsArray = [[NSArray alloc]initWithObjects:nameDict, nil];
@@ -106,65 +94,11 @@
 }
 
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    if (textField.tag == 1) {
-        //Save the username string to NSUserDefaults to retrieve later in the application.
-        NSString *usernameString = self.nameTextField.text;
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        [prefs setObject:usernameString forKey:@"usernameString"];
-        [prefs synchronize];
-        
-        
-        //The textfields will animate out of view and in to view.
-        [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^
-         {
-             //move the login view up 50 points so that the keyboard does not hide views
-             self.nameVertConst.constant = +170;
-             self.nameTextField.alpha = 0;
-             [self.view layoutIfNeeded];
-             
-         }
-                         completion:^(BOOL finished)
-         {
-                //completed animation
-         }];
-        
-        //Animation on the room code, fade in with delay.
-        [UIView animateWithDuration:1.0 delay:.5 options:UIViewAnimationOptionCurveEaseOut animations:^
-         {
-             //move the login view up 50 points so that the keyboard does not hide views
-             self.roomCodeTextField.alpha = 1.0;
-             [self.view layoutIfNeeded];
-             
-         }
-                         completion:^(BOOL finished)
-         {
-             [self.roomCodeTextField becomeFirstResponder];
-         }];
-
-    }
-    
-       return YES;
-}
 
 //The user should not be allowed to enter more than 4 digits.
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 
 {
-    //User is only allowed to have a name of 12 characters or less.
-    if (textField.tag == 1) {
-        // Prevent crashing undo bug – see note below.
-        if(range.length + range.location > textField.text.length)
-        {
-            return NO;
-        }
-        
-        NSUInteger newLength = [textField.text length] + [string length] - range.length;
-        return (newLength > 12) ? NO : YES;
-
-    }
-    
     //Room Codes are only 4 digits.
     if (textField.tag == 2) {
         // Prevent crashing undo bug – see note below.

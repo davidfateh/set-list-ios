@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface NameCreationViewController : UIViewController <UITextFieldDelegate>
-@property (strong, nonatomic) IBOutlet UITextField *nameTextField;
+
 @property (strong, nonatomic) IBOutlet UILabel *theSetListLabel;
 @property (strong, nonatomic) IBOutlet UITextField *roomCodeTextField;
 @property (strong, nonatomic) IBOutlet UIView *backgroundView;
