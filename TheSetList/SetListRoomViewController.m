@@ -100,15 +100,13 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveHostDisconnectNotification:)
-                                                 name:@"host disconnect"
+                                                 name:@"hostDisconnect"
                                                object:nil];
 
 
     self.socketID =[[SocketKeeperSingleton sharedInstance]socketID];
     
 }
-
-
 
 #pragma mark - Notification Center
 
@@ -508,6 +506,8 @@
 
 -(void)disconnectSocketAndPopOut
 {
+    self.tracks = nil;
+    self.searchTracks = nil;
     [self.socket close];
     [self.navigationController popToRootViewControllerAnimated:YES];
 
