@@ -12,10 +12,10 @@
 #import "SetListRoomViewController.h"
 #import "RadialGradiantView.h"
 
-#define HOST_URL @"http://54.84.246.69"
+#define HOST_URL @"http://192.168.1.4:5000/"
 
 @interface NameCreationViewController ()
-
+@property (weak, nonatomic) SIOSocket *socket;
 @end
 
 @implementation NameCreationViewController
@@ -26,6 +26,12 @@
     //Add the radial gradient subview to the background.
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.backgroundView addSubview:radiantBackgroundView];
+    
+    SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
+    NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@",HOST_URL];
+    [socketSingleton startSocketWithHost:hostURLwithRoomCode];
+    
+    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     
     self.roomCodeTextField.delegate = self;
     
@@ -45,7 +51,11 @@
                                                  name:@"initialize"
                                                object:nil];
     
-   
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveTestNotification:)
+                                                 name:@"test"
+                                               object:nil];
+
         
         UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
         numberToolbar.barStyle = UIBarStyleBlackTranslucent;
@@ -65,35 +75,35 @@
     NSString *numberFromTheKeyboard = self.roomCodeTextField.text;
     if (self.roomCodeTextField.tag == 2 ) {
         
-        //When the user enters the code on the textField, start the socket with the correct host and room code.
-        SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
-        
-        NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@/%@",HOST_URL, numberFromTheKeyboard];
-        [socketSingleton startSocketWithHost:hostURLwithRoomCode];
+        NSMutableDictionary *startDic = [[NSMutableDictionary alloc]init];
+        [startDic setObject:numberFromTheKeyboard forKey:@"room"];
+        NSLog(@"%@", self.socket);
+        NSLog(@"%@", numberFromTheKeyboard);
+        NSArray *startArray = [[NSArray alloc]initWithObjects:startDic, nil];
+        [self.socket emit:@"mobile connect" args:startArray];
         [self.roomCodeTextField resignFirstResponder];
         
     }
     
-    [self.roomCodeTextField resignFirstResponder];
+}
+
+#pragma mark - Notifications
+
+-(void)receiveTestNotification:(NSNotification *)notificaiton
+{
+    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
+    NSLog(@"Connected to server");
 }
 
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
-    //Upon recieving a notification that we have connected to the host, emit the user's name to the socket and perform the segue to the set list view controller.
-    NSString *guestName = @"";
-    NSMutableDictionary *nameDict = [[NSMutableDictionary alloc]init];
-    [nameDict setObject:guestName forKey:@"name"];
-    NSArray *argsArray = [[NSArray alloc]initWithObjects:nameDict, nil];
-    SIOSocket *socket = [[SocketKeeperSingleton sharedInstance]socket];
-    [socket emit:@"join" args:argsArray];
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
     });
     
 }
 
-
+#pragma mark - Text Field Delegate
 
 //The user should not be allowed to enter more than 4 digits.
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string

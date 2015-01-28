@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <SCAPI.h>
+#import "SocketKeeperSingleton.h"
 
 @interface AppDelegate ()
 
@@ -28,7 +29,6 @@
     
     NSDictionary *barButtonAppearanceDict = @{NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:22.0], NSForegroundColorAttributeName: [UIColor whiteColor]};
     [[UIBarButtonItem appearance] setTitleTextAttributes:barButtonAppearanceDict forState:UIControlStateNormal];
-    
     
     return YES;
 }

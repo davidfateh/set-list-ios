@@ -65,6 +65,11 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"hostDisconnect" object:nil];
         }];
         
+        [self.socket on:@"test" callback:^(NSArray *args) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"test" object:nil];
+
+        }];
+        
     }];
     
 }

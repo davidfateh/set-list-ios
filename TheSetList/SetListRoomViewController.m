@@ -22,6 +22,7 @@
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) SIOSocket *socket;
+@property (weak, nonatomic) NSDictionary *currentArtist;
 @property (nonatomic) BOOL ishost;
 
 @end
@@ -30,6 +31,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
+    [self.setListBackgroundView addSubview:radiantBackgroundView];
+
     
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     
@@ -53,8 +58,8 @@
     self.searchTableView.dataSource = self;
     
     //Set the tableview position for if the user is not the host. No space between header and tableView. 
-    self.setListTableViewHeightConst.constant = 218;
-    self.setListTableViewVertConst.constant = 274;
+    self.setListTableViewHeightConst.constant = 294;
+    self.setListTableViewVertConst.constant = 0;
 
     
     //set the delegates for the set list view. 
@@ -113,6 +118,7 @@
     [super viewWillAppear:YES];
     double delay = .4;
     [self purpleGlowAnimationFromBottomWithDelay:&delay];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
 }
 
 #pragma mark - Notification Center
@@ -126,9 +132,9 @@
 {
     // Do parse respone data method and update yourTableViewData
     
-    NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+    self.currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
     
-    NSDictionary *track = currentArtist;
+    NSDictionary *track = self.currentArtist;
     
     //If there is no current track, set the label to inform the user.
     if ([track isEqual:[NSNull null]]) {
@@ -366,7 +372,6 @@
     NSInteger index =  ((UITableViewCell *)sender).tag;
     NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
     [self.selectedRows addIndex:index];
-    
     NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
     //Send the data to the server/socket.
     [self.socket emit:@"q_add_request" args:argsArray];
@@ -442,8 +447,8 @@
             self.remoteImageView.image = purpleHostIndicator;
             
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.setListTableViewVertConst.constant = 304;
-                self.setListTableViewHeightConst.constant = 238;
+                self.setListTableViewVertConst.constant = 0;
+                self.setListTableViewHeightConst.constant = 264;
             } completion:^(BOOL finished) {
                 
             }];
@@ -507,6 +512,7 @@
 
 -(void)disconnectSocketAndPopOut
 {
+    self.currentArtist = nil;
     self.tracks = nil;
     self.searchTracks = nil;
     [self.socket close];
@@ -518,7 +524,7 @@
 {
     self.plusButton.alpha = 0;
     self.searchView.hidden = NO;
-    [UIView animateWithDuration:.5 animations:^{
+    [UIView animateWithDuration:.3 animations:^{
         self.blurEffectView.alpha = 0;
         self.roomCodeLabel.alpha = 0;
         self.roomCodeTextLabel.alpha = 0;
@@ -542,6 +548,7 @@
 {
     self.purpleGlowImageView.alpha = 0;
     self.purpleGlowVertConst.constant = -338;
+    self.searchBackgroundView.alpha = 0;
     [UIView animateWithDuration:1.0 delay:*delay options:UIViewAnimationOptionCurveEaseOut animations:^
      {
          self.purpleGlowImageView.alpha = 1;
