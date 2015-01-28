@@ -15,10 +15,11 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UILabel *currentSongLabel;
 @property (strong, nonatomic) IBOutlet UILabel *currentArtistLabel;
-@property (strong, nonatomic) IBOutlet UILabel *nameSpaceLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UIView *setListView;
 @property (strong, nonatomic) NSArray *tracks;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteLabelVertConst;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteImageVertConst;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;
 
@@ -35,18 +36,31 @@
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender;
 
 
-//REMOTE VIEW properties and methods.
-@property (strong, nonatomic) IBOutlet UIButton *remoteButton;
-@property (strong, nonatomic) IBOutlet UIButton *remoteExitButton;
+
+//HOST Properties and methods
 @property (strong, nonatomic) IBOutlet UIButton *skipButton;
-@property (strong, nonatomic) IBOutlet UILabel *remoteConnectionStatusLabel;
-@property (strong, nonatomic) IBOutlet UITextField *remotePasswordTextField;
-@property (strong, nonatomic) IBOutlet UIView *remoteConnectView;
-- (IBAction)remoteExitButtonPressed:(UIButton *)sender;
-- (IBAction)remoteButtonPressed:(UIButton *)sender;
 - (IBAction)playPauseButtonPressed:(UIButton *)sender;
 - (IBAction)skipButtonPressed:(UIButton *)sender;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewHeightConst;
+- (IBAction)setListlogoPressed:(UIButton *)sender;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewVertConst;
 @property (strong, nonatomic) IBOutlet UIButton *playPauseButton;
+
+
+//SETTINGS VIEW properties and methods
+@property (strong, nonatomic) IBOutlet UIView *settingsView;
+@property (strong, nonatomic) IBOutlet UITextField *remotePasswordTextField;
+@property (strong, nonatomic) IBOutlet UIImageView *remoteImageView;
+@property (strong, nonatomic) IBOutlet UIButton *exitSettingsViewButton;
+@property (strong, nonatomic) IBOutlet UIView *whiteBorderView2;
+@property (strong, nonatomic) IBOutlet UILabel *remotePasswordInfoLabel;
+@property (strong, nonatomic) IBOutlet UILabel *roomCodeTextLabel;
+@property (strong, nonatomic) IBOutlet UIView *whiteBorderView1;
+@property (strong, nonatomic) IBOutlet UILabel *roomCodeLabel;
+@property (strong, nonatomic) IBOutlet UIButton *leaveRoomButton;
+- (IBAction)exitSettingsButtonPressed:(UIButton *)sender;
+- (IBAction)leaveRoomButtonPressed:(UIButton *)sender;
+
+
+
 @end

@@ -22,6 +22,7 @@
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) SIOSocket *socket;
+@property (weak, nonatomic) NSDictionary *currentArtist;
 @property (nonatomic) BOOL ishost;
 
 @end
@@ -31,6 +32,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
+    [self.setListBackgroundView addSubview:radiantBackgroundView];
+
+    
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -39,7 +44,7 @@
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
     
-    self.remoteExitButton.transform = CGAffineTransformMakeRotation(M_PI/4);
+    self.exitSettingsViewButton.transform = CGAffineTransformMakeRotation(M_PI/4);
     
     //Set the remotePasswords textfield font colors etc.
     [self.remotePasswordTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
@@ -53,8 +58,8 @@
     self.searchTableView.dataSource = self;
     
     //Set the tableview position for if the user is not the host. No space between header and tableView. 
-    self.setListTableViewHeightConst.constant = 218;
-    self.setListTableViewVertConst.constant = 274;
+    self.setListTableViewHeightConst.constant = 294;
+    self.setListTableViewVertConst.constant = 0;
 
     
     //set the delegates for the set list view. 
@@ -65,7 +70,7 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     //Set the number of the namespace/roomCode; 
-    self.nameSpaceLabel.text = self.roomCode;
+    self.roomCodeLabel.text = self.roomCode;
     
     
     //Add a blur effect view in order to blur the background upon opening the search view.
@@ -97,22 +102,48 @@
                                                  name:@"currentArtistB"
                                                object:nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"currentArtistB" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveOnDisconnectNotification:)
+                                                 name:@"onDisconnect"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveHostDisconnectNotification:)
+                                                 name:@"hostDisconnect"
+                                               object:nil];
+
 
     self.socketID =[[SocketKeeperSingleton sharedInstance]socketID];
     
 }
 
-
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    double delay = .4;
+    [self purpleGlowAnimationFromBottomWithDelay:&delay];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
+}
 
 #pragma mark - Notification Center
+
+-(void)receiveHostDisconnectNotification:(NSNotification *)notification
+{
+    [self disconnectSocketAndPopOut];
+}
+
+-(void)receiveOnDisconnectNotification:(NSNotification *)notification
+{
+    [self disconnectSocketAndPopOut];
+}
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
 {
     // Do parse respone data method and update yourTableViewData
     
-    NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+    self.currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
     
-    NSDictionary *track = currentArtist;
+    NSDictionary *track = self.currentArtist;
     
     //If there is no current track, set the label to inform the user.
     if ([track isEqual:[NSNull null]]) {
@@ -215,9 +246,6 @@
             }
             cell.tag = indexPath.row;
         }
-
-    
-    
     
     return cell;
 }
@@ -293,8 +321,9 @@
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
     
     if (!self.plusButtonIsSelected) {
+        self.purpleGlowImageView.alpha = 0;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(1, -1)];
-        self.purpleGlowVertConst.constant = 0;
+        self.purpleGlowVertConst.constant = -189;
         self.plusButton.transform = CGAffineTransformMakeRotation(M_PI/4);
         [[UIApplication sharedApplication]setStatusBarHidden:YES];
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -305,12 +334,22 @@
         }
                          completion:^(BOOL finished) {
                              self.plusButtonIsSelected = YES;
+                             //animation will show the glow apear from the top and fade/slide in.
+                             [UIView animateWithDuration:.8 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                                 self.purpleGlowImageView.alpha = 1;
+                                 self.purpleGlowVertConst.constant = 0;
+                             } completion:^(BOOL finished) {
+                                 //
+                             }];
+                             
                          }];
-        
+    
+    
     }
     else {//if plusbutton is selected
+        self.purpleGlowImageView.alpha = 0;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(-1, 1)];
-        self.purpleGlowVertConst.constant = -149;
+        self.purpleGlowVertConst.constant = -338;
         self.plusButton.transform = CGAffineTransformMakeRotation(-M_PI / 2);
         [[UIApplication sharedApplication]setStatusBarHidden:NO];
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -321,6 +360,14 @@
         }
                          completion:^(BOOL finished) {
                             self.plusButtonIsSelected = NO;
+                             //animation makes the glow fade/slide in from bottom
+                             //animation makes the glow fade/slide in from bottom
+                             [UIView animateWithDuration:.8 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                                 self.purpleGlowImageView.alpha = 1;
+                                 self.purpleGlowVertConst.constant = -149;
+                             } completion:^(BOOL finished) {
+                                 //animation complete
+                             }];
                          }];
     }
     
@@ -334,7 +381,6 @@
     NSInteger index =  ((UITableViewCell *)sender).tag;
     NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
     [self.selectedRows addIndex:index];
-    
     NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
     //Send the data to the server/socket.
     [self.socket emit:@"q_add_request" args:argsArray];
@@ -344,32 +390,6 @@
 
 #pragma mark - Remote Host Methods
 
-- (IBAction)remoteExitButtonPressed:(UIButton *)sender
-{
-    //Return to the set list view. Renew the search view.
-    self.blurEffectView.alpha = 0;
-    self.remoteConnectView.hidden = YES;
-    self.searchView.hidden = NO;
-    [self.remotePasswordTextField resignFirstResponder];
-}
-
-- (IBAction)remoteButtonPressed:(UIButton *)sender
-{
-    
-    //Bring up the remote view with an animation, and blur the background. Hide the search view.
-    self.remoteConnectView.hidden = NO;
-    self.remotePasswordTextField.transform = CGAffineTransformMakeScale(.7,.7);
-    self.searchView.hidden = YES;
-    self.blurEffectView.alpha = 1;
-    self.remoteExitButton.alpha = 1;
-    [UIView animateWithDuration:.1 animations:^{
-        self.remotePasswordTextField.alpha = 1;
-        self.remotePasswordTextField.transform = CGAffineTransformMakeScale(1,1);    } completion:^(BOOL finished) {
-        
-    }];
-    
-    
-}
 
 - (IBAction)playPauseButtonPressed:(UIButton *)sender
 {
@@ -407,7 +427,7 @@
         key = (NSMutableDictionary *)[args objectAtIndex:0];
         //if the password is a correct, and connection is successful, make the host view appear.
         if ([key objectForKey:@"success"]) {
-            NSLog(@"Host Connection Succesful");
+            NSLog(@"Remote Host Connection Succesful");
             self.ishost = YES;
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -422,24 +442,29 @@
                 self.playPauseButton.selected = NO;
             }];
             
-            self.blurEffectView.alpha = 0;
-            self.searchView.hidden = NO;
-            self.remoteConnectView.hidden = YES;
+            
             self.playPauseButton.hidden = NO;
             self.skipButton.hidden = NO;
-            self.remoteButton.selected = YES;
+            
+            [self exitSettingsAnimation];
+            
+            self.remotePasswordTextField.hidden = YES;
+            self.remoteImageVertConst.constant = 181;
+            self.remoteLabelVertConst.constant = 210;
+            self.remotePasswordInfoLabel.text = @"Remote connected";
+            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
+            self.remoteImageView.image = purpleHostIndicator;
             
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.setListTableViewVertConst.constant = 304;
-                self.setListTableViewHeightConst.constant = 238;
+                self.setListTableViewVertConst.constant = 0;
+                self.setListTableViewHeightConst.constant = 264;
             } completion:^(BOOL finished) {
                 
             }];
             
         }
         if ([key objectForKey:@"error"]) {
-            NSLog(@"Error logging in");
-            self.remoteConnectionStatusLabel.text = @"Error Connecting To Host";
+            self.remotePasswordInfoLabel.text = [key objectForKey:@"error"];
         }
 
     }];
@@ -447,6 +472,37 @@
     return YES;
 }
 
+- (IBAction)setListlogoPressed:(UIButton *)sender
+{
+    //Bring up the remote view with an animation, and blur the background. Hide the search view.
+    self.settingsView.hidden = NO;
+    self.searchView.hidden = YES;
+    [UIView animateWithDuration:.5 animations:^{
+        self.blurEffectView.alpha = 1;
+        self.roomCodeLabel.alpha = 1;
+        self.roomCodeTextLabel.alpha = 1;
+        self.whiteBorderView1.alpha  = 1;
+        self.whiteBorderView2.alpha = 1;
+        self.remotePasswordInfoLabel.alpha = 1;
+        self.leaveRoomButton.alpha = 1;
+        self.remoteImageView.alpha = 1;
+        self.exitSettingsViewButton.alpha = 1;
+        self.remotePasswordTextField.alpha = 1;
+        }];
+    
+}
+- (IBAction)exitSettingsButtonPressed:(UIButton *)sender
+{
+    [self exitSettingsAnimation];
+    double time = .3;
+    [self purpleGlowAnimationFromBottomWithDelay:&time];
+    [self.remotePasswordTextField resignFirstResponder];
+}
+
+- (IBAction)leaveRoomButtonPressed:(UIButton *)sender
+{
+    [self disconnectSocketAndPopOut];
+}
 
 #pragma mark - Helper Methods
 
@@ -462,5 +518,56 @@
     }else
         return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
 }
+
+-(void)disconnectSocketAndPopOut
+{
+    self.currentArtist = nil;
+    self.tracks = nil;
+    self.searchTracks = nil;
+    [self.socket close];
+    [self.navigationController popToRootViewControllerAnimated:YES];
+
+}
+
+-(void)exitSettingsAnimation
+{
+    self.plusButton.alpha = 0;
+    self.searchView.hidden = NO;
+    [UIView animateWithDuration:.3 animations:^{
+        self.blurEffectView.alpha = 0;
+        self.roomCodeLabel.alpha = 0;
+        self.roomCodeTextLabel.alpha = 0;
+        self.whiteBorderView1.alpha  = 0;
+        self.whiteBorderView2.alpha = 0;
+        self.remotePasswordInfoLabel.alpha = 0;
+        self.leaveRoomButton.alpha = 0;
+        self.remoteImageView.alpha = 0;
+        self.exitSettingsViewButton.alpha = 0;
+        self.remotePasswordTextField.alpha = 0;
+        self.plusButton.alpha = 1;
+        
+    } completion:^(BOOL finished) {
+        self.settingsView.hidden = YES;
+        [self purpleGlowImageView];
+    }];
+
+}
+
+-(void)purpleGlowAnimationFromBottomWithDelay:(NSTimeInterval *)delay
+{
+    self.purpleGlowImageView.alpha = 0;
+    self.purpleGlowVertConst.constant = -338;
+    self.searchBackgroundView.alpha = 0;
+    [UIView animateWithDuration:1.0 delay:*delay options:UIViewAnimationOptionCurveEaseOut animations:^
+     {
+         self.purpleGlowImageView.alpha = 1;
+         self.purpleGlowVertConst.constant = -149;
+     }
+     
+                     completion:^(BOOL finished) {
+                     }];
+
+}
+
 
 @end
