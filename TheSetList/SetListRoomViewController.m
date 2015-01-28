@@ -299,8 +299,9 @@
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
     
     if (!self.plusButtonIsSelected) {
+        self.purpleGlowImageView.alpha = 0;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(1, -1)];
-        self.purpleGlowVertConst.constant = 0;
+        self.purpleGlowVertConst.constant = -189;
         self.plusButton.transform = CGAffineTransformMakeRotation(M_PI/4);
         [[UIApplication sharedApplication]setStatusBarHidden:YES];
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -311,12 +312,22 @@
         }
                          completion:^(BOOL finished) {
                              self.plusButtonIsSelected = YES;
+                             //animation will show the glow apear from the top and fade/slide in.
+                             [UIView animateWithDuration:.8 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                                 self.purpleGlowImageView.alpha = 1;
+                                 self.purpleGlowVertConst.constant = 0;
+                             } completion:^(BOOL finished) {
+                                 //
+                             }];
+                             
                          }];
-        
+    
+    
     }
     else {//if plusbutton is selected
+        self.purpleGlowImageView.alpha = 0;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(-1, 1)];
-        self.purpleGlowVertConst.constant = -149;
+        self.purpleGlowVertConst.constant = -338;
         self.plusButton.transform = CGAffineTransformMakeRotation(-M_PI / 2);
         [[UIApplication sharedApplication]setStatusBarHidden:NO];
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -327,6 +338,15 @@
         }
                          completion:^(BOOL finished) {
                             self.plusButtonIsSelected = NO;
+                             //animation makes the glow fade/slide in from bottom
+                             [UIView animateWithDuration:.8 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                                 self.purpleGlowImageView.alpha = 1;
+                                 self.purpleGlowVertConst.constant = -149;
+                             } completion:^(BOOL finished) {
+                                 //animation complete
+                             }];
+
+                             
                          }];
     }
     
