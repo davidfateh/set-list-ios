@@ -18,8 +18,11 @@
 @property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UIView *setListView;
 @property (strong, nonatomic) NSArray *tracks;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteLabelVertConst;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteImageVertConst;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;
+@property (strong, nonatomic) IBOutlet UIImageView *hostIconIndicatorImage;
 
 //SEARCH VIEW properties and methods
 @property (strong, nonatomic) IBOutlet UIView *searchBackgroundView;

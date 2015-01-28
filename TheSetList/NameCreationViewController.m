@@ -12,7 +12,7 @@
 #import "SetListRoomViewController.h"
 #import "RadialGradiantView.h"
 
-#define HOST_URL @"http://54.152.12.89"
+#define HOST_URL @"http://54.84.246.69"
 
 @interface NameCreationViewController ()
 

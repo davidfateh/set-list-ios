@@ -393,10 +393,32 @@
                 self.playPauseButton.selected = NO;
             }];
             
-            self.blurEffectView.alpha = 0;
+            self.hostIconIndicatorImage.hidden = NO;
             self.searchView.hidden = NO;
             self.playPauseButton.hidden = NO;
             self.skipButton.hidden = NO;
+            
+            [UIView animateWithDuration:.3 animations:^{
+                self.blurEffectView.alpha = 0;
+                self.roomCodeLabel.alpha = 0;
+                self.roomCodeTextLabel.alpha = 0;
+                self.whiteBorderView1.alpha  = 0;
+                self.whiteBorderView2.alpha = 0;
+                self.remotePasswordInfoLabel.alpha = 0;
+                self.leaveRoomButton.alpha = 0;
+                self.remoteImageView.alpha = 0;
+                self.exitSettingsViewButton.alpha = 0;
+                self.remotePasswordTextField.alpha = 0;
+                self.settingsView.hidden = YES;
+            }];
+            
+            self.remotePasswordTextField.hidden = YES;
+            self.remoteImageVertConst.constant = 181;
+            self.remoteLabelVertConst.constant = 210;
+            UIImage *purpleIndicator = [UIImage imageNamed:@"remote-enabled.png"];
+            self.remoteImageView.image = purpleIndicator;
+            self.remotePasswordInfoLabel.text = @"You are a remote host";
+
             
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 304;
@@ -407,7 +429,7 @@
             
         }
         if ([key objectForKey:@"error"]) {
-            NSLog(@"Error logging in");
+            self.remotePasswordInfoLabel.text = [key objectForKey:@"error"];
         }
 
     }];
@@ -436,7 +458,6 @@
 }
 - (IBAction)exitSettingsButtonPressed:(UIButton *)sender
 {
-    self.settingsView.hidden = YES;
     self.searchView.hidden = NO;
     
     [UIView animateWithDuration:.3 animations:^{
@@ -450,6 +471,7 @@
         self.remoteImageView.alpha = 0;
         self.exitSettingsViewButton.alpha = 0;
         self.remotePasswordTextField.alpha = 0;
+        self.settingsView.hidden = YES;
     }];
 
     [self.remotePasswordTextField resignFirstResponder];
