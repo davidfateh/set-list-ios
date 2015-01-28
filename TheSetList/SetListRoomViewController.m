@@ -104,6 +104,10 @@
     [[NSNotificationCenter defaultCenter]postNotificationName:@"currentArtistB" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveOnDisconnectNotification:)
+                                                 name:@"onDisconnect"
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveHostDisconnectNotification:)
                                                  name:@"hostDisconnect"
                                                object:nil];
@@ -124,6 +128,11 @@
 #pragma mark - Notification Center
 
 -(void)receiveHostDisconnectNotification:(NSNotification *)notification
+{
+    [self disconnectSocketAndPopOut];
+}
+
+-(void)receiveOnDisconnectNotification:(NSNotification *)notification
 {
     [self disconnectSocketAndPopOut];
 }
@@ -406,6 +415,7 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    NSLog(@"%@", self.socket);
     //Joing to the remote host, emit the password, if correct password allow the user to be the host and pause, play and skip songs.
     NSString *remotePassword = self.remotePasswordTextField.text;
     NSMutableDictionary *passwordDick = [[NSMutableDictionary alloc]init];

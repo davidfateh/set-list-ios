@@ -65,10 +65,15 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"hostDisconnect" object:nil];
         }];
         
-        [self.socket on:@"test" callback:^(NSArray *args) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"test" object:nil];
-
-        }];
+        self.socket.onDisconnect = ^()
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"onDisconnect" object:nil];
+        };
+        
+        self.socket.onConnect = ^()
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"onConnect" object:nil];
+        };
         
     }];
     

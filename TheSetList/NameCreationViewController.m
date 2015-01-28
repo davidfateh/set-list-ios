@@ -27,12 +27,6 @@
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.backgroundView addSubview:radiantBackgroundView];
     
-    SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
-    NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@",HOST_URL];
-    [socketSingleton startSocketWithHost:hostURLwithRoomCode];
-    
-    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
-    
     self.roomCodeTextField.delegate = self;
     
     [self.roomCodeTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
@@ -52,8 +46,8 @@
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveTestNotification:)
-                                                 name:@"test"
+                                             selector:@selector(receiveOnConnectNotification:)
+                                                 name:@"onConnect"
                                                object:nil];
 
         
@@ -67,6 +61,17 @@
                                nil];
         [numberToolbar sizeToFit];
         self.roomCodeTextField.inputAccessoryView = numberToolbar;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
+    self.roomCodeTextField.text = nil;
+    
+    SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
+    NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@",HOST_URL];
+    [socketSingleton startSocketWithHost:hostURLwithRoomCode];
 }
 
 //When the user hits the arrow key, connect to the host and resign the keyboard.
@@ -89,7 +94,7 @@
 
 #pragma mark - Notifications
 
--(void)receiveTestNotification:(NSNotification *)notificaiton
+-(void)receiveOnConnectNotification:(NSNotification *)notificaiton
 {
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     NSLog(@"Connected to server");
