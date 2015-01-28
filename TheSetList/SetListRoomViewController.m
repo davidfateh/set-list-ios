@@ -108,6 +108,13 @@
     
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    double delay = .4;
+    [self purpleGlowAnimationFromBottomWithDelay:&delay];
+}
+
 #pragma mark - Notification Center
 
 -(void)receiveHostDisconnectNotification:(NSNotification *)notification
@@ -339,14 +346,13 @@
                          completion:^(BOOL finished) {
                             self.plusButtonIsSelected = NO;
                              //animation makes the glow fade/slide in from bottom
+                             //animation makes the glow fade/slide in from bottom
                              [UIView animateWithDuration:.8 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                                  self.purpleGlowImageView.alpha = 1;
                                  self.purpleGlowVertConst.constant = -149;
                              } completion:^(BOOL finished) {
                                  //animation complete
                              }];
-
-                             
                          }];
     }
     
@@ -422,23 +428,11 @@
                 self.playPauseButton.selected = NO;
             }];
             
-            self.searchView.hidden = NO;
+            
             self.playPauseButton.hidden = NO;
             self.skipButton.hidden = NO;
             
-            [UIView animateWithDuration:.3 animations:^{
-                self.blurEffectView.alpha = 0;
-                self.roomCodeLabel.alpha = 0;
-                self.roomCodeTextLabel.alpha = 0;
-                self.whiteBorderView1.alpha  = 0;
-                self.whiteBorderView2.alpha = 0;
-                self.remotePasswordInfoLabel.alpha = 0;
-                self.leaveRoomButton.alpha = 0;
-                self.remoteImageView.alpha = 0;
-                self.exitSettingsViewButton.alpha = 0;
-                self.remotePasswordTextField.alpha = 0;
-                self.settingsView.hidden = YES;
-            }];
+            [self exitSettingsAnimation];
             
             self.remotePasswordTextField.hidden = YES;
             self.remoteImageVertConst.constant = 181;
@@ -469,7 +463,7 @@
     //Bring up the remote view with an animation, and blur the background. Hide the search view.
     self.settingsView.hidden = NO;
     self.searchView.hidden = YES;
-    [UIView animateWithDuration:.3 animations:^{
+    [UIView animateWithDuration:.5 animations:^{
         self.blurEffectView.alpha = 1;
         self.roomCodeLabel.alpha = 1;
         self.roomCodeTextLabel.alpha = 1;
@@ -485,22 +479,9 @@
 }
 - (IBAction)exitSettingsButtonPressed:(UIButton *)sender
 {
-    self.searchView.hidden = NO;
-    
-    [UIView animateWithDuration:.3 animations:^{
-        self.blurEffectView.alpha = 0;
-        self.roomCodeLabel.alpha = 0;
-        self.roomCodeTextLabel.alpha = 0;
-        self.whiteBorderView1.alpha  = 0;
-        self.whiteBorderView2.alpha = 0;
-        self.remotePasswordInfoLabel.alpha = 0;
-        self.leaveRoomButton.alpha = 0;
-        self.remoteImageView.alpha = 0;
-        self.exitSettingsViewButton.alpha = 0;
-        self.remotePasswordTextField.alpha = 0;
-        self.settingsView.hidden = YES;
-    }];
-
+    [self exitSettingsAnimation];
+    double time = .3;
+    [self purpleGlowAnimationFromBottomWithDelay:&time];
     [self.remotePasswordTextField resignFirstResponder];
 }
 
@@ -530,6 +511,45 @@
     self.searchTracks = nil;
     [self.socket close];
     [self.navigationController popToRootViewControllerAnimated:YES];
+
+}
+
+-(void)exitSettingsAnimation
+{
+    self.plusButton.alpha = 0;
+    self.searchView.hidden = NO;
+    [UIView animateWithDuration:.5 animations:^{
+        self.blurEffectView.alpha = 0;
+        self.roomCodeLabel.alpha = 0;
+        self.roomCodeTextLabel.alpha = 0;
+        self.whiteBorderView1.alpha  = 0;
+        self.whiteBorderView2.alpha = 0;
+        self.remotePasswordInfoLabel.alpha = 0;
+        self.leaveRoomButton.alpha = 0;
+        self.remoteImageView.alpha = 0;
+        self.exitSettingsViewButton.alpha = 0;
+        self.remotePasswordTextField.alpha = 0;
+        self.plusButton.alpha = 1;
+        
+    } completion:^(BOOL finished) {
+        self.settingsView.hidden = YES;
+        [self purpleGlowImageView];
+    }];
+
+}
+
+-(void)purpleGlowAnimationFromBottomWithDelay:(NSTimeInterval *)delay
+{
+    self.purpleGlowImageView.alpha = 0;
+    self.purpleGlowVertConst.constant = -338;
+    [UIView animateWithDuration:1.0 delay:*delay options:UIViewAnimationOptionCurveEaseOut animations:^
+     {
+         self.purpleGlowImageView.alpha = 1;
+         self.purpleGlowVertConst.constant = -149;
+     }
+     
+                     completion:^(BOOL finished) {
+                     }];
 
 }
 
