@@ -168,7 +168,7 @@
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s1F-gF-HfV">
                                                             <rect key="frame" x="0.0" y="2" width="315" height="38"/>
-                                                            <color key="backgroundColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.14000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <color key="backgroundColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.080000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="38" id="6Ki-7D-mtU"/>
                                                                 <constraint firstAttribute="width" constant="315" id="uEV-FR-nfP"/>

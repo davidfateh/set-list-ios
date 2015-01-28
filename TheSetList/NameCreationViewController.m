@@ -68,7 +68,6 @@
     [super viewWillAppear:YES];
     
     self.roomCodeTextField.text = nil;
-    
     SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
     NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@",HOST_URL];
     [socketSingleton startSocketWithHost:hostURLwithRoomCode];

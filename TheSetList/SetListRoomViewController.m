@@ -415,7 +415,6 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    NSLog(@"%@", self.socket);
     //Joing to the remote host, emit the password, if correct password allow the user to be the host and pause, play and skip songs.
     NSString *remotePassword = self.remotePasswordTextField.text;
     NSMutableDictionary *passwordDick = [[NSMutableDictionary alloc]init];
@@ -428,7 +427,7 @@
         key = (NSMutableDictionary *)[args objectAtIndex:0];
         //if the password is a correct, and connection is successful, make the host view appear.
         if ([key objectForKey:@"success"]) {
-            NSLog(@"Host Connection Succesful");
+            NSLog(@"Remote Host Connection Succesful");
             self.ishost = YES;
             
             dispatch_async(dispatch_get_main_queue(), ^{
