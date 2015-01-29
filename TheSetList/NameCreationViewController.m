@@ -12,10 +12,11 @@
 #import "SetListRoomViewController.h"
 #import "RadialGradiantView.h"
 
-#define HOST_URL @"http://192.168.1.4:5000/"
+#define HOST_URL @"http://54.84.246.69/"
 
 @interface NameCreationViewController ()
 @property (weak, nonatomic) SIOSocket *socket;
+@property (nonatomic) BOOL isHost;
 @end
 
 @implementation NameCreationViewController
@@ -85,6 +86,8 @@
         NSLog(@"%@", numberFromTheKeyboard);
         NSArray *startArray = [[NSArray alloc]initWithObjects:startDic, nil];
         [self.socket emit:@"mobile connect" args:startArray];
+        
+        
         [self.roomCodeTextField resignFirstResponder];
         
     }
@@ -104,7 +107,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
     });
-    
 }
 
 #pragma mark - Text Field Delegate
@@ -137,6 +139,13 @@
         SetListRoomViewController *setListVC = segue.destinationViewController;
         setListVC.roomCode = self.roomCodeTextField.text;
     }
+    
+    
 }
 
+- (IBAction)hostRoomButtonPressed:(UIButton *)sender
+{
+    self.isHost = YES;
+    [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+}
 @end

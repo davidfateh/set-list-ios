@@ -47,11 +47,11 @@
         //on Callback for events related to updates with the song queue.
         [self.socket on:@"q_update_B" callback:^(NSArray *args) {
             
-            
+            NSLog(@"qUpdateB has been emitted");
             NSArray *tracks = [args objectAtIndex:0];
             self.setListTracks = tracks;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB" object:nil];
             
+            [self performSelectorOnMainThread:@selector(postNotification) withObject:nil waitUntilDone:YES] ;
         }];
         
         [self.socket on:@"current_artist_B" callback:^(NSArray *args) {
@@ -77,6 +77,13 @@
         
     }];
     
+}
+
+
+- (void)postNotification {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"
+                                                        object:nil];
+
 }
 
 @end

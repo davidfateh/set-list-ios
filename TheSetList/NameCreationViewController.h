@@ -15,4 +15,6 @@
 @property (strong, nonatomic) IBOutlet UIView *backgroundView;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *nameVertConst;
 
+- (IBAction)hostRoomButtonPressed:(UIButton *)sender;
+
 @end

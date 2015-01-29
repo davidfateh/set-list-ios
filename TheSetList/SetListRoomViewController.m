@@ -23,8 +23,7 @@
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) SIOSocket *socket;
 @property (weak, nonatomic) NSDictionary *currentArtist;
-@property (nonatomic) BOOL ishost;
-
+@property (nonatomic) BOOL isRemoteHost;
 @end
 
 @implementation SetListRoomViewController
@@ -34,9 +33,6 @@
     
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.setListBackgroundView addSubview:radiantBackgroundView];
-
-    
-    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -57,10 +53,11 @@
     self.searchTableView.delegate = self;
     self.searchTableView.dataSource = self;
     
-    //Set the tableview position for if the user is not the host. No space between header and tableView. 
+    //Set the tableview position and functionality for if the user is not the host. No space between header and tableView.
+    
     self.setListTableViewHeightConst.constant = 294;
     self.setListTableViewVertConst.constant = 0;
-
+    
     
     //set the delegates for the set list view. 
     self.tableView.delegate = self;
@@ -69,7 +66,7 @@
     self.tableView.layoutMargins = UIEdgeInsetsZero;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    //Set the number of the namespace/roomCode; 
+    //Set the number of the namespace/roomCode. Sent from creation VC.
     self.roomCodeLabel.text = self.roomCode;
     
     
@@ -86,40 +83,38 @@
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
     
-    
-    //Add a notifcation observer and postNotification name for updating the tracks.
+    // Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateBNotification:)
                                                  name:@"qUpdateB"
                                                object:nil];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"qUpdateB" object:nil];
-    
-    
     
     //Add a notifcation observer and postNotification name for updating current artist.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateCurrentArtistBNotification:)
                                                  name:@"currentArtistB"
                                                object:nil];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"currentArtistB" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveOnDisconnectNotification:)
                                                  name:@"onDisconnect"
                                                object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveHostDisconnectNotification:)
                                                  name:@"hostDisconnect"
                                                object:nil];
 
-
-    self.socketID =[[SocketKeeperSingleton sharedInstance]socketID];
+    
     
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
+    
     double delay = .4;
     [self purpleGlowAnimationFromBottomWithDelay:&delay];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
@@ -134,6 +129,7 @@
 
 -(void)receiveOnDisconnectNotification:(NSNotification *)notification
 {
+    NSLog(@"worked");
     [self disconnectSocketAndPopOut];
 }
 
@@ -142,7 +138,6 @@
     // Do parse respone data method and update yourTableViewData
     
     self.currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
-    
     NSDictionary *track = self.currentArtist;
     
     //If there is no current track, set the label to inform the user.
@@ -172,8 +167,8 @@
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
 {
+    NSLog(@"Recieved update B");
     NSArray *recievedtracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
-    
     self.tracks = recievedtracks;
     [self.tableView reloadData];
     
@@ -189,23 +184,27 @@
     
     cell.delegate = self;
     
-        if (tableView.tag == 1) {
-            NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
-            NSString *songTitle = [track objectForKey:@"title"];
-            NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
-            
-            cell.artistLabel.text = artist;
-            cell.songLabel.text = songTitle;
-           
-            if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
-                cell.userSelectedSongImageView.hidden = NO;
-            }
-            else
-            {
-                cell.userSelectedSongImageView.hidden = YES;
-            }
-            
-            
+    if (tableView.tag == 1) {
+        NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
+        
+        
+        
+        if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+            cell.userSelectedSongImageView.hidden = NO;
+        }
+        else
+        {
+            cell.userSelectedSongImageView.hidden = YES;
+        }
+        
+        
+        
+        NSString *songTitle = [track objectForKey:@"title"];
+        NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
+        
+        cell.artistLabel.text = artist;
+        cell.songLabel.text = songTitle;
+        
         }
         else if (tableView.tag == 2)
         {
@@ -394,7 +393,7 @@
 - (IBAction)playPauseButtonPressed:(UIButton *)sender
 {
     //If the user is the host, allow them to togglepause the songs.
-    if (self.ishost) {
+    if (self.isRemoteHost) {
         NSMutableDictionary *togglePauseDic = [[NSMutableDictionary alloc]init];
         [togglePauseDic setObject:@"togglePause" forKey:@"action"];
         NSArray *argsArray = [[NSArray alloc]initWithObjects:togglePauseDic, nil];
@@ -405,7 +404,7 @@
 - (IBAction)skipButtonPressed:(UIButton *)sender
 {
     //if the user is the host, allow them to skip songs.
-    if (self.ishost) {
+    if (self.isRemoteHost) {
         NSMutableDictionary *skipDic = [[NSMutableDictionary alloc]init];
         [skipDic setObject:@"skip" forKey:@"action"];
         NSArray *argsArray = [[NSArray alloc]initWithObjects:skipDic, nil];
@@ -428,7 +427,7 @@
         //if the password is a correct, and connection is successful, make the host view appear.
         if ([key objectForKey:@"success"]) {
             NSLog(@"Remote Host Connection Succesful");
-            self.ishost = YES;
+            self.isRemoteHost = YES;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.remotePasswordTextField resignFirstResponder];
@@ -524,6 +523,8 @@
     self.currentArtist = nil;
     self.tracks = nil;
     self.searchTracks = nil;
+    [self.searchTableView reloadData];
+    [self.tableView reloadData];
     [self.socket close];
     [self.navigationController popToRootViewControllerAnimated:YES];
 

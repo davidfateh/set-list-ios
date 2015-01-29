@@ -58,6 +58,7 @@
 @property (strong, nonatomic) IBOutlet UIView *whiteBorderView1;
 @property (strong, nonatomic) IBOutlet UILabel *roomCodeLabel;
 @property (strong, nonatomic) IBOutlet UIButton *leaveRoomButton;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *leaveRoomButtonVertConst;
 - (IBAction)exitSettingsButtonPressed:(UIButton *)sender;
 - (IBAction)leaveRoomButtonPressed:(UIButton *)sender;
 

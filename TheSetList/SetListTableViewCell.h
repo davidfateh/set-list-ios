@@ -20,9 +20,6 @@
 @property (strong, nonatomic) IBOutlet UIImageView *userSelectedSongImageView;
 @property (strong, nonatomic) IBOutlet UILabel *artistLabel;
 
-
-
-
 //SearchTableViewCell properties
 @property (strong, nonatomic) IBOutlet UIImageView *searchAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UILabel *searchSongTitle;
