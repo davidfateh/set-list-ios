@@ -51,13 +51,14 @@
             NSArray *tracks = [args objectAtIndex:0];
             self.setListTracks = tracks;
             
-            [self performSelectorOnMainThread:@selector(postNotification) withObject:nil waitUntilDone:YES] ;
+            [self performSelectorOnMainThread:@selector(postQUpdateBNotification) withObject:nil waitUntilDone:YES] ;
         }];
         
         [self.socket on:@"current_artist_B" callback:^(NSArray *args) {
             
             self.currentArtist = [args objectAtIndex:0];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"currentArtistB" object:nil];
+            
+            [self performSelectorOnMainThread:@selector(postCurrentArtistBNotification) withObject:nil waitUntilDone:YES] ;
             
         }];
         
@@ -80,10 +81,14 @@
 }
 
 
-- (void)postNotification {
+- (void)postQUpdateBNotification {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"
                                                         object:nil];
 
+}
+
+-(void)postCurrentArtistBNotification {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentArtistB" object:nil];
 }
 
 @end

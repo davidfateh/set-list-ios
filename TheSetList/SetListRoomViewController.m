@@ -83,17 +83,27 @@
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
     
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
     // Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateBNotification:)
                                                  name:@"qUpdateB"
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"
+                                                        object:nil];
     
     //Add a notifcation observer and postNotification name for updating current artist.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateCurrentArtistBNotification:)
                                                  name:@"currentArtistB"
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentArtistB" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveOnDisconnectNotification:)
@@ -106,18 +116,18 @@
                                                object:nil];
 
     
-    
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:YES];
-    
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
+    self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
     
     double delay = .4;
     [self purpleGlowAnimationFromBottomWithDelay:&delay];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"qUpdateB" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"currentArtistB" object:nil];
 }
 
 #pragma mark - Notification Center
@@ -129,7 +139,6 @@
 
 -(void)receiveOnDisconnectNotification:(NSNotification *)notification
 {
-    NSLog(@"worked");
     [self disconnectSocketAndPopOut];
 }
 
@@ -142,7 +151,7 @@
     
     //If there is no current track, set the label to inform the user.
     if ([track isEqual:[NSNull null]]) {
-        self.currentSongLabel.text = @"No current song";
+        self.currentSongLabel.text = @"";
         self.currentArtistLabel.text = @"";
         
     }
