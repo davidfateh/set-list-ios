@@ -47,7 +47,6 @@
         //on Callback for events related to updates with the song queue.
         [self.socket on:@"q_update_B" callback:^(NSArray *args) {
             
-            NSLog(@"qUpdateB has been emitted");
             NSArray *tracks = [args objectAtIndex:0];
             self.setListTracks = tracks;
             
@@ -68,7 +67,9 @@
         
         self.socket.onDisconnect = ^()
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"onDisconnect" object:nil];
+            NSLog(@"socket onDisconnect method fired");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"onDisconnect"
+                                                                object:nil];
         };
         
         self.socket.onConnect = ^()
@@ -79,7 +80,6 @@
     }];
     
 }
-
 
 - (void)postQUpdateBNotification {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"

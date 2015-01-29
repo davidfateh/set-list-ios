@@ -29,6 +29,9 @@
     [super prepareForReuse];
 }
 
+- (IBAction)artistButtonPressed:(UIButton *)sender {
+}
+
 - (IBAction)addSongButtonPressed:(UIButton *)sender
 {
     [self.delegate addSongButtonPressedOnCell:self];

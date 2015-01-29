@@ -81,7 +81,7 @@
     self.blurEffectView = visualEffectView;
     
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
-    [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
+    [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
     
 }
@@ -134,17 +134,19 @@
 
 -(void)receiveHostDisconnectNotification:(NSNotification *)notification
 {
+    NSLog(@"host disconnected notification fired");
     [self disconnectSocketAndPopOut];
 }
 
 -(void)receiveOnDisconnectNotification:(NSNotification *)notification
 {
+    NSLog(@"onDisconnect notification fired");
     [self disconnectSocketAndPopOut];
 }
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
 {
-    // Do parse respone data method and update yourTableViewData
+    NSLog(@"currentArtist Notification fired");
     
     self.currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
     NSDictionary *track = self.currentArtist;
@@ -176,11 +178,10 @@
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
 {
-    NSLog(@"Recieved update B");
+    NSLog(@"Recieved update B notification fired");
     NSArray *recievedtracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
     self.tracks = recievedtracks;
     [self.tableView reloadData];
-    
 }
 
 #pragma mark - TableView Delegate and DataSource
@@ -221,7 +222,9 @@
             
             NSMutableDictionary *track = [[self.searchTracks objectAtIndex:indexPath.row]mutableCopy];
             cell.searchSongTitle.text = [track objectForKey:@"title"];
-            cell.searchArtist.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            NSString *artistName = [[track objectForKey:@"user"]objectForKey:@"username"];
+            [cell.artistButton setTitle:artistName forState:UIControlStateNormal];
             
             //Format the tracks duration into a string and set the label.
             int duration = [[track objectForKey:@"duration"]intValue];
@@ -327,7 +330,6 @@
 #pragma mark - Custom Buttons
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
-    
     if (!self.plusButtonIsSelected) {
         self.purpleGlowImageView.alpha = 0;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(1, -1)];
@@ -457,11 +459,7 @@
             [self exitSettingsAnimation];
             
             self.remotePasswordTextField.hidden = YES;
-            self.remoteImageVertConst.constant = 181;
-            self.remoteLabelVertConst.constant = 210;
             self.remotePasswordInfoLabel.text = @"Remote connected";
-            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
-            self.remoteImageView.image = purpleHostIndicator;
             
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 0;
@@ -509,7 +507,7 @@
 
 - (IBAction)leaveRoomButtonPressed:(UIButton *)sender
 {
-    [self disconnectSocketAndPopOut];
+    [self.socket close];
 }
 
 #pragma mark - Helper Methods
@@ -534,7 +532,6 @@
     self.searchTracks = nil;
     [self.searchTableView reloadData];
     [self.tableView reloadData];
-    [self.socket close];
     [self.navigationController popToRootViewControllerAnimated:YES];
 
 }
@@ -558,6 +555,13 @@
         
     } completion:^(BOOL finished) {
         self.settingsView.hidden = YES;
+        if (self.isRemoteHost) {
+            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
+            self.remoteImageView.image = purpleHostIndicator;
+            self.remoteImageVertConst.constant = 201;
+            self.remoteLabelVertConst.constant = 230;
+        }
+
         [self purpleGlowImageView];
     }];
 
