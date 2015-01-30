@@ -151,6 +151,12 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The queue is empty, add some some songs " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ArQ-X8-leD">
+                                        <rect key="frame" x="18" y="229" width="285" height="21"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk7-qf-x4X">
                                         <rect key="frame" x="106" y="21" width="108" height="30"/>
                                         <constraints>
@@ -512,7 +518,7 @@
                                                             <rect key="frame" x="88" y="41" width="151" height="16"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                                             <state key="normal" title="Artist">
-                                                                <color key="titleColor" red="0.38229554891586304" green="0.3657248318195343" blue="0.65916305780410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                             <connections>
@@ -594,7 +600,9 @@
                     <connections>
                         <outlet property="currentAlbumArtImage" destination="Rpy-ls-d7e" id="N5D-zf-8iR"/>
                         <outlet property="currentArtistLabel" destination="G7J-l7-Cmn" id="vay-4s-LA9"/>
+                        <outlet property="currentArtistViewBackground" destination="Sep-1q-gCc" id="2gd-8c-QXs"/>
                         <outlet property="currentSongLabel" destination="QRe-J8-h5x" id="tUC-U9-1Cg"/>
+                        <outlet property="emptyQueueLabel" destination="ArQ-X8-leD" id="GFo-SD-udQ"/>
                         <outlet property="exitSettingsViewButton" destination="DZT-1t-Rze" id="KwG-GY-wYB"/>
                         <outlet property="leaveRoomButton" destination="HWh-Mc-EGE" id="9Mo-LF-V1N"/>
                         <outlet property="leaveRoomButtonVertConst" destination="MsF-pd-Jl8" id="e8F-xq-ibI"/>
@@ -637,29 +645,32 @@
                         <viewControllerLayoutGuide type="top" id="dbe-Ha-tTR"/>
                         <viewControllerLayoutGuide type="bottom" id="YaS-Xe-PLq"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="eXw-jg-Zlz">
+                    <view key="view" contentMode="scaleToFill" id="eXw-jg-Zlz" userLabel="Empty Queue View">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zwI-JH-X31">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Zy-kh-rRy">
-                                <rect key="frame" x="106" y="20" width="108" height="32"/>
+                                <rect key="frame" x="106" y="21" width="108" height="32"/>
                                 <fontDescription key="fontDescription" name="Lobster-Regular" family="Lobster" pointSize="24"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="purple-glow.png" translatesAutoresizingMaskIntoConstraints="NO" id="TWd-5F-HE1">
-                                <rect key="frame" x="76" y="162" width="168" height="120"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="purple-glow.png" translatesAutoresizingMaskIntoConstraints="NO" id="O2i-Ra-tqX">
-                                <rect key="frame" x="76" y="153" width="168" height="156"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rMx-x4-M6h">
-                                <rect key="frame" x="145" y="269" width="30" height="30"/>
+                                <rect key="frame" x="145" y="220" width="30" height="30"/>
                                 <state key="normal" backgroundImage="plusButton">
                                     <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Get the playlist started. Add songs to the queue" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2r9-iM-bjy">
+                                <rect key="frame" x="16" y="258" width="289" height="22"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>

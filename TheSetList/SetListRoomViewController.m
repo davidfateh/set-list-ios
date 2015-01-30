@@ -562,6 +562,8 @@
 
 
 -(void)setCurrentArtist {
+    
+    NSLog(@"%@", self.currentArtist);
     //Set the current artist.
     self.currentArtist= [[SocketKeeperSingleton sharedInstance]currentArtist];
     NSDictionary *track = self.currentArtist;
@@ -570,12 +572,16 @@
         if ([track isEqual:[NSNull null]]) {
             self.currentSongLabel.text = @"";
             self.currentArtistLabel.text = @"";
+            self.currentArtistViewBackground.hidden = YES;
+            self.emptyQueueLabel.hidden = NO;
             
         }
         
         //else, display the current songs info
         else
         {
+            self.emptyQueueLabel.hidden = YES;
+            self.currentArtistViewBackground.hidden = NO;
             self.currentSongLabel.text = [track objectForKey:@"title"];
             self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
             
@@ -592,6 +598,5 @@
     }
 
 }
-
 
 @end
