@@ -12,7 +12,7 @@
 #import "SetListRoomViewController.h"
 #import "RadialGradiantView.h"
 
-#define HOST_URL @"http://54.84.246.69/"
+#define HOST_URL @"http://192.168.1.4:5000/"
 
 @interface NameCreationViewController ()
 @property (weak, nonatomic) SIOSocket *socket;

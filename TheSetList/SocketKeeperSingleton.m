@@ -38,10 +38,17 @@
         [self.socket on:@"initialize" callback:^(NSArray *args) {
             
             NSDictionary *socketIdDict = [args objectAtIndex:0];
-            NSString *socketID = [socketIdDict objectForKey:@"socket"];
-            self.socketID = socketID;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"initialize" object:nil];
-            
+            if ([socketIdDict objectForKey:@"error"])
+            {
+                NSLog(@"%@", [socketIdDict objectForKey:@"error"]);
+            }
+            else
+            {
+                NSString *socketID = [socketIdDict objectForKey:@"socket"];
+                self.socketID = socketID;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"initialize" object:nil];
+            }
+           
         }];
         
         //on Callback for events related to updates with the song queue.
@@ -49,15 +56,15 @@
             
             NSArray *tracks = [args objectAtIndex:0];
             self.setListTracks = tracks;
-            
-            [self performSelectorOnMainThread:@selector(postQUpdateBNotification) withObject:nil waitUntilDone:YES] ;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"
+                                                                object:nil];
+
         }];
         
         [self.socket on:@"current_artist_B" callback:^(NSArray *args) {
             
             self.currentArtist = [args objectAtIndex:0];
-            
-            [self performSelectorOnMainThread:@selector(postCurrentArtistBNotification) withObject:nil waitUntilDone:YES] ;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"currentArtistB" object:nil];
             
         }];
         
@@ -72,23 +79,17 @@
                                                                 object:nil];
         };
         
+        __weak typeof(self) weakSelf = self;
         self.socket.onConnect = ^()
         {
+            weakSelf.setListTracks = nil;
+            weakSelf.currentArtist = nil;
+            weakSelf.socketID = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"onConnect" object:nil];
         };
         
     }];
     
-}
-
-- (void)postQUpdateBNotification {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"
-                                                        object:nil];
-
-}
-
--(void)postCurrentArtistBNotification {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentArtistB" object:nil];
 }
 
 @end

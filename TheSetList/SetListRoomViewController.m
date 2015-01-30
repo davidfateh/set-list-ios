@@ -83,27 +83,17 @@
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
-    
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:YES];
-    
     // Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateBNotification:)
                                                  name:@"qUpdateB"
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"
-                                                        object:nil];
     
     //Add a notifcation observer and postNotification name for updating current artist.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateCurrentArtistBNotification:)
                                                  name:@"currentArtistB"
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentArtistB" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveOnDisconnectNotification:)
@@ -116,12 +106,29 @@
                                                object:nil];
 
     
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
     
+    //Add some animations upon load up. Purple glow and tableview animation.
     double delay = .4;
     [self purpleGlowAnimationFromBottomWithDelay:&delay];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
+    
+    //Set Current artist, if there is one.
+    [self setCurrentArtist];
+    
+    //Set the current tracks, if there is one. 
+     NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+    if (setListTracks) {
+        self.tracks = setListTracks;
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -146,41 +153,13 @@
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
 {
-    NSLog(@"currentArtist Notification fired");
-    
-    self.currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
-    NSDictionary *track = self.currentArtist;
-    
-    //If there is no current track, set the label to inform the user.
-    if ([track isEqual:[NSNull null]]) {
-        self.currentSongLabel.text = @"";
-        self.currentArtistLabel.text = @"";
-        
-    }
-    
-    //else, display the current songs info
-    else
-    {
-        self.currentSongLabel.text = [track objectForKey:@"title"];
-        self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-        
-        //If there is no picture available. Adds a Custom picture.
-        
-        //Init the cell image with the track's artwork.
-        NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
-        NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
-        UIImage *cellImage = [UIImage imageWithData:imageData];
-        self.currentAlbumArtImage.image = cellImage;
-        
-    }
-    
+    [self setCurrentArtist];
 }
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
 {
     NSLog(@"Recieved update B notification fired");
-    NSArray *recievedtracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
-    self.tracks = recievedtracks;
+    self.tracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
     [self.tableView reloadData];
 }
 
@@ -507,7 +486,7 @@
 
 - (IBAction)leaveRoomButtonPressed:(UIButton *)sender
 {
-    [self.socket close];
+    [self disconnectSocketAndPopOut];
 }
 
 #pragma mark - Helper Methods
@@ -527,11 +506,9 @@
 
 -(void)disconnectSocketAndPopOut
 {
-    self.currentArtist = nil;
-    self.tracks = nil;
-    self.searchTracks = nil;
-    [self.searchTableView reloadData];
-    [self.tableView reloadData];
+    
+    [self.socket close];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setListRoomClosed" object:nil];
     [self.navigationController popToRootViewControllerAnimated:YES];
 
 }
@@ -580,6 +557,39 @@
      
                      completion:^(BOOL finished) {
                      }];
+
+}
+
+
+-(void)setCurrentArtist {
+    //Set the current artist.
+    self.currentArtist= [[SocketKeeperSingleton sharedInstance]currentArtist];
+    NSDictionary *track = self.currentArtist;
+    if (track) {
+        //If there is no current track, set the label to inform the user.
+        if ([track isEqual:[NSNull null]]) {
+            self.currentSongLabel.text = @"";
+            self.currentArtistLabel.text = @"";
+            
+        }
+        
+        //else, display the current songs info
+        else
+        {
+            self.currentSongLabel.text = [track objectForKey:@"title"];
+            self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            //If there is no picture available. Adds a Custom picture.
+            
+            //Init the cell image with the track's artwork.
+            NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
+            NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
+            UIImage *cellImage = [UIImage imageWithData:imageData];
+            self.currentAlbumArtImage.image = cellImage;
+            
+        }
+        
+    }
 
 }
 
