@@ -405,6 +405,8 @@
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     //Joing to the remote host, emit the password, if correct password allow the user to be the host and pause, play and skip songs.
+    UIImage *playImage = [UIImage imageNamed:@"Play"];
+    UIImage *pauseImage = [UIImage imageNamed:@"Pause"];
     NSString *remotePassword = self.remotePasswordTextField.text;
     NSMutableDictionary *passwordDick = [[NSMutableDictionary alloc]init];
     [passwordDick setObject:remotePassword forKey:@"password"];
@@ -425,10 +427,10 @@
             
             
             [self.socket on:@"playing" callback:^(NSArray *args) {
-                self.playPauseButton.selected = YES;
+                [self.playPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
             }];
             [self.socket on:@"paused" callback:^(NSArray *args) {
-                self.playPauseButton.selected = NO;
+                 [self.playPauseButton setBackgroundImage:playImage forState:UIControlStateNormal];
             }];
             
             
