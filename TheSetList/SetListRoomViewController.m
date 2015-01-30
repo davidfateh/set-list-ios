@@ -23,8 +23,7 @@
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) SIOSocket *socket;
 @property (weak, nonatomic) NSDictionary *currentArtist;
-@property (nonatomic) BOOL ishost;
-
+@property (nonatomic) BOOL isRemoteHost;
 @end
 
 @implementation SetListRoomViewController
@@ -34,9 +33,6 @@
     
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.setListBackgroundView addSubview:radiantBackgroundView];
-
-    
-    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     
     [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -57,10 +53,11 @@
     self.searchTableView.delegate = self;
     self.searchTableView.dataSource = self;
     
-    //Set the tableview position for if the user is not the host. No space between header and tableView. 
+    //Set the tableview position and functionality for if the user is not the host. No space between header and tableView.
+    
     self.setListTableViewHeightConst.constant = 294;
     self.setListTableViewVertConst.constant = 0;
-
+    
     
     //set the delegates for the set list view. 
     self.tableView.delegate = self;
@@ -69,7 +66,7 @@
     self.tableView.layoutMargins = UIEdgeInsetsZero;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    //Set the number of the namespace/roomCode; 
+    //Set the number of the namespace/roomCode. Sent from creation VC.
     self.roomCodeLabel.text = self.roomCode;
     
     
@@ -84,99 +81,86 @@
     self.blurEffectView = visualEffectView;
     
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
-    [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
+    [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
-    
-    //Add a notifcation observer and postNotification name for updating the tracks.
+    // Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateBNotification:)
                                                  name:@"qUpdateB"
                                                object:nil];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"qUpdateB" object:nil];
-    
-    
     
     //Add a notifcation observer and postNotification name for updating current artist.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateCurrentArtistBNotification:)
                                                  name:@"currentArtistB"
                                                object:nil];
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"currentArtistB" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveOnDisconnectNotification:)
                                                  name:@"onDisconnect"
                                                object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveHostDisconnectNotification:)
                                                  name:@"hostDisconnect"
                                                object:nil];
 
-
-    self.socketID =[[SocketKeeperSingleton sharedInstance]socketID];
+    
     
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
+    self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
+    
+    //Add some animations upon load up. Purple glow and tableview animation.
     double delay = .4;
     [self purpleGlowAnimationFromBottomWithDelay:&delay];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
+    
+    //Set Current artist, if there is one.
+    [self setCurrentArtist];
+    
+    //Set the current tracks, if there is one. 
+     NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+    if (setListTracks) {
+        self.tracks = setListTracks;
+    }
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"qUpdateB" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"currentArtistB" object:nil];
 }
 
 #pragma mark - Notification Center
 
 -(void)receiveHostDisconnectNotification:(NSNotification *)notification
 {
+    NSLog(@"host disconnected notification fired");
     [self disconnectSocketAndPopOut];
 }
 
 -(void)receiveOnDisconnectNotification:(NSNotification *)notification
 {
+    NSLog(@"onDisconnect notification fired");
     [self disconnectSocketAndPopOut];
 }
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
 {
-    // Do parse respone data method and update yourTableViewData
-    
-    self.currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
-    
-    NSDictionary *track = self.currentArtist;
-    
-    //If there is no current track, set the label to inform the user.
-    if ([track isEqual:[NSNull null]]) {
-        self.currentSongLabel.text = @"No current song";
-        self.currentArtistLabel.text = @"";
-        
-    }
-    
-    //else, display the current songs info
-    else
-    {
-        self.currentSongLabel.text = [track objectForKey:@"title"];
-        self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-        
-        //If there is no picture available. Adds a Custom picture.
-        
-        //Init the cell image with the track's artwork.
-        NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
-        NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
-        UIImage *cellImage = [UIImage imageWithData:imageData];
-        self.currentAlbumArtImage.image = cellImage;
-        
-    }
-    
+    [self setCurrentArtist];
 }
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
 {
-    NSArray *recievedtracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
-    
-    self.tracks = recievedtracks;
+    NSLog(@"Recieved update B notification fired");
+    self.tracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
     [self.tableView reloadData];
-    
 }
 
 #pragma mark - TableView Delegate and DataSource
@@ -189,23 +173,27 @@
     
     cell.delegate = self;
     
-        if (tableView.tag == 1) {
-            NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
-            NSString *songTitle = [track objectForKey:@"title"];
-            NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
-            
-            cell.artistLabel.text = artist;
-            cell.songLabel.text = songTitle;
-           
-            if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
-                cell.userSelectedSongImageView.hidden = NO;
-            }
-            else
-            {
-                cell.userSelectedSongImageView.hidden = YES;
-            }
-            
-            
+    if (tableView.tag == 1) {
+        NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
+        
+        
+        
+        if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+            cell.userSelectedSongImageView.hidden = NO;
+        }
+        else
+        {
+            cell.userSelectedSongImageView.hidden = YES;
+        }
+        
+        
+        
+        NSString *songTitle = [track objectForKey:@"title"];
+        NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
+        
+        cell.artistLabel.text = artist;
+        cell.songLabel.text = songTitle;
+        
         }
         else if (tableView.tag == 2)
         {
@@ -213,7 +201,9 @@
             
             NSMutableDictionary *track = [[self.searchTracks objectAtIndex:indexPath.row]mutableCopy];
             cell.searchSongTitle.text = [track objectForKey:@"title"];
-            cell.searchArtist.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            NSString *artistName = [[track objectForKey:@"user"]objectForKey:@"username"];
+            [cell.artistButton setTitle:artistName forState:UIControlStateNormal];
             
             //Format the tracks duration into a string and set the label.
             int duration = [[track objectForKey:@"duration"]intValue];
@@ -319,7 +309,6 @@
 #pragma mark - Custom Buttons
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
-    
     if (!self.plusButtonIsSelected) {
         self.purpleGlowImageView.alpha = 0;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(1, -1)];
@@ -394,7 +383,7 @@
 - (IBAction)playPauseButtonPressed:(UIButton *)sender
 {
     //If the user is the host, allow them to togglepause the songs.
-    if (self.ishost) {
+    if (self.isRemoteHost) {
         NSMutableDictionary *togglePauseDic = [[NSMutableDictionary alloc]init];
         [togglePauseDic setObject:@"togglePause" forKey:@"action"];
         NSArray *argsArray = [[NSArray alloc]initWithObjects:togglePauseDic, nil];
@@ -405,7 +394,7 @@
 - (IBAction)skipButtonPressed:(UIButton *)sender
 {
     //if the user is the host, allow them to skip songs.
-    if (self.ishost) {
+    if (self.isRemoteHost) {
         NSMutableDictionary *skipDic = [[NSMutableDictionary alloc]init];
         [skipDic setObject:@"skip" forKey:@"action"];
         NSArray *argsArray = [[NSArray alloc]initWithObjects:skipDic, nil];
@@ -428,7 +417,7 @@
         //if the password is a correct, and connection is successful, make the host view appear.
         if ([key objectForKey:@"success"]) {
             NSLog(@"Remote Host Connection Succesful");
-            self.ishost = YES;
+            self.isRemoteHost = YES;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.remotePasswordTextField resignFirstResponder];
@@ -449,11 +438,7 @@
             [self exitSettingsAnimation];
             
             self.remotePasswordTextField.hidden = YES;
-            self.remoteImageVertConst.constant = 181;
-            self.remoteLabelVertConst.constant = 210;
             self.remotePasswordInfoLabel.text = @"Remote connected";
-            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
-            self.remoteImageView.image = purpleHostIndicator;
             
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 0;
@@ -521,10 +506,9 @@
 
 -(void)disconnectSocketAndPopOut
 {
-    self.currentArtist = nil;
-    self.tracks = nil;
-    self.searchTracks = nil;
+    
     [self.socket close];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setListRoomClosed" object:nil];
     [self.navigationController popToRootViewControllerAnimated:YES];
 
 }
@@ -548,6 +532,13 @@
         
     } completion:^(BOOL finished) {
         self.settingsView.hidden = YES;
+        if (self.isRemoteHost) {
+            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
+            self.remoteImageView.image = purpleHostIndicator;
+            self.remoteImageVertConst.constant = 201;
+            self.remoteLabelVertConst.constant = 230;
+        }
+
         [self purpleGlowImageView];
     }];
 
@@ -569,5 +560,43 @@
 
 }
 
+
+-(void)setCurrentArtist {
+    
+    NSLog(@"%@", self.currentArtist);
+    //Set the current artist.
+    self.currentArtist= [[SocketKeeperSingleton sharedInstance]currentArtist];
+    NSDictionary *track = self.currentArtist;
+    if (track) {
+        //If there is no current track, set the label to inform the user.
+        if ([track isEqual:[NSNull null]]) {
+            self.currentSongLabel.text = @"";
+            self.currentArtistLabel.text = @"";
+            self.currentArtistViewBackground.hidden = YES;
+            self.emptyQueueLabel.hidden = NO;
+            
+        }
+        
+        //else, display the current songs info
+        else
+        {
+            self.emptyQueueLabel.hidden = YES;
+            self.currentArtistViewBackground.hidden = NO;
+            self.currentSongLabel.text = [track objectForKey:@"title"];
+            self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            //If there is no picture available. Adds a Custom picture.
+            
+            //Init the cell image with the track's artwork.
+            NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
+            NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
+            UIImage *cellImage = [UIImage imageWithData:imageData];
+            self.currentAlbumArtImage.image = cellImage;
+            
+        }
+        
+    }
+
+}
 
 @end

@@ -16,6 +16,7 @@
 
 @interface NameCreationViewController ()
 @property (weak, nonatomic) SIOSocket *socket;
+@property (nonatomic) BOOL isHost;
 @end
 
 @implementation NameCreationViewController
@@ -79,13 +80,15 @@
     NSString *numberFromTheKeyboard = self.roomCodeTextField.text;
     if (self.roomCodeTextField.tag == 2 ) {
         
+        [self.roomCodeTextField resignFirstResponder];
+
         NSMutableDictionary *startDic = [[NSMutableDictionary alloc]init];
         [startDic setObject:numberFromTheKeyboard forKey:@"room"];
         NSLog(@"%@", self.socket);
         NSLog(@"%@", numberFromTheKeyboard);
         NSArray *startArray = [[NSArray alloc]initWithObjects:startDic, nil];
         [self.socket emit:@"mobile connect" args:startArray];
-        [self.roomCodeTextField resignFirstResponder];
+        
         
     }
     
@@ -101,10 +104,7 @@
 
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
-    });
-    
 }
 
 #pragma mark - Text Field Delegate
@@ -137,6 +137,13 @@
         SetListRoomViewController *setListVC = segue.destinationViewController;
         setListVC.roomCode = self.roomCodeTextField.text;
     }
+    
+    
 }
 
+- (IBAction)hostRoomButtonPressed:(UIButton *)sender
+{
+    self.isHost = YES;
+    [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+}
 @end

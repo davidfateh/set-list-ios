@@ -20,9 +20,6 @@
 @property (strong, nonatomic) IBOutlet UIImageView *userSelectedSongImageView;
 @property (strong, nonatomic) IBOutlet UILabel *artistLabel;
 
-
-
-
 //SearchTableViewCell properties
 @property (strong, nonatomic) IBOutlet UIImageView *searchAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UILabel *searchSongTitle;
@@ -30,8 +27,10 @@
 @property (strong, nonatomic) IBOutlet UILabel *searchDurationLabel;
 @property (strong, nonatomic) IBOutlet UIButton *plusButton;
 @property (strong, nonatomic) NSMutableDictionary *track;
+@property (strong, nonatomic) IBOutlet UIButton *artistButton;
 
 
+- (IBAction)artistButtonPressed:(UIButton *)sender;
 
 - (IBAction)addSongButtonPressed:(UIButton *)sender;
 

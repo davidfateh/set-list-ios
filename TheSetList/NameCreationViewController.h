@@ -13,6 +13,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *theSetListLabel;
 @property (strong, nonatomic) IBOutlet UITextField *roomCodeTextField;
 @property (strong, nonatomic) IBOutlet UIView *backgroundView;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *nameVertConst;
+
+- (IBAction)hostRoomButtonPressed:(UIButton *)sender;
 
 @end

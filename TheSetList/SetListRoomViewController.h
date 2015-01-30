@@ -18,7 +18,9 @@
 @property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UIView *setListView;
 @property (strong, nonatomic) NSArray *tracks;
+@property (strong, nonatomic) IBOutlet UIView *currentArtistViewBackground;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteLabelVertConst;
+@property (strong, nonatomic) IBOutlet UILabel *emptyQueueLabel;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteImageVertConst;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;
@@ -58,8 +60,14 @@
 @property (strong, nonatomic) IBOutlet UIView *whiteBorderView1;
 @property (strong, nonatomic) IBOutlet UILabel *roomCodeLabel;
 @property (strong, nonatomic) IBOutlet UIButton *leaveRoomButton;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *leaveRoomButtonVertConst;
 - (IBAction)exitSettingsButtonPressed:(UIButton *)sender;
 - (IBAction)leaveRoomButtonPressed:(UIButton *)sender;
+
+
+
+
+
 
 
 
