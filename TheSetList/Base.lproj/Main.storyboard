@@ -121,6 +121,26 @@
                                             <constraint firstAttribute="height" constant="190" id="M7F-dO-xmG"/>
                                         </constraints>
                                     </imageView>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0201" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4CT-dz-BcD">
+                                        <rect key="frame" x="82" y="170" width="156" height="58"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="156" id="302-oi-1kT"/>
+                                            <constraint firstAttribute="height" constant="58" id="9CZ-tS-TiQ"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="70"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is your room code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Gp-5w-m49">
+                                        <rect key="frame" x="73" y="228" width="174" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="Wqp-if-uU7"/>
+                                            <constraint firstAttribute="width" constant="174" id="csh-Up-lSb"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sep-1q-gCc">
                                         <rect key="frame" x="0.0" y="204" width="326" height="46"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.58999999999999997" colorSpace="custom" customColorSpace="sRGB"/>
@@ -128,8 +148,8 @@
                                     <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KH9-zn-Exh" userLabel="PlayPauseButton">
                                         <rect key="frame" x="125" y="270" width="15" height="15"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="15" id="JOh-6k-y8C"/>
-                                            <constraint firstAttribute="height" constant="15" id="zGv-YI-cvR"/>
+                                            <constraint firstAttribute="width" constant="15" id="9Ky-JX-azF"/>
+                                            <constraint firstAttribute="height" constant="15" id="D4c-UN-Tb7"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <state key="normal" backgroundImage="Play">
@@ -138,21 +158,6 @@
                                         </state>
                                         <connections>
                                             <action selector="playPauseButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="7Rx-wQ-Hkl"/>
-                                        </connections>
-                                    </button>
-                                    <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1xR-U8-lzH" userLabel="Skip Button">
-                                        <rect key="frame" x="181" y="270" width="15" height="15"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="15" id="Qg9-h1-085"/>
-                                            <constraint firstAttribute="width" constant="15" id="wZA-Qd-4Nn"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <state key="normal" backgroundImage="Skip">
-                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="oXp-xX-sd1"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SeR-Zn-aCc">
@@ -165,6 +170,23 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1xR-U8-lzH" userLabel="Skip Button">
+                                        <rect key="frame" x="180" y="270" width="15" height="15"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="15" id="Pbm-RY-Gem"/>
+                                            <constraint firstAttribute="height" constant="15" id="Qg9-h1-085"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="15" id="iaB-7N-waH"/>
+                                            <constraint firstAttribute="width" constant="15" id="wZA-Qd-4Nn"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <state key="normal" backgroundImage="Skip">
+                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="oXp-xX-sd1"/>
+                                        </connections>
+                                    </button>
                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The queue is empty, add some some songs " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ArQ-X8-leD">
                                         <rect key="frame" x="18" y="229" width="285" height="21"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
@@ -279,22 +301,26 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstItem="7Gp-5w-m49" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="228" id="2r1-Gp-7b3"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="231" id="3e6-fQ-CSa"/>
                                     <constraint firstAttribute="width" constant="320" id="4rv-Vl-FcV"/>
-                                    <constraint firstItem="KH9-zn-Exh" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="125" id="8Vr-de-8rs"/>
-                                    <constraint firstItem="1xR-U8-lzH" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="I6c-z0-maf"/>
+                                    <constraint firstItem="4CT-dz-BcD" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="170" id="Fgk-Lp-9ll"/>
+                                    <constraint firstItem="1xR-U8-lzH" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="180" id="GPW-6p-51y"/>
                                     <constraint firstItem="bk7-qf-x4X" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="106" id="M8z-NR-36B"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="216" id="MOk-54-a4e"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="18" id="Qfr-po-DDI"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="102" id="Syl-JA-PNr"/>
+                                    <constraint firstItem="7Gp-5w-m49" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="73" id="X1I-Sr-9Fg"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="XBF-1d-B9r"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="21" id="XzW-i3-fjz"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="60" id="YQn-Xy-DpS"/>
                                     <constraint firstItem="bk7-qf-x4X" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="21" id="a8O-g2-7Ho"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="29" id="aSm-qz-G2J"/>
-                                    <constraint firstItem="1xR-U8-lzH" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="181" id="ai5-21-oEv"/>
-                                    <constraint firstItem="KH9-zn-Exh" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="gMx-di-Gw2"/>
+                                    <constraint firstItem="4CT-dz-BcD" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="82" id="fuB-eO-EBI"/>
+                                    <constraint firstItem="KH9-zn-Exh" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="125" id="ibt-rV-ikU"/>
+                                    <constraint firstItem="KH9-zn-Exh" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="jUo-Zj-PrM"/>
                                     <constraint firstAttribute="bottom" secondItem="ddj-u0-EjL" secondAttribute="bottom" id="k5n-rC-AmB"/>
+                                    <constraint firstItem="1xR-U8-lzH" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="ky5-46-RNm"/>
                                     <constraint firstItem="ddj-u0-EjL" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="9" id="qZL-uY-RgK"/>
                                     <constraint firstAttribute="height" constant="568" id="xKx-cB-yz7"/>
                                 </constraints>
@@ -603,6 +629,8 @@
                         <outlet property="currentSongLabel" destination="QRe-J8-h5x" id="tUC-U9-1Cg"/>
                         <outlet property="emptyQueueLabel" destination="ArQ-X8-leD" id="GFo-SD-udQ"/>
                         <outlet property="exitSettingsViewButton" destination="DZT-1t-Rze" id="KwG-GY-wYB"/>
+                        <outlet property="hostCodeMessageLabel" destination="7Gp-5w-m49" id="p5g-O2-Sdc"/>
+                        <outlet property="hostRoomCodeLabel" destination="4CT-dz-BcD" id="cah-qa-9aO"/>
                         <outlet property="leaveRoomButton" destination="HWh-Mc-EGE" id="9Mo-LF-V1N"/>
                         <outlet property="leaveRoomButtonVertConst" destination="MsF-pd-Jl8" id="e8F-xq-ibI"/>
                         <outlet property="playPauseButton" destination="KH9-zn-Exh" id="tKz-rJ-e0h"/>
@@ -650,23 +678,24 @@
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zwI-JH-X31">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0201" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BrC-IZ-uKk">
+                                        <rect key="frame" x="82" y="170" width="156" height="58"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="70"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="This is your room code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wjr-AR-Hx9">
+                                        <rect key="frame" x="73" y="228" width="174" height="20"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Zy-kh-rRy">
                                 <rect key="frame" x="106" y="21" width="108" height="32"/>
                                 <fontDescription key="fontDescription" name="Lobster-Regular" family="Lobster" pointSize="24"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rMx-x4-M6h">
-                                <rect key="frame" x="145" y="220" width="30" height="30"/>
-                                <state key="normal" backgroundImage="plusButton">
-                                    <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Get the playlist started. Add songs to the queue" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2r9-iM-bjy">
-                                <rect key="frame" x="16" y="258" width="289" height="22"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>

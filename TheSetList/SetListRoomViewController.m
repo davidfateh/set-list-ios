@@ -104,14 +104,35 @@
                                              selector:@selector(receiveHostDisconnectNotification:)
                                                  name:@"hostDisconnect"
                                                object:nil];
-
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveHostSongAddedNotification:)
+                                                 name:@"hostSongAdded"
+                                               object:nil];
+
     
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    
+    /////////HOST/////////
+    
+    if ([[SocketKeeperSingleton sharedInstance]isHost]) {
+        NSLog(@"User is the host of this room");
+        self.currentArtistViewBackground.hidden = YES;
+        self.hostCodeMessageLabel.hidden = NO;
+        self.hostRoomCodeLabel.hidden = NO;
+        self.isHost = [[SocketKeeperSingleton sharedInstance]isHost];
+        self.hostRoomCodeLabel.text = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
+    }
+    
+    
+    
+    
+    ///////NOT HOST///////
     
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
@@ -122,7 +143,9 @@
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
     
     //Set Current artist, if there is one.
-    [self setCurrentArtist];
+    NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+    [self setCurrentArtistFromCurrentArtist:currentArtist];
+
     
     //Set the current tracks, if there is one. 
      NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
@@ -139,6 +162,25 @@
 
 #pragma mark - Notification Center
 
+
+
+-(void)receiveHostSongAddedNotification:(NSNotification *)notification
+{
+    
+    NSLog(@"Recieved host song added notification");
+    if (!self.hostRoomCodeLabel.hidden) {
+        NSLog(@"New host current artist.");
+        self.hostRoomCodeLabel.hidden = YES;
+        self.hostCodeMessageLabel.hidden = YES;
+    }
+
+    if (![self.hostCurrentArtist objectForKey:@"nil"]) {
+        NSDictionary *songAddedForCurrent = [[SocketKeeperSingleton sharedInstance]songAdded];
+        [self setCurrentArtistFromCurrentArtist:songAddedForCurrent];
+    }
+}
+
+
 -(void)receiveHostDisconnectNotification:(NSNotification *)notification
 {
     NSLog(@"host disconnected notification fired");
@@ -153,7 +195,13 @@
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
 {
-    [self setCurrentArtist];
+    if (!self.hostRoomCodeLabel.hidden) {
+        NSLog(@"New host current artist.");
+        self.hostRoomCodeLabel.hidden = YES;
+        self.hostCodeMessageLabel.hidden = YES;
+    }
+    NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+    [self setCurrentArtistFromCurrentArtist:currentArtist];
 }
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
@@ -363,9 +411,23 @@
     [self.searchBar resignFirstResponder];
 }
 
-
 -(void)addSongButtonPressedOnCell:(id)sender
 {
+    if (self.isHost) {
+        if (![self.hostCurrentArtist objectForKey:@"nil"]) {
+            NSInteger index =  ((UITableViewCell *)sender).tag;
+            NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
+            self.hostCurrentArtist = track;
+            NSArray *arrayWithTrack = [[NSArray alloc]initWithObjects:track, nil];
+           [self.socket emit:@"q_add_request" args:arrayWithTrack];
+            NSLog(@"q_add_request emitted");
+        }
+    }
+    
+    
+    //else, add song as guest
+    else
+    {
     //Get the index from the sender's tag.
     NSInteger index =  ((UITableViewCell *)sender).tag;
     NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
@@ -373,7 +435,7 @@
     NSArray *argsArray = [[NSArray alloc]initWithObjects:track, nil];
     //Send the data to the server/socket.
     [self.socket emit:@"q_add_request" args:argsArray];
-    
+    }
     
 }
 
@@ -563,12 +625,10 @@
 }
 
 
--(void)setCurrentArtist {
+-(void)setCurrentArtistFromCurrentArtist:(NSDictionary *)currentArtist {
     
-    NSLog(@"%@", self.currentArtist);
-    //Set the current artist.
-    self.currentArtist= [[SocketKeeperSingleton sharedInstance]currentArtist];
-    NSDictionary *track = self.currentArtist;
+    
+    NSDictionary *track = currentArtist;
     if (track) {
         //If there is no current track, set the label to inform the user.
         if ([track isEqual:[NSNull null]]) {
@@ -591,6 +651,7 @@
             
             //Init the cell image with the track's artwork.
             NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
+            NSLog(@"%@", [track objectForKey:@"highRes"]);
             NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
             UIImage *cellImage = [UIImage imageWithData:imageData];
             self.currentAlbumArtImage.image = cellImage;

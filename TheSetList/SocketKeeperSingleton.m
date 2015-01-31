@@ -36,7 +36,7 @@
         
         //Send a message to RoomCode controler to notify the reciever that the user has enetered a correct code and can enter the specific setList room.
         [self.socket on:@"initialize" callback:^(NSArray *args) {
-            
+            NSLog(@"initialize emmited from socket");
             NSDictionary *socketIdDict = [args objectAtIndex:0];
             if ([socketIdDict objectForKey:@"error"])
             {
@@ -87,6 +87,27 @@
             weakSelf.socketID = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"onConnect" object:nil];
         };
+        
+        
+        ///////HOST SOCKET METHODS////////
+        
+        [self.socket on:@"room code" callback:^(NSArray *args) {
+            NSString *roomCode = [args objectAtIndex:0];
+            self.hostRoomCode = roomCode;
+            self.isHost = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"onHostRoomConnect" object:nil];
+            
+            
+            [self.socket on:@"song_added" callback:^(NSArray *args)
+             {
+                 NSLog(@"song added callback recieved");
+                 NSDictionary *songAdded = [args objectAtIndex:0];
+                 self.songAdded = songAdded;
+                 [[NSNotificationCenter defaultCenter] postNotificationName:@"hostSongAdded" object:nil];
+             }];
+
+        }];
+
         
     }];
     

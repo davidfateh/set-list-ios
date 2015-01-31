@@ -50,6 +50,12 @@
                                              selector:@selector(receiveOnConnectNotification:)
                                                  name:@"onConnect"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveOnHostRoomConnectNotification:)
+                                                 name:@"onHostRoomConnect"
+                                               object:nil];
+
 
         
         UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
@@ -96,6 +102,11 @@
 
 #pragma mark - Notifications
 
+-(void)receiveOnHostRoomConnectNotification:(NSNotification *)notificaiton
+{
+    [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+}
+
 -(void)receiveOnConnectNotification:(NSNotification *)notificaiton
 {
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
@@ -138,12 +149,10 @@
         setListVC.roomCode = self.roomCodeTextField.text;
     }
     
-    
 }
 
 - (IBAction)hostRoomButtonPressed:(UIButton *)sender
 {
-    self.isHost = YES;
-    [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+    [self.socket emit:@"start room"];
 }
 @end

@@ -41,12 +41,17 @@
 
 //HOST Properties and methods
 @property (strong, nonatomic) IBOutlet UIButton *skipButton;
+@property (nonatomic) BOOL isHost; 
 - (IBAction)playPauseButtonPressed:(UIButton *)sender;
 - (IBAction)skipButtonPressed:(UIButton *)sender;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewHeightConst;
 - (IBAction)setListlogoPressed:(UIButton *)sender;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewVertConst;
 @property (strong, nonatomic) IBOutlet UIButton *playPauseButton;
+@property (strong, nonatomic) IBOutlet UILabel *hostRoomCodeLabel;
+@property (strong, nonatomic) IBOutlet UILabel *hostCodeMessageLabel;
+@property (strong, nonatomic) NSMutableArray *hostQueue;
+@property (strong, nonatomic) NSDictionary *hostCurrentArtist;
 
 
 //SETTINGS VIEW properties and methods
