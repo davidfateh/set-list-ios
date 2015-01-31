@@ -10,7 +10,7 @@
 #import "SetListTableViewCell.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate>
+@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate>
 
 //SET LIST properties and methods. 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
@@ -52,7 +52,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *hostRoomCodeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *hostCodeMessageLabel;
 @property (strong, nonatomic) NSMutableArray *hostQueue;
-@property (strong, nonatomic) NSDictionary *hostCurrentArtist;
+@property (strong, nonatomic) NSMutableDictionary *hostCurrentArtist;
 @property (strong, nonatomic) AVAudioPlayer *audioPlayer;
 
 

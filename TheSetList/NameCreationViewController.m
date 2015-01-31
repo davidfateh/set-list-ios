@@ -87,12 +87,8 @@
     if (self.roomCodeTextField.tag == 2 ) {
         
         [self.roomCodeTextField resignFirstResponder];
-
-        NSMutableDictionary *startDic = [[NSMutableDictionary alloc]init];
-        [startDic setObject:numberFromTheKeyboard forKey:@"room"];
-        NSLog(@"%@", self.socket);
-        NSLog(@"%@", numberFromTheKeyboard);
-        NSArray *startArray = [[NSArray alloc]initWithObjects:startDic, nil];
+        NSDictionary *startDic = @{@"room" :numberFromTheKeyboard};
+        NSArray *startArray = @[startDic];
         [self.socket emit:@"mobile connect" args:startArray];
         
         
@@ -104,7 +100,9 @@
 
 -(void)receiveOnHostRoomConnectNotification:(NSNotification *)notificaiton
 {
-    [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+    });
 }
 
 -(void)receiveOnConnectNotification:(NSNotification *)notificaiton
@@ -115,7 +113,11 @@
 
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+
+    });
+
 }
 
 #pragma mark - Text Field Delegate

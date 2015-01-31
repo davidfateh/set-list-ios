@@ -100,7 +100,6 @@
             
             [self.socket on:@"song_added" callback:^(NSArray *args)
              {
-                 NSLog(@"song added callback recieved");
                  NSDictionary *songAdded = [args objectAtIndex:0];
                  self.songAdded = songAdded;
                  [[NSNotificationCenter defaultCenter] postNotificationName:@"hostSongAdded" object:nil];
