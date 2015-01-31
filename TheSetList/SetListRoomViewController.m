@@ -249,19 +249,36 @@
 
 -(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
 {
-    if (!self.isHost)
+    NSLog(@"recieved updated current artist");
+    
+    if (self.isHost) {
+        NSString *streamURL = [self.hostCurrentArtist objectForKey:@"stream_url"];
+        NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
+        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
+        [self playCurrentSongWithStreamURL:urlString];
+
+    }
+    else
     {
-    if (!self.hostRoomCodeLabel.hidden) {
-        self.hostRoomCodeLabel.hidden = YES;
-        self.hostCodeMessageLabel.hidden = YES;
+        if (!self.hostRoomCodeLabel.hidden) {
+            self.hostRoomCodeLabel.hidden = YES;
+            self.hostCodeMessageLabel.hidden = YES;
+        }
+        
+        NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+        [self setCurrentArtistFromCurrentArtist:currentArtist];
+
     }
-    NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
-    [self setCurrentArtistFromCurrentArtist:currentArtist];
-    }
+    
 }
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
 {
+    if (self.isHost)
+    {
+        
+    }
+    NSLog(@"recieved update B notification");
     self.tracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
     [self.tableView reloadData];
 }
@@ -667,7 +684,7 @@
 
 -(void)disconnectSocketAndPopOut
 {
-    
+    [self.audioPlayer stop];
     [self.socket close];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"setListRoomClosed" object:nil];
     [self.navigationController popToRootViewControllerAnimated:YES];
@@ -761,6 +778,7 @@
 -(void)playCurrentSongWithStreamURL:(NSString *)URL
 {
     NSString *urlString = URL;
+    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
     [SCRequest performMethod:SCRequestMethodGET
                   onResource:[NSURL URLWithString:urlString]
              usingParameters:nil
@@ -773,14 +791,14 @@
          self.audioPlayer.delegate = self;
          [self.audioPlayer prepareToPlay];
          [self.audioPlayer play];
+         [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
      }];
 
 }
 
 -(void)playNextSongInQueue
 {
-    if (self.hostQueue) {
-        
+    if ([self.hostQueue count]) {
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
         self.hostCurrentArtist = [currentTrack mutableCopy];
@@ -789,7 +807,6 @@
         NSArray *arrayWithTrack = @[currentTrack];
         [self.socket emit:@"current_artist" args:arrayWithTrack];
         [self.socket emit:@"q update" args:argsWithQueue];
-        
     }
 }
 
