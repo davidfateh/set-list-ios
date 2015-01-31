@@ -83,6 +83,7 @@
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
+    
     // Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateBNotification:)
@@ -127,6 +128,7 @@
         self.hostRoomCodeLabel.hidden = NO;
         self.isHost = [[SocketKeeperSingleton sharedInstance]isHost];
         self.hostRoomCodeLabel.text = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
+        self.hostQueue = [[NSMutableArray alloc]init];
     }
     
     
@@ -174,9 +176,25 @@
         self.hostCodeMessageLabel.hidden = YES;
     }
 
-    if (![self.hostCurrentArtist objectForKey:@"nil"]) {
-        NSDictionary *songAddedForCurrent = [[SocketKeeperSingleton sharedInstance]songAdded];
+   NSDictionary *songAdded = [[SocketKeeperSingleton sharedInstance]songAdded];
+    //if there is no current artist, the song being added will become current artist and play music.
+    if ([self.hostCurrentArtist objectForKey:@"user"]) {
+        
+        [self.hostQueue addObject:songAdded];
+        [self.tableView reloadData];
+        
+    }
+    //else, if there is a current artist, add the songAdded to the end of the queue.
+    else
+    {
+        self.hostCurrentArtist = songAdded;
+        NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
         [self setCurrentArtistFromCurrentArtist:songAddedForCurrent];
+        NSString *songStreamURL = [songAddedForCurrent objectForKey:@"stream_url"];
+        NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", songStreamURL,CLIENT_ID];
+        [self playCurrentSongWithStreamURL:urlString];
+        NSArray *songAddedArray = [[NSArray alloc]initWithObjects:songAddedForCurrent, nil];
+        [self.socket emit:@"current_artist" args:songAddedArray];
     }
 }
 
@@ -222,28 +240,54 @@
     cell.delegate = self;
     
     if (tableView.tag == 1) {
-        NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
         
-        
-        
-        if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
-            cell.userSelectedSongImageView.hidden = NO;
+        if (self.isHost) {
+            
+            NSDictionary *track = [self.hostQueue objectAtIndex:indexPath.row];
+            
+            if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+                cell.userSelectedSongImageView.hidden = NO;
+            }
+            else
+            {
+                cell.userSelectedSongImageView.hidden = YES;
+            }
+            
+            
+            
+            NSString *songTitle = [track objectForKey:@"title"];
+            NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            cell.artistLabel.text = artist;
+            cell.songLabel.text = songTitle;
+            
         }
         else
         {
-            cell.userSelectedSongImageView.hidden = YES;
+            
+            NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
+            
+            if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+                cell.userSelectedSongImageView.hidden = NO;
+            }
+            else
+            {
+                cell.userSelectedSongImageView.hidden = YES;
+            }
+            
+            
+            
+            NSString *songTitle = [track objectForKey:@"title"];
+            NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
+            
+            cell.artistLabel.text = artist;
+            cell.songLabel.text = songTitle;
+            
+        }
+  
         }
         
-        
-        
-        NSString *songTitle = [track objectForKey:@"title"];
-        NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
-        
-        cell.artistLabel.text = artist;
-        cell.songLabel.text = songTitle;
-        
-        }
-        else if (tableView.tag == 2)
+            else if (tableView.tag == 2)
         {
             // Configure the cell...
             
@@ -292,7 +336,10 @@
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableView.tag == 1) {
-        return [self.tracks count];
+        if (self.isHost) {
+            return [self.hostQueue count];
+        }
+        else return [self.tracks count];
     }
     else return [self.searchTracks count];
 }
@@ -413,15 +460,13 @@
 
 -(void)addSongButtonPressedOnCell:(id)sender
 {
+    NSInteger index =  ((UITableViewCell *)sender).tag;
+    NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
+    
+    
     if (self.isHost) {
-        if (![self.hostCurrentArtist objectForKey:@"nil"]) {
-            NSInteger index =  ((UITableViewCell *)sender).tag;
-            NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
-            self.hostCurrentArtist = track;
-            NSArray *arrayWithTrack = [[NSArray alloc]initWithObjects:track, nil];
-           [self.socket emit:@"q_add_request" args:arrayWithTrack];
-            NSLog(@"q_add_request emitted");
-        }
+        NSArray *arrayWithTrack = [[NSArray alloc]initWithObjects:track, nil];
+        [self.socket emit:@"q_add_request" args:arrayWithTrack];
     }
     
     
@@ -651,7 +696,6 @@
             
             //Init the cell image with the track's artwork.
             NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
-            NSLog(@"%@", [track objectForKey:@"highRes"]);
             NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
             UIImage *cellImage = [UIImage imageWithData:imageData];
             self.currentAlbumArtImage.image = cellImage;
@@ -661,5 +705,27 @@
     }
 
 }
+
+-(void)playCurrentSongWithStreamURL:(NSString *)URL
+{
+    NSString *urlString = URL;
+    
+    [SCRequest performMethod:SCRequestMethodGET
+                  onResource:[NSURL URLWithString:urlString]
+             usingParameters:nil
+                 withAccount:nil
+      sendingProgressHandler:nil
+             responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error)
+     {
+         
+         NSError *playerError;
+         self.audioPlayer = [[AVAudioPlayer alloc]initWithData:responseData error:&playerError];
+         [self.audioPlayer prepareToPlay];
+         [self.audioPlayer play];
+     }];
+
+}
+
+
 
 @end
