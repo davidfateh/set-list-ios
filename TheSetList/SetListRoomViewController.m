@@ -110,6 +110,12 @@
                                              selector:@selector(receiveHostSongAddedNotification:)
                                                  name:@"hostSongAdded"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveUserJoinedNotification:)
+                                                 name:@"userJoined"
+                                               object:nil];
+
 
     
 }
@@ -165,6 +171,26 @@
 #pragma mark - Notification Center
 
 
+-(void)receiveUserJoinedNotification:(NSNotification *)notification
+{
+    NSString *userId = [[SocketKeeperSingleton sharedInstance]clientSocketID];
+    
+    if (self.hostCurrentArtist) {
+        NSString *userId = [[SocketKeeperSingleton sharedInstance]clientSocketID];
+        NSDictionary *argsCurrentDic = @{@"init":userId, @"data":self.hostCurrentArtist};
+        NSArray *argsCurrentArray = @[argsCurrentDic];
+        [self.socket emit:@"current_artist" args:argsCurrentArray];
+        
+    }
+    if (self.hostQueue) {
+        
+        NSDictionary *argsQueueDic = @{@"init" : userId, @"data" : self.hostQueue};
+        NSArray *argsQueueArray = @[argsQueueDic];
+        [self.socket emit:@"q update" args:argsQueueArray];
+        
+    }
+    
+}
 
 -(void)receiveHostSongAddedNotification:(NSNotification *)notification
 {
@@ -177,11 +203,14 @@
     }
 
    NSDictionary *songAdded = [[SocketKeeperSingleton sharedInstance]songAdded];
-    //if there is no current artist, the song being added will become current artist and play music.
+    //if there is a current artist, add the song to the queue, else, make it the current artist.
     if ([self.hostCurrentArtist objectForKey:@"user"]) {
         
         [self.hostQueue addObject:songAdded];
         [self.tableView reloadData];
+        //Emit the added song so the client can recieve it.
+        NSArray *queueArray = [[NSArray alloc]initWithObjects:self.hostQueue, nil];
+        [self.socket emit:@"q update" args:queueArray];
         
     }
     //else, if there is a current artist, add the songAdded to the end of the queue.

@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSString *roomCode;
 @property (nonatomic) BOOL socketIsConnected;
 @property (strong, nonatomic) NSDictionary *songAdded;
+@property (strong, nonatomic) NSString *clientSocketID;
 
 + (SocketKeeperSingleton *) sharedInstance;
 

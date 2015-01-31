@@ -105,6 +105,14 @@
                  self.songAdded = songAdded;
                  [[NSNotificationCenter defaultCenter] postNotificationName:@"hostSongAdded" object:nil];
              }];
+            
+            //When a mobile client joins
+            [self.socket on:@"add user" callback:^(NSArray *args) {
+                NSMutableDictionary *idDic = args[0];
+                self.clientSocketID = idDic[@"id"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"userJoined" object:nil];
+                
+            }];
 
         }];
 
