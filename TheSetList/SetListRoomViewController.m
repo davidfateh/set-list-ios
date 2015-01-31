@@ -206,6 +206,7 @@
         
         [self.hostQueue addObject:songAdded];
         [self.tableView reloadData];
+        [self prepareToPlayNextSongInQueue];
         //Emit the added song so the client can recieve it.
         NSArray *queueArray = @[self.hostQueue];
         [self.socket emit:@"q update" args:queueArray];
@@ -217,9 +218,8 @@
         self.hostCurrentArtist = [songAdded mutableCopy];
         NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
         [self setCurrentArtistFromCurrentArtist:songAddedForCurrent];
-        NSString *songStreamURL = [songAddedForCurrent objectForKey:@"stream_url"];
-        NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", songStreamURL,CLIENT_ID];
-        [self playCurrentSongWithStreamURL:urlString];
+        [self playFistSongWithCurrentArtist:songAddedForCurrent];
+        [self prepareToPlayNextSongInQueue];
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
         [self.socket emit:@"current_artist" args:songAddedArray];
@@ -252,11 +252,7 @@
     NSLog(@"recieved updated current artist");
     
     if (self.isHost) {
-        NSString *streamURL = [self.hostCurrentArtist objectForKey:@"stream_url"];
-        NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
-        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
-        [self playCurrentSongWithStreamURL:urlString];
-
+       //Is host
     }
     else
     {
@@ -274,10 +270,6 @@
 
 - (void)receiveUpdateBNotification:(NSNotification *)notification
 {
-    if (self.isHost)
-    {
-        
-    }
     NSLog(@"recieved update B notification");
     self.tracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
     [self.tableView reloadData];
@@ -738,7 +730,6 @@
 
 }
 
-
 -(void)setCurrentArtistFromCurrentArtist:(NSDictionary *)currentArtist {
     
     
@@ -772,29 +763,19 @@
         }
         
     }
-
+    
 }
 
--(void)playCurrentSongWithStreamURL:(NSString *)URL
+#pragma mark - Playing Songs
+
+-(void)playSongFromQueue
 {
-    NSString *urlString = URL;
-    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
-    [SCRequest performMethod:SCRequestMethodGET
-                  onResource:[NSURL URLWithString:urlString]
-             usingParameters:nil
-                 withAccount:nil
-      sendingProgressHandler:nil
-             responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error)
-     {
-         NSError *playerError;
-         self.audioPlayer = [[AVAudioPlayer alloc]initWithData:responseData error:&playerError];
-         self.audioPlayer.delegate = self;
-         [self.audioPlayer prepareToPlay];
-         [self.audioPlayer play];
-         [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
-     }];
-
+    NSError *playerError;
+    self.audioPlayer = [[AVAudioPlayer alloc]initWithData:self.trackData error:&playerError];
+    [self.audioPlayer prepareToPlay];
+    [self.audioPlayer play];
 }
+
 
 -(void)playNextSongInQueue
 {
@@ -803,13 +784,57 @@
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
         self.hostCurrentArtist = [currentTrack mutableCopy];
         [self.hostQueue removeObjectAtIndex:0];
+        [self.tableView reloadData];
+        [self playSongFromQueue];
+        [self prepareToPlayNextSongInQueue];
         NSArray *argsWithQueue = @[self.hostQueue];
         NSArray *arrayWithTrack = @[currentTrack];
+        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
         [self.socket emit:@"current_artist" args:arrayWithTrack];
         [self.socket emit:@"q update" args:argsWithQueue];
+       
     }
 }
 
+-(void)playFistSongWithCurrentArtist:(NSDictionary *)currentArtist
+{
+    NSString *streamURL = [currentArtist objectForKey:@"stream_url"];
+    NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
+    [SCRequest performMethod:SCRequestMethodGET
+                  onResource:[NSURL URLWithString:urlString]
+             usingParameters:nil
+                 withAccount:nil
+      sendingProgressHandler:nil
+             responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error)
+     {
+         self.audioPlayer.delegate = self;
+         NSError *playerError;
+         self.audioPlayer = [[AVAudioPlayer alloc]initWithData:self.trackData error:&playerError];
+         [self.audioPlayer prepareToPlay];
+         [self.audioPlayer play];
+     }];
+
+}
+
+-(void)prepareToPlayNextSongInQueue
+{
+    if ([self.hostQueue count]) {
+        NSDictionary *queuedTrack = [self.hostQueue objectAtIndex:0];
+        NSString *streamURL = [queuedTrack objectForKey:@"stream_url"];
+        NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
+        [SCRequest performMethod:SCRequestMethodGET
+                      onResource:[NSURL URLWithString:urlString]
+                 usingParameters:nil
+                     withAccount:nil
+          sendingProgressHandler:nil
+                 responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error)
+         {
+             self.audioPlayer.delegate = self;
+             self.trackData = responseData;
+         }];
+    }
+  
+}
 
 
 @end
