@@ -43,17 +43,17 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveInitializeNotification:)
-                                                 name:@"initialize"
+                                                 name:kInitialize
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveOnConnectNotification:)
-                                                 name:@"onConnect"
+                                                 name:kOnConnect
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveOnHostRoomConnectNotification:)
-                                                 name:@"onHostRoomConnect"
+                                                 name:kOnHostRoomConnect
                                                object:nil];
 
 

@@ -196,12 +196,6 @@
                                             <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="oXp-xX-sd1"/>
                                         </connections>
                                     </button>
-                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The queue is empty, add some some songs " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ArQ-X8-leD">
-                                        <rect key="frame" x="18" y="229" width="285" height="21"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk7-qf-x4X">
                                         <rect key="frame" x="106" y="21" width="108" height="30"/>
                                         <constraints>
@@ -639,7 +633,6 @@
                         <outlet property="currentArtistViewBackground" destination="Sep-1q-gCc" id="2gd-8c-QXs"/>
                         <outlet property="currentSongLabel" destination="QRe-J8-h5x" id="tUC-U9-1Cg"/>
                         <outlet property="durationProgressView" destination="Lwh-Rq-NrE" id="2Rm-tb-2Zf"/>
-                        <outlet property="emptyQueueLabel" destination="ArQ-X8-leD" id="GFo-SD-udQ"/>
                         <outlet property="exitSettingsViewButton" destination="DZT-1t-Rze" id="KwG-GY-wYB"/>
                         <outlet property="hostCodeMessageLabel" destination="7Gp-5w-m49" id="p5g-O2-Sdc"/>
                         <outlet property="hostRoomCodeLabel" destination="4CT-dz-BcD" id="cah-qa-9aO"/>

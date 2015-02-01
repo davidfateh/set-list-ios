@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SetListTableViewCell.h"
 #import <AVFoundation/AVFoundation.h>
+#import "Constants.h"
 
 @interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate>
 
@@ -21,7 +22,6 @@
 @property (strong, nonatomic) NSArray *tracks;
 @property (strong, nonatomic) IBOutlet UIView *currentArtistViewBackground;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteLabelVertConst;
-@property (strong, nonatomic) IBOutlet UILabel *emptyQueueLabel;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteImageVertConst;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;

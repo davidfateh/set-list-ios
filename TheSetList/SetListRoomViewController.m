@@ -88,33 +88,33 @@
     // Add a notifcation observer and postNotification name for updating the tracks.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateBNotification:)
-                                                 name:@"qUpdateB"
+                                                 name:kQueueUpdated
                                                object:nil];
     
     //Add a notifcation observer and postNotification name for updating current artist.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUpdateCurrentArtistBNotification:)
-                                                 name:@"currentArtistB"
+                                                 name:kCurrentArtistUpdate
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveOnDisconnectNotification:)
-                                                 name:@"onDisconnect"
+                                                 name:kOnDisconnect
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveHostDisconnectNotification:)
-                                                 name:@"hostDisconnect"
+                                                 name:kHostDisconnect
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveHostSongAddedNotification:)
-                                                 name:@"hostSongAdded"
+                                                 name:kQueueAdd
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveUserJoinedNotification:)
-                                                 name:@"userJoined"
+                                                 name:kUserJoined
                                                object:nil];
     
     
@@ -123,18 +123,13 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    
     NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
     /////////HOST/////////
     
     if ([[SocketKeeperSingleton sharedInstance]isHost]) {
         NSLog(@"User is the host of this room");
-        self.currentArtistViewBackground.hidden = YES;
-        self.hostCodeMessageLabel.hidden = NO;
-        self.hostRoomCodeLabel.hidden = NO;
-        self.durationProgressView.hidden = NO;
         self.isHost = YES;
-        self.hostRoomCodeLabel.text = roomCodeAsHost;
+        [self viewForNoCurrentArtistAsHost];
         self.roomCodeLabel.text = roomCodeAsHost;
         self.hostQueue = [[NSMutableArray alloc]init];
         self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
@@ -164,8 +159,8 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"qUpdateB" object:nil];
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"currentArtistB" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kQueueUpdated     object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kCurrentArtistUpdate object:nil];
 }
 
 #pragma mark - Notification Center
@@ -179,14 +174,14 @@
         NSString *userId = [[SocketKeeperSingleton sharedInstance]clientSocketID];
         NSDictionary *argsCurrentDic = @{@"init":userId, @"data":self.hostCurrentArtist};
         NSArray *argsCurrentArray = @[argsCurrentDic];
-        [self.socket emit:@"current_artist" args:argsCurrentArray];
+        [self.socket emit:kCurrentArtistChange args:argsCurrentArray];
         
     }
     if (self.hostQueue) {
         
         NSDictionary *argsQueueDic = @{@"init" : userId, @"data" : self.hostQueue};
         NSArray *argsQueueArray = @[argsQueueDic];
-        [self.socket emit:@"q update" args:argsQueueArray];
+        [self.socket emit:kQueueChange args:argsQueueArray];
         
     }
     
@@ -210,7 +205,7 @@
         [self prepareToPlayNextSongInQueue];
         //Emit the added song so the client can recieve it.
         NSArray *queueArray = @[self.hostQueue];
-        [self.socket emit:@"q update" args:queueArray];
+        [self.socket emit:kQueueChange args:queueArray];
         
     }
     //else, if there isnt a current artist, add the song as current artist.
@@ -223,7 +218,7 @@
         [self prepareToPlayNextSongInQueue];
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
-        [self.socket emit:@"current_artist" args:songAddedArray];
+        [self.socket emit:kCurrentArtistChange args:songAddedArray];
         
         //Unhide host capabilities
         self.playPauseButton.hidden = NO;
@@ -506,7 +501,7 @@
     
     if (self.isHost) {
         NSArray *arrayWithTrack = @[track];
-        [self.socket emit:@"q_add_request" args:arrayWithTrack];
+        [self.socket emit:kQueueRequest args:arrayWithTrack];
     }
     //else, add song as guest
     else
@@ -517,7 +512,7 @@
         [self.selectedRows addIndex:index];
         NSArray *argsArray = @[track];
         //Send the data to the server/socket.
-        [self.socket emit:@"q_add_request" args:argsArray];
+        [self.socket emit:kQueueRequest args:argsArray];
     }
     
 }
@@ -527,13 +522,12 @@
 {
     if (flag) {
         //if there is no tracks in queue
-        NSLog(@"%lu", (unsigned long)[self.hostQueue count]);
         if (![self.hostQueue count]) {
             NSLog(@"nothing in queue upon song finishing");
             [self.hostCurrentArtist removeAllObjects];
             [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
             NSArray *argsCurrentArray = @[self.hostCurrentArtist];
-            [self.socket emit:@"current_artist" args:argsCurrentArray];
+            [self.socket emit:kCurrentArtistChange args:argsCurrentArray];
         }
         else {
             [self playNextSongInQueue];
@@ -567,7 +561,7 @@
     if (self.isRemoteHost) {
         NSDictionary *togglePauseDic = @{@"action" : @"togglePause"};
         NSArray *argsArray = @[togglePauseDic];
-        [self.socket emit:@"remote" args:argsArray];
+        [self.socket emit:kRemoteAction args:argsArray];
     }
 }
 
@@ -575,33 +569,35 @@
 {
     
     if (self.isHost) {
+        [self.audioPlayer stop];
         [self playNextSongInQueue];
     }
     //if the user is the host, allow them to skip songs.
     if (self.isRemoteHost) {
         NSDictionary *skipDic = @{@"action" : @"skip"};
         NSArray *argsArray = @[skipDic];
-        [self.socket emit:@"remote" args:argsArray];
+        [self.socket emit:kRemoteAction args:argsArray];
     }
 }
 
+//When remote text field returns
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    //Joing to the remote host, emit the password, if correct password allow the user to be the host and pause, play and skip songs.
+    //Joing to the remote host, emit the password, if correct password allow the user to be the remote host and pause, play and skip songs.
     UIImage *playImage = [UIImage imageNamed:@"Play"];
     UIImage *pauseImage = [UIImage imageNamed:@"Pause"];
     NSString *remotePassword = self.remotePasswordTextField.text;
     NSDictionary *passwordDic = @{@"password" : remotePassword};
     NSArray *argsArray = @[passwordDic];
-    [self.socket emit:@"add remote" args:argsArray];
-    [self.socket on:@"add remote" callback:^(NSArray *args) {
+    [self.socket emit:kRemoteAdd args:argsArray];
+    [self.socket on:kRemoteSet callback:^(NSArray *args) {
         
         NSDictionary *key = [args objectAtIndex:0];
         
         if ([key objectForKey:@"error"]) {
             self.remotePasswordInfoLabel.text = [key objectForKey:@"error"];
         }
-        //if the password is a correct, and connection is successful, make the host view appear.
+        //if the password is a correct, and connection is successful, make the remote host's views appear.
         else{
             NSLog(@"Remote Host Connection Succesful");
             self.isRemoteHost = YES;
@@ -743,38 +739,32 @@
     
     
     NSDictionary *track = currentArtist;
-    if (track) {
-        //If there is a current track, display its contents as current user
-        if ([track objectForKey:@"user"]) {
-            
-            self.emptyQueueLabel.hidden = YES;
-            self.currentArtistViewBackground.hidden = NO;
-            self.currentSongLabel.text = [track objectForKey:@"title"];
-            self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-            //If there is no picture available. Adds a Custom picture.
-            //Init the cell image with the track's artwork.
-            NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
-            NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
-            UIImage *cellImage = [UIImage imageWithData:imageData];
-            self.currentAlbumArtImage.image = cellImage;
-
+    
+    //If there is no current track, clear the current artist display.
+    if (track == NULL) {
+        
+        [self viewForNoCurrentArtistAsHost];
+    }
+    //else, If there is a current track, display its contents as current user
+    else
+    {
+        if (![track objectForKey:@"user"])
+        {
+            [self viewForNoCurrentArtistAsHost];
         }
-        //else, if there is no current track, clear the current artist display.
         else
         {
-            self.currentSongLabel.text = @"";
-            self.currentArtistLabel.text = @"";
-            self.currentArtistViewBackground.hidden = YES;
-            self.emptyQueueLabel.hidden = NO;
-            self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
-            self.currentArtistViewBackground.hidden = YES;
-            self.playPauseButton.hidden = YES;
-            self.skipButton.hidden = YES;
-
+        self.currentArtistViewBackground.hidden = NO;
+        self.currentSongLabel.text = [track objectForKey:@"title"];
+        self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+        //If there is no picture available. Adds a Custom picture.
+        //Init the cell image with the track's artwork.
+        NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
+        NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
+        UIImage *cellImage = [UIImage imageWithData:imageData];
+        self.currentAlbumArtImage.image = cellImage;
         }
-        
     }
-    
 }
 
 #pragma mark - Playing Songs
@@ -785,6 +775,7 @@
     self.audioPlayer = [[AVAudioPlayer alloc]initWithData:self.trackData error:&playerError];
     [self.audioPlayer prepareToPlay];
     [self.audioPlayer play];
+    self.durationProgressView.hidden = NO;
     self.durationProgressView.progress = 0.0;
     [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
 
@@ -814,8 +805,8 @@
         NSArray *argsWithQueue = @[self.hostQueue];
         NSArray *arrayWithTrack = @[currentTrack];
         [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
-        [self.socket emit:@"current_artist" args:arrayWithTrack];
-        [self.socket emit:@"q update" args:argsWithQueue];
+        [self.socket emit:kCurrentArtistChange args:arrayWithTrack];
+        [self.socket emit:kQueueChange args:argsWithQueue];
        
     }
 }
@@ -848,6 +839,7 @@
          self.audioPlayer.delegate = self;
          [self.audioPlayer prepareToPlay];
          [self.audioPlayer play];
+         self.durationProgressView.hidden = NO;
          self.durationProgressView.progress = 0.0;
          [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
      }];
@@ -873,6 +865,24 @@
          }];
     }
   
+}
+
+-(void)viewForNoCurrentArtistAsHost
+{
+    NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
+    
+    self.currentSongLabel.text = @"";
+    self.currentArtistLabel.text = @"";
+    self.durationProgressView.hidden = YES;
+    self.currentArtistViewBackground.hidden = YES;
+    self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
+    self.currentArtistViewBackground.hidden = YES;
+    self.playPauseButton.hidden = YES;
+    self.skipButton.hidden = YES;
+    self.hostCodeMessageLabel.hidden = NO;
+    self.hostRoomCodeLabel.hidden = NO;
+    self.hostRoomCodeLabel.text = roomCodeAsHost;
+
 }
 
 
