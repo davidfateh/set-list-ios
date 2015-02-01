@@ -160,6 +160,15 @@
                                             <action selector="playPauseButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="7Rx-wQ-Hkl"/>
                                         </connections>
                                     </button>
+                                    <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="2.7755575615628914e-17" translatesAutoresizingMaskIntoConstraints="NO" id="Lwh-Rq-NrE">
+                                        <rect key="frame" x="0.0" y="250" width="320" height="2"/>
+                                        <color key="tintColor" red="0.38229554891586304" green="0.3657248318195343" blue="0.65916305780410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="320" id="1mC-p6-PbU"/>
+                                            <constraint firstAttribute="height" constant="2" id="Zb2-BT-jJk"/>
+                                        </constraints>
+                                        <color key="trackTintColor" red="0.92941182851791382" green="0.92941182851791382" blue="0.92941182851791382" alpha="0.0" colorSpace="deviceRGB"/>
+                                    </progressView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SeR-Zn-aCc">
                                         <rect key="frame" x="102" y="21" width="117" height="32"/>
                                         <constraints>
@@ -317,10 +326,12 @@
                                     <constraint firstItem="bk7-qf-x4X" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="21" id="a8O-g2-7Ho"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="29" id="aSm-qz-G2J"/>
                                     <constraint firstItem="4CT-dz-BcD" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="82" id="fuB-eO-EBI"/>
+                                    <constraint firstItem="Lwh-Rq-NrE" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="250" id="iT6-xD-xVU"/>
                                     <constraint firstItem="KH9-zn-Exh" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="125" id="ibt-rV-ikU"/>
                                     <constraint firstItem="KH9-zn-Exh" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="jUo-Zj-PrM"/>
                                     <constraint firstAttribute="bottom" secondItem="ddj-u0-EjL" secondAttribute="bottom" id="k5n-rC-AmB"/>
                                     <constraint firstItem="1xR-U8-lzH" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="ky5-46-RNm"/>
+                                    <constraint firstItem="Lwh-Rq-NrE" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="lXP-F6-X0R"/>
                                     <constraint firstItem="ddj-u0-EjL" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="9" id="qZL-uY-RgK"/>
                                     <constraint firstAttribute="height" constant="568" id="xKx-cB-yz7"/>
                                 </constraints>
@@ -627,6 +638,7 @@
                         <outlet property="currentArtistLabel" destination="G7J-l7-Cmn" id="vay-4s-LA9"/>
                         <outlet property="currentArtistViewBackground" destination="Sep-1q-gCc" id="2gd-8c-QXs"/>
                         <outlet property="currentSongLabel" destination="QRe-J8-h5x" id="tUC-U9-1Cg"/>
+                        <outlet property="durationProgressView" destination="Lwh-Rq-NrE" id="2Rm-tb-2Zf"/>
                         <outlet property="emptyQueueLabel" destination="ArQ-X8-leD" id="GFo-SD-udQ"/>
                         <outlet property="exitSettingsViewButton" destination="DZT-1t-Rze" id="KwG-GY-wYB"/>
                         <outlet property="hostCodeMessageLabel" destination="7Gp-5w-m49" id="p5g-O2-Sdc"/>
