@@ -32,7 +32,7 @@
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (strong, nonatomic) IBOutlet UIButton *plusButton;
 @property (strong, nonatomic) IBOutlet UITableView *searchTableView;
-@property (strong, nonatomic) NSMutableArray *searchTracks;
+@property (strong, nonatomic) NSArray *searchTracks;
 @property (strong, nonatomic) IBOutlet UIView *searchView;
 @property (strong, nonatomic) IBOutlet UIImageView *purpleGlowImageView;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *purpleGlowVertConst;
@@ -42,8 +42,7 @@
 
 //HOST Properties and methods
 @property (strong, nonatomic) IBOutlet UIButton *skipButton;
-@property (nonatomic) BOOL isHost;
-@property (strong, nonatomic) IBOutlet UIProgressView *durationProgressView;
+@property (nonatomic) BOOL isHost; 
 - (IBAction)playPauseButtonPressed:(UIButton *)sender;
 - (IBAction)skipButtonPressed:(UIButton *)sender;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewHeightConst;
