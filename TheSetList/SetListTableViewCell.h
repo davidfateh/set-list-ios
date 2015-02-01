@@ -14,8 +14,7 @@
 @end
 
 @interface SetListTableViewCell : UITableViewCell
-
-@property (strong, nonatomic) id delegate;
+@property (weak, nonatomic) id <SetListCellDelegate> delegate;
 @property (strong, nonatomic) IBOutlet UILabel *songLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *userSelectedSongImageView;
 @property (strong, nonatomic) IBOutlet UILabel *artistLabel;

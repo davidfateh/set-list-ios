@@ -22,8 +22,9 @@
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) SIOSocket *socket;
-@property (weak, nonatomic) NSDictionary *currentArtist;
+@property (strong, nonatomic) NSDictionary *currentArtist;
 @property (nonatomic) BOOL isRemoteHost;
+@property (strong, nonatomic) NSTimer *timer;
 @end
 
 @implementation SetListRoomViewController
@@ -126,22 +127,20 @@
     
     NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
     /////////HOST/////////
-    
     if ([[SocketKeeperSingleton sharedInstance]isHost]) {
         NSLog(@"User is the host of this room");
         self.currentArtistViewBackground.hidden = YES;
         self.hostCodeMessageLabel.hidden = NO;
         self.hostRoomCodeLabel.hidden = NO;
-        self.durationProgressView.hidden = NO;
         self.isHost = YES;
         self.hostRoomCodeLabel.text = roomCodeAsHost;
         self.roomCodeLabel.text = roomCodeAsHost;
         self.hostQueue = [[NSMutableArray alloc]init];
         self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
+        self.timer = [[NSTimer alloc]init];
+        
     }
-    
     ///////NOT HOST///////
-    
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
     
@@ -164,6 +163,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:YES];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"qUpdateB" object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"currentArtistB" object:nil];
 }
@@ -538,7 +538,7 @@
         else {
             [self playNextSongInQueue];
             [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
-        };
+        }
     }
 }
 
@@ -762,6 +762,7 @@
         //else, if there is no current track, clear the current artist display.
         else
         {
+            self.durationProgressView.hidden = YES;
             self.currentSongLabel.text = @"";
             self.currentArtistLabel.text = @"";
             self.currentArtistViewBackground.hidden = YES;
@@ -785,10 +786,23 @@
     self.audioPlayer = [[AVAudioPlayer alloc]initWithData:self.trackData error:&playerError];
     [self.audioPlayer prepareToPlay];
     [self.audioPlayer play];
+    self.durationProgressView.hidden = NO;
     self.durationProgressView.progress = 0.0;
-    [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+    self. timer = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
 
 }
+
+- (void)updateTime {
+    
+    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
+    self.durationProgressView.progress = [self.audioPlayer currentTime] / [self.audioPlayer duration];
+    if (self.durationProgressView.progress == 0)
+    {
+        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+    }
+    
+}
+
 
 
 -(void)playNextSongInQueue
@@ -820,18 +834,6 @@
     }
 }
 
-- (void)updateTime {
-    
-    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
-    self.durationProgressView.progress = [self.audioPlayer currentTime] / [self.audioPlayer duration];
-    if (self.durationProgressView.progress == 0)
-    {
-        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
-    }
-    
-}
-
-
 -(void)playSongWithCurrentArtist:(NSDictionary *)currentArtist
 {
     NSString *streamURL = [currentArtist objectForKey:@"stream_url"];
@@ -848,8 +850,9 @@
          self.audioPlayer.delegate = self;
          [self.audioPlayer prepareToPlay];
          [self.audioPlayer play];
+         self.durationProgressView.hidden = NO;
          self.durationProgressView.progress = 0.0;
-         [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+         self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
      }];
 
 }

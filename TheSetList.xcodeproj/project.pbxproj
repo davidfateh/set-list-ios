@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		185A0A0F1A7E8636007F2177 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A0A0E1A7E8636007F2177 /* Constants.m */; };
 		186DDF3B1A78271100B4EF16 /* remote.gif in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3A1A78271100B4EF16 /* remote.gif */; };
 		186DDF3D1A7828FB00B4EF16 /* remote-enabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */; };
 		186DDF3F1A78297800B4EF16 /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3E1A78297800B4EF16 /* exit.png */; };
@@ -54,6 +55,8 @@
 
 /* Begin PBXFileReference section */
 		1838799C1A75810200244B3E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		185A0A0D1A7E8636007F2177 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		185A0A0E1A7E8636007F2177 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		186DDF3A1A78271100B4EF16 /* remote.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = remote.gif; sourceTree = "<group>"; };
 		186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "remote-enabled.png"; sourceTree = "<group>"; };
 		186DDF3E1A78297800B4EF16 /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
@@ -159,6 +162,8 @@
 				18EC3D081A6C68B500AFD97F /* SetList View Controller */,
 				18EC3D091A6C699400AFD97F /* SocketKeeperSingleton.h */,
 				18EC3D0A1A6C699400AFD97F /* SocketKeeperSingleton.m */,
+				185A0A0D1A7E8636007F2177 /* Constants.h */,
+				185A0A0E1A7E8636007F2177 /* Constants.m */,
 				18EC3CC91A65F64C00AFD97F /* Images.xcassets */,
 				18EC3CCB1A65F64C00AFD97F /* LaunchScreen.xib */,
 				18EC3CC01A65F64C00AFD97F /* TheSetList.xcdatamodeld */,
@@ -405,6 +410,7 @@
 				18EC3D071A6C67E200AFD97F /* SetListTableViewCell.m in Sources */,
 				18EC3D001A67413B00AFD97F /* SetListRoomViewController.m in Sources */,
 				18EC3D0B1A6C699400AFD97F /* SocketKeeperSingleton.m in Sources */,
+				185A0A0F1A7E8636007F2177 /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
