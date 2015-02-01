@@ -218,7 +218,7 @@
         self.hostCurrentArtist = [songAdded mutableCopy];
         NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
         [self setCurrentArtistFromCurrentArtist:songAddedForCurrent];
-        [self playFistSongWithCurrentArtist:songAddedForCurrent];
+        [self playSongWithCurrentArtist:songAddedForCurrent];
         [self prepareToPlayNextSongInQueue];
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
@@ -521,10 +521,11 @@
 {
     if (flag) {
         if (![self.hostQueue count]) {
+            NSLog(@"nothing in queue upon song finishing");
             [self.hostCurrentArtist removeAllObjects];
+            [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
             NSArray *argsCurrentArray = @[self.hostCurrentArtist];
             [self.socket emit:@"current_artist" args:argsCurrentArray];
-            [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
         }
         else {
             [self playNextSongInQueue];
@@ -565,7 +566,7 @@
 - (IBAction)skipButtonPressed:(UIButton *)sender
 {
     if (self.isHost) {
-        [self playNextSongInQueue];
+            [self playNextSongInQueue];
     }
     
     //if the user is the host, allow them to skip songs.
@@ -735,20 +736,9 @@
     
     NSDictionary *track = currentArtist;
     if (track) {
-        //If there is no current track, set the label to inform the user.
-        if ([track isEqual:[NSNull null]]) {
-            self.currentSongLabel.text = @"";
-            self.currentArtistLabel.text = @"";
-            self.currentArtistViewBackground.hidden = YES;
-            self.emptyQueueLabel.hidden = NO;
-            self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
-            self.currentArtistViewBackground.hidden = YES;
-            self.playPauseButton.hidden = YES;
-            self.skipButton.hidden = YES;
-        }
-        //else, display the current songs info
-        else
-        {
+        //If there is a current track, display its contents as current user
+        if ([track objectForKey:@"user"]) {
+            
             self.emptyQueueLabel.hidden = YES;
             self.currentArtistViewBackground.hidden = NO;
             self.currentSongLabel.text = [track objectForKey:@"title"];
@@ -759,7 +749,20 @@
             NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
             UIImage *cellImage = [UIImage imageWithData:imageData];
             self.currentAlbumArtImage.image = cellImage;
-            
+
+        }
+        //else, if there is no current track, clear the current artist display.
+        else
+        {
+            self.currentSongLabel.text = @"";
+            self.currentArtistLabel.text = @"";
+            self.currentArtistViewBackground.hidden = YES;
+            self.emptyQueueLabel.hidden = NO;
+            self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
+            self.currentArtistViewBackground.hidden = YES;
+            self.playPauseButton.hidden = YES;
+            self.skipButton.hidden = YES;
+
         }
         
     }
@@ -785,7 +788,14 @@
         self.hostCurrentArtist = [currentTrack mutableCopy];
         [self.hostQueue removeObjectAtIndex:0];
         [self.tableView reloadData];
-        [self playSongFromQueue];
+        
+        if (self.trackData == nil) {
+            [self playSongWithCurrentArtist:self.hostCurrentArtist];
+        }
+        else
+        {
+            [self playSongFromQueue];
+        }
         [self prepareToPlayNextSongInQueue];
         NSArray *argsWithQueue = @[self.hostQueue];
         NSArray *arrayWithTrack = @[currentTrack];
@@ -796,7 +806,7 @@
     }
 }
 
--(void)playFistSongWithCurrentArtist:(NSDictionary *)currentArtist
+-(void)playSongWithCurrentArtist:(NSDictionary *)currentArtist
 {
     NSString *streamURL = [currentArtist objectForKey:@"stream_url"];
     NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
@@ -807,9 +817,9 @@
       sendingProgressHandler:nil
              responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error)
      {
-         self.audioPlayer.delegate = self;
          NSError *playerError;
-         self.audioPlayer = [[AVAudioPlayer alloc]initWithData:self.trackData error:&playerError];
+         self.audioPlayer = [[AVAudioPlayer alloc]initWithData:responseData error:&playerError];
+         self.audioPlayer.delegate = self;
          [self.audioPlayer prepareToPlay];
          [self.audioPlayer play];
      }];
@@ -819,6 +829,7 @@
 -(void)prepareToPlayNextSongInQueue
 {
     if ([self.hostQueue count]) {
+        self.trackData = nil;
         NSDictionary *queuedTrack = [self.hostQueue objectAtIndex:0];
         NSString *streamURL = [queuedTrack objectForKey:@"stream_url"];
         NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
