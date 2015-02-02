@@ -84,9 +84,6 @@
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
-    self.timer = [[NSTimer alloc]init];
-    
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -99,7 +96,6 @@
     
     NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
     /////////HOST/////////
-    
     if ([[SocketKeeperSingleton sharedInstance]isHost]) {
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -116,8 +112,20 @@
         self.isHost = YES;
         [self viewForNoCurrentArtistAsHost];
         self.roomCodeLabel.text = roomCodeAsHost;
-        self.hostQueue = [[NSMutableArray alloc]init];
-        self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
+        
+        if (!self.hostQueue) {
+            self.hostQueue = [[NSMutableArray alloc]init];
+        }
+        if (!self.hostCurrentArtist) {
+            self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
+        }
+        
+        if (!self.player) {
+            self.player = [[AVPlayer alloc]init];
+        }
+        if (!self.timer) {
+            self.timer = [[NSTimer alloc]init];
+        }
     }
     
     ///////NOT HOST///////
@@ -503,15 +511,15 @@
     
     
     if (self.isHost) {
+        [self.selectedRows addIndex:index];
         NSArray *arrayWithTrack = @[track];
         [self.socket emit:kQueueRequest args:arrayWithTrack];
+        
     }
     //else, add song as guest
     else
     {
         //Get the index from the sender's tag.
-        NSInteger index =  ((UITableViewCell *)sender).tag;
-        NSDictionary *track = [self.searchTracks objectAtIndex:index];
         [self.selectedRows addIndex:index];
         NSArray *argsArray = @[track];
         //Send the data to the server/socket.
@@ -583,8 +591,9 @@
             NSLog(@"Remote Host Connection Succesful");
             self.isRemoteHost = YES;
             
+            __weak typeof(self) weakSelf = self;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.remotePasswordTextField resignFirstResponder];
+                [weakSelf.remotePasswordTextField resignFirstResponder];
             });
             [self.socket on:@"playing" callback:^(NSArray *args) {
                 [self.playPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
@@ -682,6 +691,14 @@
 -(void)disconnectSocketAndPopOut
 {
     //stop the music.
+    [self.player pause];
+    self.player = NULL;
+    
+    //Release objects from queue.
+    self.hostQueue = NULL;
+    self.searchTracks = NULL;
+    self.hostCurrentArtist = NULL;
+    self.currentArtist = NULL;
     
     //invalidate the timer
     [self.timer invalidate];

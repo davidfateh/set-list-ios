@@ -81,6 +81,7 @@
         __weak typeof(self) weakSelf = self;
         self.socket.onConnect = ^()
         {
+            weakSelf.isHost = NO;
             weakSelf.setListTracks = nil;
             weakSelf.currentArtist = nil;
             weakSelf.socketID = nil;
