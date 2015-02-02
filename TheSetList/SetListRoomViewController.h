@@ -55,6 +55,7 @@
 @property (strong, nonatomic) NSMutableArray *hostQueue;
 @property (strong, nonatomic) NSMutableDictionary *hostCurrentArtist;
 @property (strong, nonatomic) AVAudioPlayer *audioPlayer;
+@property (strong, nonatomic) AVPlayer *player;
 @property (strong, nonatomic) NSData *trackData;
 
 

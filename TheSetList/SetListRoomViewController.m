@@ -24,6 +24,7 @@
 @property (strong, nonatomic) SIOSocket *socket;
 @property (weak, nonatomic) NSDictionary *currentArtist;
 @property (nonatomic) BOOL isRemoteHost;
+@property (strong, nonatomic) NSTimer *timer;
 @end
 
 @implementation SetListRoomViewController
@@ -54,8 +55,7 @@
     self.searchTableView.dataSource = self;
     
     
-    //Set the tableview position and functionality for if the user is not the host. No space between header and tableView.
-    
+    //Set the tableview position and functionality for if the user is not the host. No space between header and tableViews
     self.setListTableViewHeightConst.constant = 294;
     self.setListTableViewVertConst.constant = 0;
     
@@ -84,38 +84,7 @@
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
-    
-    // Add a notifcation observer and postNotification name for updating the tracks.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveUpdateBNotification:)
-                                                 name:kQueueUpdated
-                                               object:nil];
-    
-    //Add a notifcation observer and postNotification name for updating current artist.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveUpdateCurrentArtistBNotification:)
-                                                 name:kCurrentArtistUpdate
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveOnDisconnectNotification:)
-                                                 name:kOnDisconnect
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveHostDisconnectNotification:)
-                                                 name:kHostDisconnect
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveHostSongAddedNotification:)
-                                                 name:kQueueAdd
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveUserJoinedNotification:)
-                                                 name:kUserJoined
-                                               object:nil];
+    self.timer = [[NSTimer alloc]init];
     
     
 }
@@ -123,10 +92,26 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    
+    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
+    self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
+    
     NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
     /////////HOST/////////
     
     if ([[SocketKeeperSingleton sharedInstance]isHost]) {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveHostSongAddedNotification:)
+                                                     name:kQueueAdd
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveUserJoinedNotification:)
+                                                     name:kUserJoined
+                                                   object:nil];
+        
         NSLog(@"User is the host of this room");
         self.isHost = YES;
         [self viewForNoCurrentArtistAsHost];
@@ -136,31 +121,51 @@
     }
     
     ///////NOT HOST///////
-    
-    self.socket = [[SocketKeeperSingleton sharedInstance]socket];
-    self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
-    
-    //Add some animations upon load up. Purple glow and tableview animation.
-    double delay = .4;
-    [self purpleGlowAnimationFromBottomWithDelay:&delay];
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
-    
-    //Set Current artist, if there is one.
-    NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
-    [self setCurrentArtistFromCurrentArtist:currentArtist];
-
-    
-    //Set the current tracks, if there is one. 
-     NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
-    if (setListTracks) {
-        self.tracks = setListTracks;
+    else {
+        // Add a notifcation observer and postNotification name for updating the tracks.
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveQueueUpdatedNotification:)
+                                                     name:kQueueUpdated
+                                                   object:nil];
+        
+        //Add a notifcation observer and postNotification name for updating current artist.
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveCurrentArtistUpdateNotification:)
+                                                     name:kCurrentArtistUpdate
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveOnDisconnectNotification:)
+                                                     name:kOnDisconnect
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveHostDisconnectNotification:)
+                                                     name:kHostDisconnect
+                                                   object:nil];
+        
+        
+        //Add some animations upon load up. Purple glow and tableview animation.
+        double delay = .4;
+        [self purpleGlowAnimationFromBottomWithDelay:&delay];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
+        
+        //Set Current artist, if there is one.
+        NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+        [self setCurrentArtistFromCurrentArtist:currentArtist];
+        
+        
+        //Set the current tracks, if there is one.
+        NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+        if (setListTracks) {
+            self.tracks = setListTracks;
+        }
     }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:kQueueUpdated     object:nil];
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:kCurrentArtistUpdate object:nil];
+    
 }
 
 #pragma mark - Notification Center
@@ -202,7 +207,6 @@
         
         [self.hostQueue addObject:songAdded];
         [self.tableView reloadData];
-        [self prepareToPlayNextSongInQueue];
         //Emit the added song so the client can recieve it.
         NSArray *queueArray = @[self.hostQueue];
         [self.socket emit:kQueueChange args:queueArray];
@@ -214,8 +218,7 @@
         self.hostCurrentArtist = [songAdded mutableCopy];
         NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
         [self setCurrentArtistFromCurrentArtist:songAddedForCurrent];
-        [self playSongWithCurrentArtist:songAddedForCurrent];
-        [self prepareToPlayNextSongInQueue];
+        [self playCurrentArtist:self.hostCurrentArtist];
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
         [self.socket emit:kCurrentArtistChange args:songAddedArray];
@@ -243,7 +246,7 @@
     [self disconnectSocketAndPopOut];
 }
 
--(void)receiveUpdateCurrentArtistBNotification:(NSNotification *)notification
+-(void)receiveCurrentArtistUpdateNotification:(NSNotification *)notification
 {
     
     if (!self.isHost) {
@@ -254,7 +257,7 @@
     
 }
 
-- (void)receiveUpdateBNotification:(NSNotification *)notification
+- (void)receiveQueueUpdatedNotification:(NSNotification *)notification
 {
     NSLog(@"recieved update B notification");
     if (!self.isHost) {
@@ -516,29 +519,7 @@
     }
     
 }
-#pragma mark - AVAudioPlayer Delegate
-
--(void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
-{
-    if (flag) {
-        //if there is no tracks in queue
-        if (![self.hostQueue count]) {
-            NSLog(@"nothing in queue upon song finishing");
-            [self.hostCurrentArtist removeAllObjects];
-            [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
-            NSArray *argsCurrentArray = @[self.hostCurrentArtist];
-            [self.socket emit:kCurrentArtistChange args:argsCurrentArray];
-        }
-        else {
-            [self playNextSongInQueue];
-            [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
-        };
-    }
-}
-
-
 #pragma mark - Remote Host Methods
-
 
 - (IBAction)playPauseButtonPressed:(UIButton *)sender
 {
@@ -548,10 +529,10 @@
     if (self.isHost) {
         if([currentButton isEqual:pauseButtonImage])
         {
-            [self.audioPlayer pause];
+            [self.player pause];
             [self.playPauseButton setBackgroundImage:playButtonImage forState:UIControlStateNormal];
         } else {
-            [self.audioPlayer play];
+            [self.player play];
             [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
         }
 
@@ -569,7 +550,7 @@
 {
     
     if (self.isHost) {
-        [self.audioPlayer stop];
+        self.durationProgressView.hidden = YES;
         [self playNextSongInQueue];
     }
     //if the user is the host, allow them to skip songs.
@@ -666,6 +647,25 @@
 
 #pragma mark - Helper Methods
 
+
+-(void)viewForNoCurrentArtistAsHost
+{
+    NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
+    
+    self.currentSongLabel.text = @"";
+    self.currentArtistLabel.text = @"";
+    self.durationProgressView.hidden = YES;
+    self.currentArtistViewBackground.hidden = YES;
+    self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
+    self.currentArtistViewBackground.hidden = YES;
+    self.playPauseButton.hidden = YES;
+    self.skipButton.hidden = YES;
+    self.hostCodeMessageLabel.hidden = NO;
+    self.hostRoomCodeLabel.hidden = NO;
+    self.hostRoomCodeLabel.text = roomCodeAsHost;
+    
+}
+
 //for formating the tracks durations.
 - (NSString *)timeFormatted:(int)totalSeconds
 {
@@ -681,11 +681,25 @@
 
 -(void)disconnectSocketAndPopOut
 {
-    [self.audioPlayer stop];
+    //stop the music.
+    
+    //invalidate the timer
+    [self.timer invalidate];
+    
+    //remove observers from notifications.
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kQueueUpdated     object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kCurrentArtistUpdate object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnDisconnect     object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kHostDisconnect object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kQueueAdd    object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kUserJoined object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
+    
+    //close the socket.
     [self.socket close];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"setListRoomClosed" object:nil];
+    //pop out
     [self.navigationController popToRootViewControllerAnimated:YES];
-
+    
 }
 
 -(void)exitSettingsAnimation
@@ -769,22 +783,50 @@
 
 #pragma mark - Playing Songs
 
--(void)playSongFromQueue
-{
-    NSError *playerError;
-    self.audioPlayer = [[AVAudioPlayer alloc]initWithData:self.trackData error:&playerError];
-    [self.audioPlayer prepareToPlay];
-    [self.audioPlayer play];
-    self.durationProgressView.hidden = NO;
-    self.durationProgressView.progress = 0.0;
-    [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-
+- (void)updateTime {
+    
+    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
+    float duration = CMTimeGetSeconds(self.player.currentItem.duration);
+    float current = CMTimeGetSeconds(self.player.currentTime);
+    
+    self.durationProgressView.progress = (current/duration);
+    if (self.durationProgressView.progress == 0)
+    {
+        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+    }
 }
 
+-(void)playCurrentArtist:(NSDictionary *)currentArtist
+{
+    NSString *streamString = [currentArtist objectForKey:@"stream_url"];
+    NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamString,CLIENT_ID];
+    NSURL *URLFromString = [NSURL URLWithString:urlString];
+    self.player = [[AVPlayer alloc]initWithURL:URLFromString];
+    [self.player play];
+    self.durationProgressView.hidden = NO;
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+}
+
+-(void)itemDidFinishPlaying:(NSNotification *) notification {
+    //if there is no tracks in queue
+    if (![self.hostQueue count]) {
+        NSLog(@"nothing in queue upon song finishing");
+        [self.hostCurrentArtist removeAllObjects];
+        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
+        NSArray *argsCurrentArray = @[self.hostCurrentArtist];
+        [self.socket emit:kCurrentArtistChange args:argsCurrentArray];
+    }
+    else {
+        [self playNextSongInQueue];
+        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
+    };
+}
 
 -(void)playNextSongInQueue
 {
     if ([self.hostQueue count]) {
+        [self.audioPlayer stop];
         UIImage *pausedButtonImage = [UIImage imageNamed:@"Pause"];
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
@@ -792,16 +834,13 @@
         [self.hostQueue removeObjectAtIndex:0];
         [self.tableView reloadData];
         
-        if (self.trackData == nil) {
-            [self playSongWithCurrentArtist:self.hostCurrentArtist];
-        }
-        else
-        {
-            [self playSongFromQueue];
-        }
+        [self playCurrentArtist:self.hostCurrentArtist];
+        
         [self.playPauseButton setBackgroundImage:pausedButtonImage forState:UIControlStateNormal];
-        [self prepareToPlayNextSongInQueue];
         self.audioPlayer.delegate = self;
+        self.durationProgressView.hidden = NO;
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+
         NSArray *argsWithQueue = @[self.hostQueue];
         NSArray *arrayWithTrack = @[currentTrack];
         [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
@@ -810,80 +849,5 @@
        
     }
 }
-
-- (void)updateTime {
-    
-    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
-    self.durationProgressView.progress = [self.audioPlayer currentTime] / [self.audioPlayer duration];
-    if (self.durationProgressView.progress == 0)
-    {
-        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
-    }
-    
-}
-
-
--(void)playSongWithCurrentArtist:(NSDictionary *)currentArtist
-{
-    NSString *streamURL = [currentArtist objectForKey:@"stream_url"];
-    NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
-    [SCRequest performMethod:SCRequestMethodGET
-                  onResource:[NSURL URLWithString:urlString]
-             usingParameters:nil
-                 withAccount:nil
-      sendingProgressHandler:nil
-             responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error)
-     {
-         NSError *playerError;
-         self.audioPlayer = [[AVAudioPlayer alloc]initWithData:responseData error:&playerError];
-         self.audioPlayer.delegate = self;
-         [self.audioPlayer prepareToPlay];
-         [self.audioPlayer play];
-         self.durationProgressView.hidden = NO;
-         self.durationProgressView.progress = 0.0;
-         [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-     }];
-
-}
-
--(void)prepareToPlayNextSongInQueue
-{
-    if ([self.hostQueue count]) {
-        self.trackData = nil;
-        NSDictionary *queuedTrack = [self.hostQueue objectAtIndex:0];
-        NSString *streamURL = [queuedTrack objectForKey:@"stream_url"];
-        NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamURL,CLIENT_ID];
-        [SCRequest performMethod:SCRequestMethodGET
-                      onResource:[NSURL URLWithString:urlString]
-                 usingParameters:nil
-                     withAccount:nil
-          sendingProgressHandler:nil
-                 responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error)
-         {
-             self.audioPlayer.delegate = self;
-             self.trackData = responseData;
-         }];
-    }
-  
-}
-
--(void)viewForNoCurrentArtistAsHost
-{
-    NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
-    
-    self.currentSongLabel.text = @"";
-    self.currentArtistLabel.text = @"";
-    self.durationProgressView.hidden = YES;
-    self.currentArtistViewBackground.hidden = YES;
-    self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
-    self.currentArtistViewBackground.hidden = YES;
-    self.playPauseButton.hidden = YES;
-    self.skipButton.hidden = YES;
-    self.hostCodeMessageLabel.hidden = NO;
-    self.hostRoomCodeLabel.hidden = NO;
-    self.hostRoomCodeLabel.text = roomCodeAsHost;
-
-}
-
 
 @end
