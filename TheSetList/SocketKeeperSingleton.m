@@ -32,6 +32,7 @@
     
     [SIOSocket socketWithHost:host response:^(SIOSocket *socket) {
         
+        self.socket = [[SIOSocket alloc]init];
         self.socket = socket;
         
         
@@ -45,12 +46,38 @@
             }
             else
             {
+
                 NSString *socketID = [socketIdDict objectForKey:@"socket"];
+                NSString *roomCode = [socketIdDict objectForKey:@"roomCode"];
                 self.socketID = socketID;
+                self.roomCode = roomCode;
+                NSDictionary *startDic = @{@"room" :self.roomCode};
+                NSArray *startArray = @[startDic];
+                __weak typeof(self) weakSelf = self;
+                self.socket.onReconnect = ^(NSInteger numberOfAttempts)
+                {
+                    NSLog(@"reconnect sent, with attempts %i", numberOfAttempts);
+                    [weakSelf.socket emit:@"mobile connect" args:startArray];
+                    if (numberOfAttempts == 5) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kHostDisconnect object:nil];
+                    }
+                };
+                
+                self.socket.onReconnectionAttempt = ^(NSInteger numberOfAttempts)
+                {
+                    if (numberOfAttempts == 5) {
+                        NSLog(@"%i", numberOfAttempts);
+                        
+                    }
+                    
+                };
+
                 [[NSNotificationCenter defaultCenter] postNotificationName:kInitialize object:nil];
+                
             }
            
         }];
+        
         
         //on Callback for events related to updates with the song queue.
         [self.socket on:kQueueUpdated callback:^(NSArray *args) {
@@ -87,6 +114,7 @@
             weakSelf.socketID = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:kOnConnect object:nil];
         };
+        
         
         
         ///////MOBILE HOST SOCKET METHODS////////

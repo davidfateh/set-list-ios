@@ -70,6 +70,8 @@
     //Set the number of the namespace/roomCode. Sent from creation VC.
     self.roomCodeLabel.text = self.roomCode;
     
+    //Set the UUID for the user
+    self.UUIDString = [[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"];
     
     //Add a blur effect view in order to blur the background upon opening the search view.
     UIVisualEffect *blurEffect;
@@ -120,16 +122,11 @@
             self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
         }
         
-        if (!self.player) {
-            self.player = [[AVPlayer alloc]init];
-        }
-        if (!self.timer) {
-            self.timer = [[NSTimer alloc]init];
-        }
     }
     
     ///////NOT HOST///////
     else {
+        
         // Add a notifcation observer and postNotification name for updating the tracks.
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveQueueUpdatedNotification:)
@@ -150,6 +147,11 @@
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveHostDisconnectNotification:)
                                                      name:kHostDisconnect
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveInitializeNotification:)
+                                                     name:kInitialize
                                                    object:nil];
         
         
@@ -178,6 +180,10 @@
 
 #pragma mark - Notification Center
 
+-(void)receiveInitializeNotification:(NSNotification *)notificaiton
+{
+    NSLog(@"reconnected");
+}
 
 -(void)receiveUserJoinedNotification:(NSNotification *)notification
 {
@@ -234,6 +240,8 @@
         //Unhide host capabilities
         self.playPauseButton.hidden = NO;
         self.skipButton.hidden = NO;
+        self.skipButtonPressed.hidden = NO;
+        self.playButtonPressed.hidden = NO;
         [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
         self.setListTableViewVertConst.constant = 0;
         self.setListTableViewHeightConst.constant = 264;
@@ -251,7 +259,6 @@
 -(void)receiveOnDisconnectNotification:(NSNotification *)notification
 {
     NSLog(@"onDisconnect notification fired");
-    [self disconnectSocketAndPopOut];
 }
 
 -(void)receiveCurrentArtistUpdateNotification:(NSNotification *)notification
@@ -288,14 +295,6 @@
         if (self.isHost) {
             
             NSDictionary *track = [self.hostQueue objectAtIndex:indexPath.row];
-            
-            if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
-                cell.userSelectedSongImageView.hidden = NO;
-            }
-            else
-            {
-                cell.userSelectedSongImageView.hidden = YES;
-            }
             NSString *songTitle = [track objectForKey:@"title"];
             NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
             cell.artistLabel.text = artist;
@@ -307,7 +306,7 @@
         {
             NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
             
-            if ([[track objectForKey:@"socket"]isEqualToString:self.socketID]) {
+            if ([[track objectForKey:@"UUID"]isEqualToString:self.UUIDString]) {
                 cell.userSelectedSongImageView.hidden = NO;
             }
             else
@@ -508,23 +507,11 @@
 {
     NSInteger index =  ((UITableViewCell *)sender).tag;
     NSMutableDictionary *track = [self.searchTracks objectAtIndex:index];
-    
-    
-    if (self.isHost) {
-        [self.selectedRows addIndex:index];
-        NSArray *arrayWithTrack = @[track];
-        [self.socket emit:kQueueRequest args:arrayWithTrack];
-        
-    }
-    //else, add song as guest
-    else
-    {
-        //Get the index from the sender's tag.
-        [self.selectedRows addIndex:index];
-        NSArray *argsArray = @[track];
-        //Send the data to the server/socket.
-        [self.socket emit:kQueueRequest args:argsArray];
-    }
+    [self.selectedRows addIndex:index];
+    NSString *UUIDString = self.UUIDString;
+    NSDictionary *simpleTrack = @{@"title" : track[@"title"], @"user" :track[@"user"], @"stream_url": track[@"stream_url"], @"artwork_url" : track[@"artwork_url"], @"UUID" : UUIDString};
+    NSArray *arrayWithTrack = @[simpleTrack];
+    [self.socket emit:kQueueRequest args:arrayWithTrack];
     
 }
 #pragma mark - Remote Host Methods
@@ -604,6 +591,8 @@
             
             self.playPauseButton.hidden = NO;
             self.skipButton.hidden = NO;
+            self.playButtonPressed.hidden = NO;
+            self.skipButtonPressed.hidden = NO;
             [self exitSettingsAnimation];
             self.remotePasswordTextField.hidden = YES;
             self.remotePasswordInfoLabel.text = @"Remote connected";
@@ -669,6 +658,8 @@
     self.currentArtistViewBackground.hidden = YES;
     self.playPauseButton.hidden = YES;
     self.skipButton.hidden = YES;
+    self.playButtonPressed.hidden = YES;
+    self.skipButtonPressed.hidden = YES;
     self.hostCodeMessageLabel.hidden = NO;
     self.hostRoomCodeLabel.hidden = NO;
     self.hostRoomCodeLabel.text = roomCodeAsHost;
@@ -688,17 +679,19 @@
         return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
 }
 
+
+
 -(void)disconnectSocketAndPopOut
 {
     //stop the music.
     [self.player pause];
-    self.player = NULL;
+    self.player = nil;
     
     //Release objects from queue.
-    self.hostQueue = NULL;
-    self.searchTracks = NULL;
-    self.hostCurrentArtist = NULL;
-    self.currentArtist = NULL;
+    self.hostQueue = nil;
+    self.searchTracks = nil;
+    self.hostCurrentArtist = nil;
+    self.currentArtist = nil;
     
     //invalidate the timer
     [self.timer invalidate];
@@ -865,6 +858,12 @@
         [self.socket emit:kQueueChange args:argsWithQueue];
        
     }
+}
+
+
+-(void)didReceiveMemoryWarning
+{
+    NSLog(@"Memory warning!");
 }
 
 @end

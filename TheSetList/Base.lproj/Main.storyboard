@@ -197,10 +197,10 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk7-qf-x4X">
-                                        <rect key="frame" x="106" y="21" width="108" height="30"/>
+                                        <rect key="frame" x="90" y="15" width="138" height="45"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="GRO-kH-omi"/>
-                                            <constraint firstAttribute="width" constant="108" id="upR-87-a4B"/>
+                                            <constraint firstAttribute="height" constant="45" id="GRO-kH-omi"/>
+                                            <constraint firstAttribute="width" constant="138" id="upR-87-a4B"/>
                                         </constraints>
                                         <state key="normal">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -301,6 +301,32 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kmt-KZ-vGe" userLabel="playButtonPressed">
+                                        <rect key="frame" x="109" y="256" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="9MT-Za-hdt"/>
+                                            <constraint firstAttribute="width" constant="44" id="R72-5S-gWS"/>
+                                        </constraints>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="playPauseButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="dKy-zK-74T"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uho-uL-8JY" userLabel="SkipButtonPressed">
+                                        <rect key="frame" x="166" y="256" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="1YR-lp-gGS"/>
+                                            <constraint firstAttribute="width" constant="44" id="hnL-mh-aro"/>
+                                        </constraints>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="lXC-8M-3uH"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -309,7 +335,8 @@
                                     <constraint firstAttribute="width" constant="320" id="4rv-Vl-FcV"/>
                                     <constraint firstItem="4CT-dz-BcD" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="170" id="Fgk-Lp-9ll"/>
                                     <constraint firstItem="1xR-U8-lzH" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="180" id="GPW-6p-51y"/>
-                                    <constraint firstItem="bk7-qf-x4X" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="106" id="M8z-NR-36B"/>
+                                    <constraint firstItem="kmt-KZ-vGe" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="109" id="Lct-Rx-weS"/>
+                                    <constraint firstItem="bk7-qf-x4X" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="90" id="M8z-NR-36B"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="216" id="MOk-54-a4e"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="18" id="Qfr-po-DDI"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="102" id="Syl-JA-PNr"/>
@@ -317,16 +344,19 @@
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="XBF-1d-B9r"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="21" id="XzW-i3-fjz"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="60" id="YQn-Xy-DpS"/>
-                                    <constraint firstItem="bk7-qf-x4X" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="21" id="a8O-g2-7Ho"/>
+                                    <constraint firstItem="bk7-qf-x4X" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="15" id="a8O-g2-7Ho"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="29" id="aSm-qz-G2J"/>
                                     <constraint firstItem="4CT-dz-BcD" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="82" id="fuB-eO-EBI"/>
                                     <constraint firstItem="Lwh-Rq-NrE" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="250" id="iT6-xD-xVU"/>
                                     <constraint firstItem="KH9-zn-Exh" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="125" id="ibt-rV-ikU"/>
                                     <constraint firstItem="KH9-zn-Exh" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="jUo-Zj-PrM"/>
+                                    <constraint firstItem="kmt-KZ-vGe" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="256" id="jeu-WS-L46"/>
                                     <constraint firstAttribute="bottom" secondItem="ddj-u0-EjL" secondAttribute="bottom" id="k5n-rC-AmB"/>
                                     <constraint firstItem="1xR-U8-lzH" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="270" id="ky5-46-RNm"/>
                                     <constraint firstItem="Lwh-Rq-NrE" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="lXP-F6-X0R"/>
+                                    <constraint firstItem="Uho-uL-8JY" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="256" id="lf8-PD-f8p"/>
                                     <constraint firstItem="ddj-u0-EjL" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="9" id="qZL-uY-RgK"/>
+                                    <constraint firstItem="Uho-uL-8JY" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="166" id="sez-qc-rJ9"/>
                                     <constraint firstAttribute="height" constant="568" id="xKx-cB-yz7"/>
                                 </constraints>
                             </view>
@@ -593,10 +623,10 @@
                                         <color key="barTintColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <textInputTraits key="textInputTraits" keyboardAppearance="alert"/>
                                     </searchBar>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="umd-Uh-BeV">
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="umd-Uh-BeV">
                                         <rect key="frame" x="148" y="7" width="25" height="25"/>
                                         <color key="tintColor" name="alternateSelectedControlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <state key="normal" backgroundImage="plusButton">
+                                        <state key="normal" image="plusButton">
                                             <color key="titleColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -605,13 +635,28 @@
                                             <action selector="displaySearchViewButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="Uz9-i3-IHe"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jww-da-EQu">
+                                        <rect key="frame" x="128" y="0.0" width="64" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="64" id="9TI-Sf-QXb"/>
+                                            <constraint firstAttribute="height" constant="44" id="MCr-d3-WFr"/>
+                                        </constraints>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="displaySearchViewButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="KZi-8a-Eg2"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="deviceRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="568" id="3Vf-dl-fpQ"/>
+                                    <constraint firstItem="Jww-da-EQu" firstAttribute="top" secondItem="YXq-UI-Cxq" secondAttribute="top" id="F1F-iY-1yZ"/>
                                     <constraint firstAttribute="trailing" secondItem="8Xb-Vu-eG3" secondAttribute="trailing" id="LfV-Xd-7Bo"/>
                                     <constraint firstAttribute="width" constant="320" id="NLm-da-7cL"/>
                                     <constraint firstItem="8Xb-Vu-eG3" firstAttribute="top" secondItem="YXq-UI-Cxq" secondAttribute="top" constant="-149" id="SNS-uk-ZJM"/>
+                                    <constraint firstItem="Jww-da-EQu" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" constant="128" id="tlb-kj-cK7"/>
                                     <constraint firstItem="8Xb-Vu-eG3" firstAttribute="leading" secondItem="YXq-UI-Cxq" secondAttribute="leading" id="yXG-ym-RjP"/>
                                 </constraints>
                             </view>
@@ -638,6 +683,7 @@
                         <outlet property="hostRoomCodeLabel" destination="4CT-dz-BcD" id="cah-qa-9aO"/>
                         <outlet property="leaveRoomButton" destination="HWh-Mc-EGE" id="9Mo-LF-V1N"/>
                         <outlet property="leaveRoomButtonVertConst" destination="MsF-pd-Jl8" id="e8F-xq-ibI"/>
+                        <outlet property="playButtonPressed" destination="kmt-KZ-vGe" id="09E-El-Z9r"/>
                         <outlet property="playPauseButton" destination="KH9-zn-Exh" id="tKz-rJ-e0h"/>
                         <outlet property="plusButton" destination="umd-Uh-BeV" id="yUh-rI-34n"/>
                         <outlet property="purpleGlowImageView" destination="8Xb-Vu-eG3" id="pRg-S4-ZFL"/>
@@ -660,6 +706,7 @@
                         <outlet property="setListView" destination="6aW-cm-ATO" id="XdU-94-VpJ"/>
                         <outlet property="settingsView" destination="wWG-NW-vCz" id="wV8-bX-O4R"/>
                         <outlet property="skipButton" destination="1xR-U8-lzH" id="a8a-mR-H6D"/>
+                        <outlet property="skipButtonPressed" destination="Uho-uL-8JY" id="FVr-9F-5Yy"/>
                         <outlet property="tableView" destination="ddj-u0-EjL" id="p1w-Cx-Jlc"/>
                         <outlet property="whiteBorderView1" destination="gnn-PE-c1r" id="GYT-xB-JdA"/>
                         <outlet property="whiteBorderView2" destination="HgJ-rE-qhq" id="Ibr-cE-oKW"/>

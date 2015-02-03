@@ -25,6 +25,7 @@
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteImageVertConst;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;
+@property (strong, nonatomic) NSString *UUIDString; 
 
 //SEARCH VIEW properties and methods
 @property (strong, nonatomic) IBOutlet UIView *searchBackgroundView;
@@ -57,6 +58,8 @@
 @property (strong, nonatomic) AVAudioPlayer *audioPlayer;
 @property (strong, nonatomic) AVPlayer *player;
 @property (strong, nonatomic) NSData *trackData;
+@property (strong, nonatomic) IBOutlet UIButton *playButtonPressed;
+@property (strong, nonatomic) IBOutlet UIButton *skipButtonPressed;
 
 
 //SETTINGS VIEW properties and methods

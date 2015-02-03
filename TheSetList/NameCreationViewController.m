@@ -15,7 +15,7 @@
 #define HOST_URL @"http://192.168.1.4:5000/"
 
 @interface NameCreationViewController ()
-@property (weak, nonatomic) SIOSocket *socket;
+@property (strong, nonatomic) SIOSocket *socket;
 @property (nonatomic) BOOL isHost;
 @end
 
@@ -41,22 +41,6 @@
         self.roomCodeTextField.alpha = 1.0;
     }];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveInitializeNotification:)
-                                                 name:kInitialize
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveOnConnectNotification:)
-                                                 name:kOnConnect
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveOnHostRoomConnectNotification:)
-                                                 name:kOnHostRoomConnect
-                                               object:nil];
-
-
         
         UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
         numberToolbar.barStyle = UIBarStyleBlackTranslucent;
@@ -73,6 +57,21 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveInitializeNotification:)
+                                                 name:kInitialize
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveOnConnectNotification:)
+                                                 name:kOnConnect
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveOnHostRoomConnectNotification:)
+                                                 name:kOnHostRoomConnect
+                                               object:nil];
     
     self.roomCodeTextField.text = nil;
     SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
@@ -100,6 +99,10 @@
 
 -(void)receiveOnHostRoomConnectNotification:(NSNotification *)notificaiton
 {
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kInitialize     object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnHostRoomConnect object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnConnect object:nil];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
     });
@@ -113,6 +116,10 @@
 
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kInitialize     object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnHostRoomConnect object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnConnect object:nil];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
 
