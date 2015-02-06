@@ -314,8 +314,6 @@
                 cell.userSelectedSongImageView.hidden = YES;
             }
             
-            
-            
             NSString *songTitle = [track objectForKey:@"title"];
             NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
             
@@ -335,7 +333,7 @@
             cell.searchSongTitle.text = [track objectForKey:@"title"];
             
             NSString *artistName = [[track objectForKey:@"user"]objectForKey:@"username"];
-            [cell.artistButton setTitle:artistName forState:UIControlStateNormal];
+            cell.searchArtist.text = artistName;
             
             //Format the tracks duration into a string and set the label.
             int duration = [[track objectForKey:@"duration"]intValue];
@@ -361,10 +359,10 @@
             UIImage *plusImage  = [UIImage imageNamed:@"plusButton"];
             
             if ([self.selectedRows containsIndex:indexPath.row]) {
-                [cell.plusButton setBackgroundImage:checkImage forState:UIControlStateNormal];
+                [cell.addSongPlusImageView setImage:checkImage];
             }
             else {
-                [cell.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
+                [cell.addSongPlusImageView setImage:plusImage];
             }
             cell.tag = indexPath.row;
         }
@@ -545,7 +543,10 @@
 {
     
     if (self.isHost) {
-        self.durationProgressView.hidden = YES;
+        if (!self.hostQueue)
+        {
+            self.durationProgressView.hidden = NO;
+        }else self.durationProgressView.hidden = YES;
         [self playNextSongInQueue];
     }
     //if the user is the host, allow them to skip songs.
@@ -778,15 +779,16 @@
         }
         else
         {
-        self.currentArtistViewBackground.hidden = NO;
-        self.currentSongLabel.text = [track objectForKey:@"title"];
-        self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-        //If there is no picture available. Adds a Custom picture.
-        //Init the cell image with the track's artwork.
-        NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
-        NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
-        UIImage *cellImage = [UIImage imageWithData:imageData];
-        self.currentAlbumArtImage.image = cellImage;
+            self.currentArtistViewBackground.hidden = NO;
+            self.hostCodeMessageLabel.hidden = YES;
+            self.currentSongLabel.text = [track objectForKey:@"title"];
+            self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            //If there is no picture available. Adds a Custom picture.
+            //Init the cell image with the track's artwork.
+            NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
+            NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
+            UIImage *cellImage = [UIImage imageWithData:imageData];
+            self.currentAlbumArtImage.image = cellImage;
         }
     }
 }
@@ -819,7 +821,7 @@
 }
 
 -(void)itemDidFinishPlaying:(NSNotification *) notification {
-    //if there is no tracks in queue
+    //if there are no tracks in queue
     if (![self.hostQueue count]) {
         NSLog(@"nothing in queue upon song finishing");
         [self.hostCurrentArtist removeAllObjects];

@@ -27,11 +27,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *searchDurationLabel;
 @property (strong, nonatomic) IBOutlet UIButton *plusButton;
 @property (strong, nonatomic) NSMutableDictionary *track;
-@property (strong, nonatomic) IBOutlet UIButton *artistButton;
-
-
-- (IBAction)artistButtonPressed:(UIButton *)sender;
-
+@property (strong, nonatomic) IBOutlet UIImageView *addSongPlusImageView;
 - (IBAction)addSongButtonPressed:(UIButton *)sender;
 
 
