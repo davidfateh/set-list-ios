@@ -13,6 +13,8 @@
 #import "RadialGradiantView.h"
 #import "SetListTableViewCell.h"
 #import <SCAPI.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
@@ -344,16 +346,14 @@
             //If there is no picture available. Adds a Custom picture.
             if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
                 
-                cell.searchAlbumArtImage.image = [UIImage imageNamed:@"SoundCloudLogo"];
+                cell.searchAlbumArtImage.image = [UIImage imageNamed:@"noAlbumArt.png"];
                 
             }
             else{
-                //Init the cell image with the track's artwork.
-                UIImage *cellImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[track objectForKey:@"artwork_url"]]]];
-                cell.searchAlbumArtImage.image = cellImage;
+                NSURL *artworkURL = [NSURL URLWithString:track[@"artwork_url"] ];
+                [cell.searchAlbumArtImage sd_setImageWithURL:artworkURL placeholderImage:[UIImage imageNamed:@"noAlbumArt.png"]];
                 
             }
-            
             //if the row is selected make sure the check mark is the background image. 
             UIImage *checkImage = [UIImage imageNamed:@"check.png"];
             UIImage *plusImage  = [UIImage imageNamed:@"plusButton"];
@@ -397,9 +397,8 @@
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
-    
+    self.trackArtworkURLs = nil;
     NSString *search = [self.searchBar.text stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
-    
     [SCRequest performMethod:SCRequestMethodGET
                   onResource:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.soundcloud.com/tracks?client_id=%@&q=%@&format=json",CLIENT_ID, search]]
              usingParameters:nil

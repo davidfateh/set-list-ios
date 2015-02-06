@@ -16,6 +16,8 @@
 		18956B901A770B8E00C388B5 /* dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8F1A770B8E00C388B5 /* dot.png */; };
 		18956B921A7734C200C388B5 /* remote.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B911A7734C200C388B5 /* remote.png */; };
 		18A897561A7C0CAC006C5ACF /* purple-grad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A897551A7C0CAC006C5ACF /* purple-grad.png */; };
+		18C903C21A85424000C65489 /* noAlbumArt.png in Resources */ = {isa = PBXBuildFile; fileRef = 18C903C11A85424000C65489 /* noAlbumArt.png */; };
+		18C903C41A85515C00C65489 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C903C31A85515C00C65489 /* ImageIO.framework */; };
 		18EC3CBC1A65F64B00AFD97F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBB1A65F64B00AFD97F /* main.m */; };
 		18EC3CBF1A65F64B00AFD97F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBE1A65F64B00AFD97F /* AppDelegate.m */; };
 		18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CC01A65F64C00AFD97F /* TheSetList.xcdatamodeld */; };
@@ -65,6 +67,8 @@
 		18956B8F1A770B8E00C388B5 /* dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot.png; sourceTree = "<group>"; };
 		18956B911A7734C200C388B5 /* remote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remote.png; sourceTree = "<group>"; };
 		18A897551A7C0CAC006C5ACF /* purple-grad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-grad.png"; sourceTree = "<group>"; };
+		18C903C11A85424000C65489 /* noAlbumArt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noAlbumArt.png; sourceTree = "<group>"; };
+		18C903C31A85515C00C65489 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		18EC3CB61A65F64B00AFD97F /* TheSetList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSetList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC3CBA1A65F64B00AFD97F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18EC3CBB1A65F64B00AFD97F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -108,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18C903C41A85515C00C65489 /* ImageIO.framework in Frameworks */,
 				18EC3D121A6CC59200AFD97F /* CoreImage.framework in Frameworks */,
 				18EC3D0D1A6CAC6500AFD97F /* QuartzCore.framework in Frameworks */,
 				18EC3CEB1A65F84C00AFD97F /* CoreFoundation.framework in Frameworks */,
@@ -175,6 +180,7 @@
 			children = (
 				185A0A101A7EA2F8007F2177 /* Constants.h */,
 				185A0A111A7EA2F8007F2177 /* Constants.m */,
+				18C903C11A85424000C65489 /* noAlbumArt.png */,
 				18A897551A7C0CAC006C5ACF /* purple-grad.png */,
 				186DDF3E1A78297800B4EF16 /* exit.png */,
 				186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */,
@@ -213,6 +219,7 @@
 		18EC3CEC1A65F89100AFD97F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18C903C31A85515C00C65489 /* ImageIO.framework */,
 				1838799C1A75810200244B3E /* Accelerate.framework */,
 				18EC3D111A6CC59200AFD97F /* CoreImage.framework */,
 				18EC3D0C1A6CAC6500AFD97F /* QuartzCore.framework */,
@@ -349,6 +356,7 @@
 				18EC3CF61A672C4100AFD97F /* set-list_Load up.png in Resources */,
 				18EC3CCA1A65F64C00AFD97F /* Images.xcassets in Resources */,
 				18956B901A770B8E00C388B5 /* dot.png in Resources */,
+				18C903C21A85424000C65489 /* noAlbumArt.png in Resources */,
 				186DDF3F1A78297800B4EF16 /* exit.png in Resources */,
 				186DDF3D1A7828FB00B4EF16 /* remote-enabled.png in Resources */,
 				18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */,
@@ -538,6 +546,20 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TheSetList/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(TARGET_BUILD_DIR)/libPods.a",
+					"-framework",
+					CoreLocation,
+					"-framework",
+					CoreText,
+					"-framework",
+					ImageIO,
+					"-framework",
+					MapKit,
+					"-framework",
+					Security,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -553,6 +575,20 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TheSetList/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(TARGET_BUILD_DIR)/libPods.a",
+					"-framework",
+					CoreLocation,
+					"-framework",
+					CoreText,
+					"-framework",
+					ImageIO,
+					"-framework",
+					MapKit,
+					"-framework",
+					Security,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;

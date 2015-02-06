@@ -37,6 +37,7 @@
 @property (strong, nonatomic) IBOutlet UIView *searchView;
 @property (strong, nonatomic) IBOutlet UIImageView *purpleGlowImageView;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *purpleGlowVertConst;
+@property (strong, nonatomic) NSArray *trackArtworkURLs;
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender;
 
 
