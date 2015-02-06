@@ -785,9 +785,7 @@
             //If there is no picture available. Adds a Custom picture.
             //Init the cell image with the track's artwork.
             NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
-            NSData *imageData = [NSData dataWithContentsOfURL:artworkURL];
-            UIImage *cellImage = [UIImage imageWithData:imageData];
-            self.currentAlbumArtImage.image = cellImage;
+            [self.currentAlbumArtImage sd_setImageWithURL:artworkURL];
         }
     }
 }
@@ -812,6 +810,7 @@
     NSString *streamString = [currentArtist objectForKey:@"stream_url"];
     NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamString,CLIENT_ID];
     NSURL *URLFromString = [NSURL URLWithString:urlString];
+    self.player = nil;
     self.player = [[AVPlayer alloc]initWithURL:URLFromString];
     [self.player play];
     self.durationProgressView.hidden = NO;
