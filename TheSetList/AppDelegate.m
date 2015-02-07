@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <SCAPI.h>
 #import "SocketKeeperSingleton.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface AppDelegate ()
 
@@ -35,6 +36,11 @@
         NSString *uuid = [[NSUUID UUID] UUIDString];
         [[NSUserDefaults standardUserDefaults]setObject:uuid forKey:@"UUID"];
     }
+    
+    NSError *sessionError = nil;
+    NSError *activationError = nil;
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error:&sessionError];
+    [[AVAudioSession sharedInstance] setActive: YES error: &activationError];
     
     return YES;
 }

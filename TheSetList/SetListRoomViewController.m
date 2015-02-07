@@ -14,7 +14,9 @@
 #import "SetListTableViewCell.h"
 #import <SCAPI.h>
 #import <SDWebImage/UIImageView+WebCache.h>
-
+#import <MediaPlayer/MPMediaItem.h>
+#import <MediaPlayer/MPNowPlayingInfoCenter.h>
+#import "AsyncImageView.h"
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
@@ -24,9 +26,10 @@
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) SIOSocket *socket;
-@property (weak, nonatomic) NSDictionary *currentArtist;
+@property (strong, nonatomic) NSDictionary *currentArtist;
 @property (nonatomic) BOOL isRemoteHost;
 @property (strong, nonatomic) NSTimer *timer;
+@property (strong, nonatomic) NSMutableDictionary *dicForInfoCenter;
 @end
 
 @implementation SetListRoomViewController
@@ -66,6 +69,7 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
+    
     self.tableView.layoutMargins = UIEdgeInsetsZero;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -74,6 +78,11 @@
     
     //Set the UUID for the user
     self.UUIDString = [[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"];
+    
+    self.searchTracks = [[NSMutableArray alloc]init];
+    self.tracks = [[NSArray alloc]init];
+    self.currentArtist = [[NSMutableDictionary alloc]init];
+    self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
     
     //Add a blur effect view in order to blur the background upon opening the search view.
     UIVisualEffect *blurEffect;
@@ -112,6 +121,18 @@
                                                      name:kUserJoined
                                                    object:nil];
         
+        NSError *myErr;
+        // Initialize the AVAudioSession here.
+        if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&myErr]) {
+            // Handle the error here.
+            NSLog(@"Audio Session error %@, %@", myErr, [myErr userInfo]);
+        }
+        else{
+            // Since there were no errors initializing the session, we'll allow begin receiving remote control events
+            [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+        }
+        
+        self.dicForInfoCenter = [[NSMutableDictionary alloc]init];
         NSLog(@"User is the host of this room");
         self.isHost = YES;
         [self viewForNoCurrentArtistAsHost];
@@ -761,9 +782,7 @@
 
 -(void)setCurrentArtistFromCurrentArtist:(NSDictionary *)currentArtist {
     
-    
     NSDictionary *track = currentArtist;
-    
     //If there is no current track, clear the current artist display.
     if (track == NULL) {
         
@@ -810,18 +829,40 @@
     NSString *streamString = [currentArtist objectForKey:@"stream_url"];
     NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamString,CLIENT_ID];
     NSURL *URLFromString = [NSURL URLWithString:urlString];
-    self.player = nil;
-    self.player = [[AVPlayer alloc]initWithURL:URLFromString];
+    self.player = [AVPlayer playerWithURL:URLFromString];
     [self.player play];
     self.durationProgressView.hidden = NO;
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+    
+    Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
+    
+    if (playingInfoCenter) {
+        NSURL *artworkURL = [NSURL URLWithString:currentArtist[@"highRes"]];
+        [self.dicForInfoCenter removeAllObjects];
+        [self.dicForInfoCenter setObject:currentArtist[@"title"] forKey:MPMediaItemPropertyTitle];
+        [self.dicForInfoCenter setObject:currentArtist[@"user"][@"username"] forKey:MPMediaItemPropertyArtist];
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:artworkURL options:kNilOptions
+    progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        //size;
+    } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc]initWithImage:image];
+        [self.dicForInfoCenter setObject:albumArt forKey:MPMediaItemPropertyArtwork];
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.dicForInfoCenter];
+    }];
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.dicForInfoCenter];
+        NSLog(@"playingInfoCenter, and info set");
+        
+    }
+    
 }
+
 
 -(void)itemDidFinishPlaying:(NSNotification *) notification {
     //if there are no tracks in queue
     if (![self.hostQueue count]) {
         NSLog(@"nothing in queue upon song finishing");
+        [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
         [self.hostCurrentArtist removeAllObjects];
         [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
         NSArray *argsCurrentArray = @[self.hostCurrentArtist];
@@ -836,7 +877,8 @@
 -(void)playNextSongInQueue
 {
     if ([self.hostQueue count]) {
-        [self.audioPlayer stop];
+        [self.timer invalidate];
+        [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
         UIImage *pausedButtonImage = [UIImage imageNamed:@"Pause"];
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
@@ -847,9 +889,8 @@
         [self playCurrentArtist:self.hostCurrentArtist];
         
         [self.playPauseButton setBackgroundImage:pausedButtonImage forState:UIControlStateNormal];
-        self.audioPlayer.delegate = self;
         self.durationProgressView.hidden = NO;
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
 
         NSArray *argsWithQueue = @[self.hostQueue];
         NSArray *arrayWithTrack = @[currentTrack];
