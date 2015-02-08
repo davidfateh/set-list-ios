@@ -37,10 +37,7 @@
         [[NSUserDefaults standardUserDefaults]setObject:uuid forKey:@"UUID"];
     }
     
-    NSError *sessionError = nil;
-    NSError *activationError = nil;
-    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error:&sessionError];
-    [[AVAudioSession sharedInstance] setActive: YES error: &activationError];
+    [SocketKeeperSingleton sharedInstance];
     
     return YES;
 }

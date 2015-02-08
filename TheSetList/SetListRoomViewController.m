@@ -16,6 +16,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <MediaPlayer/MPMediaItem.h>
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
+#import <MediaPlayer/MPMediaQuery.h>
 #import "AsyncImageView.h"
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
@@ -121,17 +122,6 @@
                                                      name:kUserJoined
                                                    object:nil];
         
-        NSError *myErr;
-        // Initialize the AVAudioSession here.
-        if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&myErr]) {
-            // Handle the error here.
-            NSLog(@"Audio Session error %@, %@", myErr, [myErr userInfo]);
-        }
-        else{
-            // Since there were no errors initializing the session, we'll allow begin receiving remote control events
-            [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-        }
-        
         self.dicForInfoCenter = [[NSMutableDictionary alloc]init];
         NSLog(@"User is the host of this room");
         self.isHost = YES;
@@ -177,6 +167,11 @@
                                                      name:kInitialize
                                                    object:nil];
         
+        if (!self.player)
+        {
+            self.player = [[AVPlayer alloc]init];
+            self.player.allowsExternalPlayback = NO;
+        }
         
         //Add some animations upon load up. Purple glow and tableview animation.
         double delay = .4;
@@ -195,10 +190,30 @@
         }
     }
 }
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    if (self.isHost){
+        NSError *sessionError = nil;
+        NSError *activationError = nil;
+        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error:&sessionError];
+        [[AVAudioSession sharedInstance] setActive: YES error: &activationError];
+        [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+        [self becomeFirstResponder];
+        NSLog(@"reciving remote control events and responder set");
+    }
+}
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    
+    [super viewWillDisappear:YES];
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+    [self resignFirstResponder];
+
+}
+-(BOOL)canBecomeFirstResponder
+{
+    return YES;
 }
 
 #pragma mark - Notification Center
@@ -822,6 +837,7 @@
     {
         [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
     }
+    
 }
 
 -(void)playCurrentArtist:(NSDictionary *)currentArtist
@@ -830,6 +846,7 @@
     NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamString,CLIENT_ID];
     NSURL *URLFromString = [NSURL URLWithString:urlString];
     self.player = [AVPlayer playerWithURL:URLFromString];
+    self.player.allowsExternalPlayback = NO;
     [self.player play];
     self.durationProgressView.hidden = NO;
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
@@ -838,10 +855,15 @@
     Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
     
     if (playingInfoCenter) {
+        float playerDuration = CMTimeGetSeconds(self.player.currentItem.duration);
+        float playerCurrent = CMTimeGetSeconds(self.player.currentTime);
         NSURL *artworkURL = [NSURL URLWithString:currentArtist[@"highRes"]];
         [self.dicForInfoCenter removeAllObjects];
         [self.dicForInfoCenter setObject:currentArtist[@"title"] forKey:MPMediaItemPropertyTitle];
         [self.dicForInfoCenter setObject:currentArtist[@"user"][@"username"] forKey:MPMediaItemPropertyArtist];
+        [self.dicForInfoCenter setObject:[NSNumber numberWithFloat:playerDuration] forKey:MPMediaItemPropertyPlaybackDuration];
+        [self.dicForInfoCenter setObject:[NSNumber numberWithFloat:playerCurrent] forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+        [self.dicForInfoCenter setObject:[NSNumber numberWithFloat:1.0f] forKey:MPNowPlayingInfoPropertyPlaybackRate];
         [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:artworkURL options:kNilOptions
     progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         //size;
@@ -851,10 +873,32 @@
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.dicForInfoCenter];
     }];
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.dicForInfoCenter];
-        NSLog(@"playingInfoCenter, and info set");
         
     }
     
+}
+
+-(void)remoteControlReceivedWithEvent:(UIEvent *)event
+{
+    if (event.type == UIEventTypeRemoteControl) {
+        
+        if (event.type == UIEventTypeRemoteControl)
+        {
+            if (event.subtype == UIEventSubtypeRemoteControlPlay)
+            {
+                [self playPauseButtonPressed:nil];
+            }
+            else if (event.subtype == UIEventSubtypeRemoteControlPause)
+            {
+                [self playPauseButtonPressed:nil];
+            }
+            else if (event.subtype == UIEventSubtypeRemoteControlNextTrack)
+            {
+                [self skipButtonPressed:nil];
+            }
+            
+        }
+    }
 }
 
 
