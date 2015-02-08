@@ -7,6 +7,7 @@
 //
 
 #import "SocketKeeperSingleton.h"
+#import "Constants.h"
 
 @implementation SocketKeeperSingleton
 
@@ -31,12 +32,13 @@
     
     [SIOSocket socketWithHost:host response:^(SIOSocket *socket) {
         
+        self.socket = [[SIOSocket alloc]init];
         self.socket = socket;
         
         
         //Send a message to RoomCode controler to notify the reciever that the user has enetered a correct code and can enter the specific setList room.
-        [self.socket on:@"initialize" callback:^(NSArray *args) {
-            
+        [self.socket on:kInitialize callback:^(NSArray *args) {
+            NSLog(@"initialize emmited from socket");
             NSDictionary *socketIdDict = [args objectAtIndex:0];
             if ([socketIdDict objectForKey:@"error"])
             {
@@ -44,49 +46,103 @@
             }
             else
             {
+
                 NSString *socketID = [socketIdDict objectForKey:@"socket"];
+                NSString *roomCode = [socketIdDict objectForKey:@"roomCode"];
                 self.socketID = socketID;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"initialize" object:nil];
+                self.roomCode = roomCode;
+                NSDictionary *startDic = @{@"room" :self.roomCode};
+                NSArray *startArray = @[startDic];
+                __weak typeof(self) weakSelf = self;
+                self.socket.onReconnect = ^(NSInteger numberOfAttempts)
+                {
+                    NSLog(@"reconnect sent, with attempts %i", numberOfAttempts);
+                    [weakSelf.socket emit:@"mobile connect" args:startArray];
+                    if (numberOfAttempts == 5) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kHostDisconnect object:nil];
+                    }
+                };
+                
+                self.socket.onReconnectionAttempt = ^(NSInteger numberOfAttempts)
+                {
+                    if (numberOfAttempts == 5) {
+                        NSLog(@"%i", numberOfAttempts);
+                        
+                    }
+                    
+                };
+
+                [[NSNotificationCenter defaultCenter] postNotificationName:kInitialize object:nil];
+                
             }
            
         }];
         
+        
         //on Callback for events related to updates with the song queue.
-        [self.socket on:@"q_update_B" callback:^(NSArray *args) {
-            
+        [self.socket on:kQueueUpdated callback:^(NSArray *args) {
             NSArray *tracks = [args objectAtIndex:0];
             self.setListTracks = tracks;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"qUpdateB"
+            [[NSNotificationCenter defaultCenter] postNotificationName:kQueueUpdated
                                                                 object:nil];
 
         }];
         
-        [self.socket on:@"current_artist_B" callback:^(NSArray *args) {
-            
+        [self.socket on:kCurrentArtistUpdate callback:^(NSArray *args) {
             self.currentArtist = [args objectAtIndex:0];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"currentArtistB" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kCurrentArtistUpdate object:nil];
             
         }];
         
-        [self.socket on:@"host disconnect" callback:^(NSArray *args) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"hostDisconnect" object:nil];
+        [self.socket on:kHostDisconnect callback:^(NSArray *args) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kHostDisconnect object:nil];
         }];
         
         self.socket.onDisconnect = ^()
         {
             NSLog(@"socket onDisconnect method fired");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"onDisconnect"
+            [[NSNotificationCenter defaultCenter] postNotificationName:kOnDisconnect
                                                                 object:nil];
         };
         
         __weak typeof(self) weakSelf = self;
         self.socket.onConnect = ^()
         {
+            weakSelf.isHost = NO;
             weakSelf.setListTracks = nil;
             weakSelf.currentArtist = nil;
             weakSelf.socketID = nil;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"onConnect" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kOnConnect object:nil];
         };
+        
+        
+        
+        ///////MOBILE HOST SOCKET METHODS////////
+        
+        [self.socket on:kOnHostRoomConnect callback:^(NSArray *args) {
+            NSString *roomCode = [args objectAtIndex:0];
+            self.hostRoomCode = roomCode;
+            self.isHost = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:kOnHostRoomConnect object:nil];
+            
+            
+            [self.socket on:kQueueAdd callback:^(NSArray *args)
+             {
+                 NSDictionary *songAdded = [args objectAtIndex:0];
+                 self.songAdded = songAdded;
+                 [[NSNotificationCenter defaultCenter] postNotificationName:kQueueAdd object:nil];
+             }];
+            
+            //When a mobile client joins
+            [self.socket on:kUserJoined callback:^(NSArray *args) {
+                NSMutableDictionary *idDic = args[0];
+                self.clientSocketID = idDic[@"id"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kUserJoined object:nil];
+                
+            }];
+
+        }];
+
         
     }];
     

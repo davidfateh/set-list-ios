@@ -15,9 +15,12 @@
 @property (strong, nonatomic) NSArray *setListTracks;
 @property (strong, nonatomic) NSDictionary *currentArtist;
 @property (strong, nonatomic) NSString *socketID;
-
+@property (nonatomic) BOOL isHost;
+@property (strong, nonatomic) NSString *hostRoomCode;
 @property (strong, nonatomic) NSString *roomCode;
 @property (nonatomic) BOOL socketIsConnected;
+@property (strong, nonatomic) NSDictionary *songAdded;
+@property (strong, nonatomic) NSString *clientSocketID;
 
 + (SocketKeeperSingleton *) sharedInstance;
 

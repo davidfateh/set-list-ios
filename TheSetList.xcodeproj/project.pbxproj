@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		185A0A121A7EA2F8007F2177 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A0A111A7EA2F8007F2177 /* Constants.m */; };
 		186DDF3B1A78271100B4EF16 /* remote.gif in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3A1A78271100B4EF16 /* remote.gif */; };
 		186DDF3D1A7828FB00B4EF16 /* remote-enabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */; };
 		186DDF3F1A78297800B4EF16 /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3E1A78297800B4EF16 /* exit.png */; };
@@ -15,6 +16,9 @@
 		18956B901A770B8E00C388B5 /* dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8F1A770B8E00C388B5 /* dot.png */; };
 		18956B921A7734C200C388B5 /* remote.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B911A7734C200C388B5 /* remote.png */; };
 		18A897561A7C0CAC006C5ACF /* purple-grad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A897551A7C0CAC006C5ACF /* purple-grad.png */; };
+		18C903C21A85424000C65489 /* noAlbumArt.png in Resources */ = {isa = PBXBuildFile; fileRef = 18C903C11A85424000C65489 /* noAlbumArt.png */; };
+		18C903C41A85515C00C65489 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C903C31A85515C00C65489 /* ImageIO.framework */; };
+		18C903C71A869B1B00C65489 /* AsyncImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C903C61A869B1B00C65489 /* AsyncImageView.m */; };
 		18EC3CBC1A65F64B00AFD97F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBB1A65F64B00AFD97F /* main.m */; };
 		18EC3CBF1A65F64B00AFD97F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CBE1A65F64B00AFD97F /* AppDelegate.m */; };
 		18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18EC3CC01A65F64C00AFD97F /* TheSetList.xcdatamodeld */; };
@@ -54,6 +58,8 @@
 
 /* Begin PBXFileReference section */
 		1838799C1A75810200244B3E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		185A0A101A7EA2F8007F2177 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		185A0A111A7EA2F8007F2177 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		186DDF3A1A78271100B4EF16 /* remote.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = remote.gif; sourceTree = "<group>"; };
 		186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "remote-enabled.png"; sourceTree = "<group>"; };
 		186DDF3E1A78297800B4EF16 /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
@@ -62,6 +68,10 @@
 		18956B8F1A770B8E00C388B5 /* dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot.png; sourceTree = "<group>"; };
 		18956B911A7734C200C388B5 /* remote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remote.png; sourceTree = "<group>"; };
 		18A897551A7C0CAC006C5ACF /* purple-grad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-grad.png"; sourceTree = "<group>"; };
+		18C903C11A85424000C65489 /* noAlbumArt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noAlbumArt.png; sourceTree = "<group>"; };
+		18C903C31A85515C00C65489 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		18C903C51A869B1B00C65489 /* AsyncImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncImageView.h; sourceTree = "<group>"; };
+		18C903C61A869B1B00C65489 /* AsyncImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncImageView.m; sourceTree = "<group>"; };
 		18EC3CB61A65F64B00AFD97F /* TheSetList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSetList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18EC3CBA1A65F64B00AFD97F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18EC3CBB1A65F64B00AFD97F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -105,13 +115,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18EC3CE31A65F80800AFD97F /* AVFoundation.framework in Frameworks */,
+				18C903C41A85515C00C65489 /* ImageIO.framework in Frameworks */,
 				18EC3D121A6CC59200AFD97F /* CoreImage.framework in Frameworks */,
 				18EC3D0D1A6CAC6500AFD97F /* QuartzCore.framework in Frameworks */,
 				18EC3CEB1A65F84C00AFD97F /* CoreFoundation.framework in Frameworks */,
 				18EC3CE91A65F84200AFD97F /* CoreGraphics.framework in Frameworks */,
 				18EC3CE71A65F83800AFD97F /* Foundation.framework in Frameworks */,
 				18EC3CE51A65F80F00AFD97F /* UIKit.framework in Frameworks */,
-				18EC3CE31A65F80800AFD97F /* AVFoundation.framework in Frameworks */,
 				CAF0D48BB6C043B495E885D0 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -170,6 +181,11 @@
 		18EC3CB91A65F64B00AFD97F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				185A0A101A7EA2F8007F2177 /* Constants.h */,
+				185A0A111A7EA2F8007F2177 /* Constants.m */,
+				18C903C51A869B1B00C65489 /* AsyncImageView.h */,
+				18C903C61A869B1B00C65489 /* AsyncImageView.m */,
+				18C903C11A85424000C65489 /* noAlbumArt.png */,
 				18A897551A7C0CAC006C5ACF /* purple-grad.png */,
 				186DDF3E1A78297800B4EF16 /* exit.png */,
 				186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */,
@@ -208,6 +224,7 @@
 		18EC3CEC1A65F89100AFD97F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18C903C31A85515C00C65489 /* ImageIO.framework */,
 				1838799C1A75810200244B3E /* Accelerate.framework */,
 				18EC3D111A6CC59200AFD97F /* CoreImage.framework */,
 				18EC3D0C1A6CAC6500AFD97F /* QuartzCore.framework */,
@@ -300,6 +317,12 @@
 				TargetAttributes = {
 					18EC3CB51A65F64B00AFD97F = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = 7757B4WUKZ;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					18EC3CD11A65F64C00AFD97F = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -343,6 +366,7 @@
 				18EC3CF61A672C4100AFD97F /* set-list_Load up.png in Resources */,
 				18EC3CCA1A65F64C00AFD97F /* Images.xcassets in Resources */,
 				18956B901A770B8E00C388B5 /* dot.png in Resources */,
+				18C903C21A85424000C65489 /* noAlbumArt.png in Resources */,
 				186DDF3F1A78297800B4EF16 /* exit.png in Resources */,
 				186DDF3D1A7828FB00B4EF16 /* remote-enabled.png in Resources */,
 				18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */,
@@ -398,6 +422,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18EC3CF31A66047200AFD97F /* NameCreationViewController.m in Sources */,
+				18C903C71A869B1B00C65489 /* AsyncImageView.m in Sources */,
 				18EC3D191A70535600AFD97F /* RadialGradiantView.m in Sources */,
 				18EC3CBF1A65F64B00AFD97F /* AppDelegate.m in Sources */,
 				18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */,
@@ -405,6 +430,7 @@
 				18EC3D071A6C67E200AFD97F /* SetListTableViewCell.m in Sources */,
 				18EC3D001A67413B00AFD97F /* SetListRoomViewController.m in Sources */,
 				18EC3D0B1A6C699400AFD97F /* SocketKeeperSingleton.m in Sources */,
+				185A0A121A7EA2F8007F2177 /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,9 +553,27 @@
 			baseConfigurationReference = 607F341F35CA4F98B365C0AC /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TheSetList/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(TARGET_BUILD_DIR)/libPods.a",
+					"-framework",
+					CoreLocation,
+					"-framework",
+					CoreText,
+					"-framework",
+					ImageIO,
+					"-framework",
+					MapKit,
+					"-framework",
+					Security,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -538,9 +582,27 @@
 			baseConfigurationReference = 607F341F35CA4F98B365C0AC /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = TheSetList/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-force_load",
+					"$(TARGET_BUILD_DIR)/libPods.a",
+					"-framework",
+					CoreLocation,
+					"-framework",
+					CoreText,
+					"-framework",
+					ImageIO,
+					"-framework",
+					MapKit,
+					"-framework",
+					Security,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

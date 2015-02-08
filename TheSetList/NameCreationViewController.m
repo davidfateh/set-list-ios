@@ -12,10 +12,10 @@
 #import "SetListRoomViewController.h"
 #import "RadialGradiantView.h"
 
-#define HOST_URL @"http://192.168.1.4:5000/"
+#define HOST_URL @"http://54.152.215.221/"
 
 @interface NameCreationViewController ()
-@property (weak, nonatomic) SIOSocket *socket;
+@property (strong, nonatomic) SIOSocket *socket;
 @property (nonatomic) BOOL isHost;
 @end
 
@@ -41,16 +41,6 @@
         self.roomCodeTextField.alpha = 1.0;
     }];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveInitializeNotification:)
-                                                 name:@"initialize"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveOnConnectNotification:)
-                                                 name:@"onConnect"
-                                               object:nil];
-
         
         UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
         numberToolbar.barStyle = UIBarStyleBlackTranslucent;
@@ -68,6 +58,21 @@
 {
     [super viewWillAppear:YES];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveInitializeNotification:)
+                                                 name:kInitialize
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveOnConnectNotification:)
+                                                 name:kOnConnect
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receiveOnHostRoomConnectNotification:)
+                                                 name:kOnHostRoomConnect
+                                               object:nil];
+    
     self.roomCodeTextField.text = nil;
     SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
     NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@",HOST_URL];
@@ -81,12 +86,8 @@
     if (self.roomCodeTextField.tag == 2 ) {
         
         [self.roomCodeTextField resignFirstResponder];
-
-        NSMutableDictionary *startDic = [[NSMutableDictionary alloc]init];
-        [startDic setObject:numberFromTheKeyboard forKey:@"room"];
-        NSLog(@"%@", self.socket);
-        NSLog(@"%@", numberFromTheKeyboard);
-        NSArray *startArray = [[NSArray alloc]initWithObjects:startDic, nil];
+        NSDictionary *startDic = @{@"room" :numberFromTheKeyboard};
+        NSArray *startArray = @[startDic];
         [self.socket emit:@"mobile connect" args:startArray];
         
         
@@ -96,6 +97,17 @@
 
 #pragma mark - Notifications
 
+-(void)receiveOnHostRoomConnectNotification:(NSNotification *)notificaiton
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kInitialize     object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnHostRoomConnect object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnConnect object:nil];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+    });
+}
+
 -(void)receiveOnConnectNotification:(NSNotification *)notificaiton
 {
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
@@ -104,7 +116,15 @@
 
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kInitialize     object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnHostRoomConnect object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnConnect object:nil];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+
+    });
+
 }
 
 #pragma mark - Text Field Delegate
@@ -138,12 +158,10 @@
         setListVC.roomCode = self.roomCodeTextField.text;
     }
     
-    
 }
 
 - (IBAction)hostRoomButtonPressed:(UIButton *)sender
 {
-    self.isHost = YES;
-    [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+    [self.socket emit:@"start room"];
 }
 @end

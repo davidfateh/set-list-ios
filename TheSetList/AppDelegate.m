@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <SCAPI.h>
 #import "SocketKeeperSingleton.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface AppDelegate ()
 
@@ -29,6 +30,14 @@
     
     NSDictionary *barButtonAppearanceDict = @{NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:22.0], NSForegroundColorAttributeName: [UIColor whiteColor]};
     [[UIBarButtonItem appearance] setTitleTextAttributes:barButtonAppearanceDict forState:UIControlStateNormal];
+    
+    //Create a unique user ID to keep track of shit
+    if (![[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"]) {
+        NSString *uuid = [[NSUUID UUID] UUIDString];
+        [[NSUserDefaults standardUserDefaults]setObject:uuid forKey:@"UUID"];
+    }
+    
+    [SocketKeeperSingleton sharedInstance];
     
     return YES;
 }

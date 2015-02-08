@@ -22,41 +22,32 @@
 
 -(void)prepareForReuse
 {
-    UIImage *plusImage = [UIImage imageNamed:@"plusImage"];
-    [self.plusButton setBackgroundImage:plusImage forState:UIControlStateNormal];
-    self.plusButton.enabled = YES;
-    
     [super prepareForReuse];
-}
-
-- (IBAction)artistButtonPressed:(UIButton *)sender {
+    self.plusButton.enabled = YES;
 }
 
 - (IBAction)addSongButtonPressed:(UIButton *)sender
 {
     [self.delegate addSongButtonPressedOnCell:self];
-    
+    sender.enabled = NO;
     UIImage *checkImage = [UIImage imageNamed:@"check.png"];
-    [self.plusButton setBackgroundImage:checkImage forState:UIControlStateNormal];
+    [self.addSongPlusImageView setImage:checkImage];
     
     //Make the button pop up and down into a checkmark.
-    sender.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.001, 0.001);
-    [sender.superview addSubview:sender];
+    self.addSongPlusImageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.001, 0.001);
     
     [UIView animateWithDuration:0.3/1.5 animations:^{
-        sender.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.1, 1.1);
+        self.addSongPlusImageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.1, 1.1);
     } completion:^(BOOL finished) {
         [UIView animateWithDuration:0.3/2 animations:^{
-            sender.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
+            self.addSongPlusImageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
         } completion:^(BOOL finished) {
             [UIView animateWithDuration:0.3/2 animations:^{
-                sender.transform = CGAffineTransformIdentity;
-                sender.enabled = NO;
+                self.addSongPlusImageView.transform = CGAffineTransformIdentity;
             }];
         }];
     }];
 
 }
-- (IBAction)xButtonPressed:(UIButton *)sender {
-}
+
 @end

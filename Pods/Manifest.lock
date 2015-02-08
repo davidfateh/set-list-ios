@@ -6,21 +6,58 @@ PODS:
     - JSONKit
     - OHAttributedLabel
   - JSONKit (1.5pre)
+  - libwebp (0.4.2):
+    - libwebp/core
+    - libwebp/dec
+    - libwebp/demux
+    - libwebp/dsp
+    - libwebp/enc
+    - libwebp/mux
+    - libwebp/utils
+    - libwebp/webp
+  - libwebp/core (0.4.2):
+    - libwebp/webp
+  - libwebp/dec (0.4.2):
+    - libwebp/core
+  - libwebp/demux (0.4.2):
+    - libwebp/core
+  - libwebp/dsp (0.4.2):
+    - libwebp/core
+  - libwebp/enc (0.4.2):
+    - libwebp/core
+  - libwebp/mux (0.4.2):
+    - libwebp/core
+  - libwebp/utils (0.4.2):
+    - libwebp/core
+  - libwebp/webp (0.4.2)
   - NXOAuth2Client (1.2.1)
   - OHAttributedLabel (3.5.5)
+  - SDWebImage (3.7.1):
+    - SDWebImage/Core
+    - SDWebImage/MapKit
+    - SDWebImage/WebP
+  - SDWebImage/Core (3.7.1)
+  - SDWebImage/MapKit (3.7.1):
+    - SDWebImage/Core
+  - SDWebImage/WebP (3.7.1):
+    - libwebp
+    - SDWebImage/Core
   - SIOSocket (0.2.0)
 
 DEPENDENCIES:
   - CocoaSoundCloudAPI (= 1.0.1)
   - CocoaSoundCloudUI (= 1.0.5)
+  - SDWebImage (~> 3.6)
   - SIOSocket (~> 0.2.0)
 
 SPEC CHECKSUMS:
   CocoaSoundCloudAPI: 5e6bab9b529e0c0de1a0b470a25673e199e3b12b
   CocoaSoundCloudUI: a9690cb539fc2f9a20cb718caf25be4e760e7f43
   JSONKit: efef3bbd3372ff33f96b9c6f34cf4fe18e74ab69
+  libwebp: c471fec5a68b9ab8e0c1cbde275fa20eddaa02fa
   NXOAuth2Client: 28de3d9bde510d398e62d723a0123c500017af84
   OHAttributedLabel: 733b32053cd02be1044749d394e874143e41e8d7
+  SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
   SIOSocket: 40ebc9f014b9fec4ec595212faaf6f19cf29d1f2
 
 COCOAPODS: 0.32.1
