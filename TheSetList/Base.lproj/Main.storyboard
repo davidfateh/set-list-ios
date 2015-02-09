@@ -744,6 +744,9 @@
                                     </imageView>
                                 </subviews>
                                 <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="3TH-Qj-0JI" appends="YES" id="FAE-KW-fWM"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.083672411739826202" green="0.083691217005252838" blue="0.0836682990193367" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -766,8 +769,13 @@
                         <outlet property="exitSettingsViewButton" destination="DZT-1t-Rze" id="KwG-GY-wYB"/>
                         <outlet property="hostCodeMessageLabel" destination="7Gp-5w-m49" id="p5g-O2-Sdc"/>
                         <outlet property="hostRoomCodeLabel" destination="4CT-dz-BcD" id="cah-qa-9aO"/>
+                        <outlet property="leaveLabel" destination="D2P-OS-xtq" id="puw-rl-OCb"/>
                         <outlet property="leaveRoomButton" destination="HWh-Mc-EGE" id="9Mo-LF-V1N"/>
                         <outlet property="leaveRoomButtonVertConst" destination="MsF-pd-Jl8" id="e8F-xq-ibI"/>
+                        <outlet property="lineView1" destination="50v-jb-nLA" id="hKV-bK-teV"/>
+                        <outlet property="lineView2" destination="1li-4k-DHA" id="3Tv-zm-E0b"/>
+                        <outlet property="longPressRec" destination="3TH-Qj-0JI" id="GBW-hW-7ZM"/>
+                        <outlet property="menuView" destination="kLc-xN-ivn" id="p7e-mP-qLd"/>
                         <outlet property="playButtonPressed" destination="kmt-KZ-vGe" id="09E-El-Z9r"/>
                         <outlet property="playPauseButton" destination="KH9-zn-Exh" id="tKz-rJ-e0h"/>
                         <outlet property="plusButton" destination="umd-Uh-BeV" id="yUh-rI-34n"/>
@@ -775,6 +783,7 @@
                         <outlet property="purpleGlowVertConst" destination="SNS-uk-ZJM" id="88a-91-nJS"/>
                         <outlet property="remoteImageVertConst" destination="BGF-Zy-QV3" id="u7D-nh-GTt"/>
                         <outlet property="remoteImageView" destination="9wE-xP-O11" id="JBh-pS-uxM"/>
+                        <outlet property="remoteLabel" destination="eKF-AS-93C" id="jKz-GH-Yxs"/>
                         <outlet property="remoteLabelVertConst" destination="Dic-Me-Qie" id="7no-ht-tEm"/>
                         <outlet property="remotePasswordInfoLabel" destination="Uhk-DG-jFR" id="a6j-ag-ecv"/>
                         <outlet property="remotePasswordTextField" destination="UMZ-gG-6Qe" id="40i-GG-Pec"/>
@@ -792,12 +801,19 @@
                         <outlet property="settingsView" destination="wWG-NW-vCz" id="wV8-bX-O4R"/>
                         <outlet property="skipButton" destination="1xR-U8-lzH" id="a8a-mR-H6D"/>
                         <outlet property="skipButtonPressed" destination="Uho-uL-8JY" id="FVr-9F-5Yy"/>
+                        <outlet property="sliderImageView" destination="gNL-lh-T9e" id="vqJ-tZ-am8"/>
+                        <outlet property="sliderView" destination="e6n-8p-gjd" id="Aue-Qd-Br1"/>
                         <outlet property="tableView" destination="ddj-u0-EjL" id="p1w-Cx-Jlc"/>
                         <outlet property="whiteBorderView1" destination="gnn-PE-c1r" id="GYT-xB-JdA"/>
                         <outlet property="whiteBorderView2" destination="HgJ-rE-qhq" id="Ibr-cE-oKW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R4a-eb-EFL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="3TH-Qj-0JI">
+                    <connections>
+                        <action selector="handleLongPress:" destination="q9E-CL-jM1" id="QQ1-Eu-b0p"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1362" y="136"/>
         </scene>

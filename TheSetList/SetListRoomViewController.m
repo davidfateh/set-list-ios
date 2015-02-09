@@ -31,6 +31,10 @@
 @property (nonatomic) BOOL isRemoteHost;
 @property (strong, nonatomic) NSTimer *timer;
 @property (strong, nonatomic) NSMutableDictionary *dicForInfoCenter;
+@property (nonatomic) BOOL remoteLabelPushed;
+@property (nonatomic) BOOL remoteLabelSelected;
+@property (nonatomic) BOOL leaveLabelPushed;
+@property (nonatomic) BOOL leaveLabelSelected;
 @end
 
 @implementation SetListRoomViewController
@@ -84,6 +88,8 @@
     self.tracks = [[NSArray alloc]init];
     self.currentArtist = [[NSMutableDictionary alloc]init];
     self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
+    
+    self.longPressRec.minimumPressDuration = 0;
     
     //Add a blur effect view in order to blur the background upon opening the search view.
     UIVisualEffect *blurEffect;
@@ -491,11 +497,146 @@
     [searchBar resignFirstResponder];
 }
 
+#pragma mark - Menu View and Gesture Recognizer Methods
+
+-(IBAction)handleLongPress:(UILongPressGestureRecognizer *)recognizer
+{
+    recognizer.minimumPressDuration = 0;
+    UIImage *sliderImage = [UIImage imageNamed:@"slider.png"];
+    UIImage *menuImage = [UIImage imageNamed:@"menu-button.png"];
+    self.menuView.alpha = 0;
+    self.menuView.hidden = NO;
+    self.searchView.hidden = YES;
+    self.searchView.alpha = 0;
+    if (recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        [UIView animateWithDuration:.3 animations:^{
+            [self.sliderImageView setImage:sliderImage];
+            self.blurEffectView.alpha = 1;
+            self.menuView.alpha = 1;
+            self.sliderImageView.center = CGPointMake(18 , 40);
+            [self.sliderImageView setTransform:CGAffineTransformMakeScale(2.5f, 2.5f)];
+        } completion:^(BOOL finished) {
+        }];
+    }
+    else if (recognizer.state == UIGestureRecognizerStateChanged)
+    {
+        self.menuView.alpha = 1;
+        self.menuView.hidden = NO;
+        UIView *view = recognizer.view;
+        CGPoint point = [recognizer locationInView:view];
+        CGFloat sliderLoc = (self.sliderView.frame.origin.y + point.y) - (self.sliderView.frame.size.width / 2);
+        [self.sliderView setFrame:CGRectMake(self.sliderView.frame.origin.x,
+                                             sliderLoc,
+                                             self.sliderView.frame.size.width,
+                                             self.sliderView.frame.size.height)];
+        
+        CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
+        [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
+                                            line1Loc,
+                                            self.lineView1.frame.size.width,
+                                            self.lineView1.frame.size.height)];
+        CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
+        [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
+                                            line2Loc,
+                                            self.lineView2.frame.size.width,
+                                            self.lineView2.frame.size.height)];
+        
+        
+        if ((recognizer.view.center.y + point.y)>226 && (recognizer.view.center.y + point.y)<273) {
+            
+            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self.remoteLabel setFrame:CGRectMake(141, 236, 60, 20)];
+                self.remoteLabel.alpha = 1;
+                self.remoteLabelPushed = YES;
+            } completion:^(BOOL finished) {
+                //completion
+            }];
+        }
+        else
+        {
+            if (self.remoteLabelPushed) {
+                [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                    [self.remoteLabel setFrame:CGRectMake(181, 236, 60, 20)];
+                    self.remoteLabel.alpha = .5;
+                    self.remoteLabelPushed = NO;
+                } completion:^(BOOL finished) {
+                    //completion
+                }];
+                
+            }
+        }
+        
+        if ((recognizer.view.center.y + point.y)>392 && (recognizer.view.center.y + point.y)<442) {
+            
+            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self.leaveLabel setFrame:CGRectMake(155,410, 46, 21)];
+                self.leaveLabel.alpha = 1;
+                self.leaveLabelPushed = YES;
+            } completion:^(BOOL finished) {
+                //completion
+            }];
+        }
+        else
+        {
+            if (self.leaveLabelPushed) {
+                [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                    [self.leaveLabel setFrame:CGRectMake(195,410, 46, 21)];
+                    self.leaveLabel.alpha = .5;
+                    self.leaveLabelPushed = NO;
+                } completion:^(BOOL finished) {
+                    //completion
+                }];
+                
+            }
+        }
+        
+    }
+    else if (recognizer.state == UIGestureRecognizerStateEnded)
+    {
+        self.searchView.hidden = NO;
+        self.purpleGlowImageView.alpha = 0;
+        [UIView animateWithDuration:.3 animations:^{
+            [self.sliderView setFrame:CGRectMake(263,
+                                                 20,
+                                                 self.sliderView.frame.size.width,
+                                                 self.sliderView.frame.size.height)];
+            
+            CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
+            [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
+                                                line1Loc,
+                                                self.lineView1.frame.size.width,
+                                                self.lineView1.frame.size.height)];
+            CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
+            [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
+                                                line2Loc,
+                                                self.lineView2.frame.size.width,
+                                                self.lineView2.frame.size.height)];
+            
+            self.blurEffectView.alpha = 0;
+            self.sliderImageView.alpha = .2;
+            self.menuView.alpha = 0;
+            [self.sliderImageView setTransform:CGAffineTransformMakeScale(1.0, 1.0)];
+            self.sliderImageView.center = CGPointMake(30 , 25);
+            self.searchView.alpha = 1;
+        } completion:^(BOOL finished) {
+            double time = 0;
+            [self purpleGlowAnimationFromBottomWithDelay:&time];
+            self.sliderImageView.alpha = 1;
+            self.menuView.hidden = YES;
+            [self.sliderImageView setImage:menuImage];
+        }];
+        
+    }
+
+}
+
 #pragma mark - Custom Buttons
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
     if (!self.plusButtonIsSelected) {
         self.purpleGlowImageView.alpha = 0;
+        self.sliderView.hidden = YES;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(1, -1)];
         self.purpleGlowVertConst.constant = -189;
         self.plusButton.transform = CGAffineTransformMakeRotation(M_PI/4);
@@ -522,6 +663,7 @@
     }
     else {//if plusbutton is selected
         self.purpleGlowImageView.alpha = 0;
+        self.sliderView.hidden = NO;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(-1, 1)];
         self.purpleGlowVertConst.constant = -338;
         self.plusButton.transform = CGAffineTransformMakeRotation(-M_PI / 2);

@@ -79,10 +79,16 @@
 - (IBAction)leaveRoomButtonPressed:(UIButton *)sender;
 
 
-
-
-
-
+//MENU VIEW properties and methods
+@property (strong, nonatomic) IBOutlet UIImageView *sliderImageView;
+@property (strong, nonatomic) IBOutlet UIView *sliderView;
+@property (strong, nonatomic) IBOutlet UIView *menuView;
+@property (strong, nonatomic) IBOutlet UILongPressGestureRecognizer *longPressRec;
+@property (strong, nonatomic) IBOutlet UIView *lineView1;
+@property (strong, nonatomic) IBOutlet UIView *lineView2;
+@property (strong, nonatomic) IBOutlet UILabel *remoteLabel;
+@property (strong, nonatomic) IBOutlet UILabel *leaveLabel;
+-(IBAction)handleLongPress:(UILongPressGestureRecognizer *)recognizer;
 
 
 @end
