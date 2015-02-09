@@ -13,10 +13,13 @@
 		186DDF3F1A78297800B4EF16 /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3E1A78297800B4EF16 /* exit.png */; };
 		1873CDA21A7305A100D8CBC0 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 1873CDA11A7305A100D8CBC0 /* check.png */; };
 		1881C8361A88583D00A50523 /* CustomSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1881C8351A88583D00A50523 /* CustomSegue.m */; };
+		1883F3CD1A890CD500D9357B /* slider.png in Resources */ = {isa = PBXBuildFile; fileRef = 1883F3CC1A890CD500D9357B /* slider.png */; };
+		1883F3CF1A890CEB00D9357B /* search25.png in Resources */ = {isa = PBXBuildFile; fileRef = 1883F3CE1A890CEB00D9357B /* search25.png */; };
+		1883F3D11A890CF400D9357B /* search30.png in Resources */ = {isa = PBXBuildFile; fileRef = 1883F3D01A890CF400D9357B /* search30.png */; };
+		1883F3DA1A895F0E00D9357B /* menu-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 1883F3D91A895F0E00D9357B /* menu-button.png */; };
 		18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B881A76D0FC00C388B5 /* purple-glow.png */; };
 		18956B901A770B8E00C388B5 /* dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8F1A770B8E00C388B5 /* dot.png */; };
 		18956B921A7734C200C388B5 /* remote.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B911A7734C200C388B5 /* remote.png */; };
-		1895D5D01A881FFC00A1B243 /* slider.png in Resources */ = {isa = PBXBuildFile; fileRef = 1895D5CF1A881FFC00A1B243 /* slider.png */; };
 		1895D5D31A88221400A1B243 /* MainMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1895D5D21A88221400A1B243 /* MainMenuViewController.m */; };
 		18A897561A7C0CAC006C5ACF /* purple-grad.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A897551A7C0CAC006C5ACF /* purple-grad.png */; };
 		18C903C21A85424000C65489 /* noAlbumArt.png in Resources */ = {isa = PBXBuildFile; fileRef = 18C903C11A85424000C65489 /* noAlbumArt.png */; };
@@ -68,10 +71,13 @@
 		1873CDA11A7305A100D8CBC0 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		1881C8341A88583D00A50523 /* CustomSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomSegue.h; sourceTree = "<group>"; };
 		1881C8351A88583D00A50523 /* CustomSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomSegue.m; sourceTree = "<group>"; };
+		1883F3CC1A890CD500D9357B /* slider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slider.png; sourceTree = "<group>"; };
+		1883F3CE1A890CEB00D9357B /* search25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search25.png; sourceTree = "<group>"; };
+		1883F3D01A890CF400D9357B /* search30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search30.png; sourceTree = "<group>"; };
+		1883F3D91A895F0E00D9357B /* menu-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "menu-button.png"; sourceTree = "<group>"; };
 		18956B881A76D0FC00C388B5 /* purple-glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-glow.png"; sourceTree = "<group>"; };
 		18956B8F1A770B8E00C388B5 /* dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot.png; sourceTree = "<group>"; };
 		18956B911A7734C200C388B5 /* remote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remote.png; sourceTree = "<group>"; };
-		1895D5CF1A881FFC00A1B243 /* slider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slider.png; sourceTree = "<group>"; };
 		1895D5D11A88221400A1B243 /* MainMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuViewController.h; sourceTree = "<group>"; };
 		1895D5D21A88221400A1B243 /* MainMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuViewController.m; sourceTree = "<group>"; };
 		18A897551A7C0CAC006C5ACF /* purple-grad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-grad.png"; sourceTree = "<group>"; };
@@ -188,12 +194,15 @@
 		18EC3CB91A65F64B00AFD97F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1883F3D91A895F0E00D9357B /* menu-button.png */,
 				185A0A101A7EA2F8007F2177 /* Constants.h */,
 				185A0A111A7EA2F8007F2177 /* Constants.m */,
 				18C903C51A869B1B00C65489 /* AsyncImageView.h */,
 				18C903C61A869B1B00C65489 /* AsyncImageView.m */,
-				1895D5CF1A881FFC00A1B243 /* slider.png */,
 				18C903C11A85424000C65489 /* noAlbumArt.png */,
+				1883F3CC1A890CD500D9357B /* slider.png */,
+				1883F3CE1A890CEB00D9357B /* search25.png */,
+				1883F3D01A890CF400D9357B /* search30.png */,
 				18A897551A7C0CAC006C5ACF /* purple-grad.png */,
 				186DDF3E1A78297800B4EF16 /* exit.png */,
 				186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */,
@@ -367,6 +376,7 @@
 				18EC3D021A6B10FF00AFD97F /* ironAndWineCoverArt.jpg in Resources */,
 				18EC3CF41A660AF900AFD97F /* Lobster-Regular.ttf in Resources */,
 				186DDF3B1A78271100B4EF16 /* remote.gif in Resources */,
+				1883F3DA1A895F0E00D9357B /* menu-button.png in Resources */,
 				18A897561A7C0CAC006C5ACF /* purple-grad.png in Resources */,
 				18EC3CC81A65F64C00AFD97F /* Main.storyboard in Resources */,
 				18EC3D1F1A7069B400AFD97F /* SetListLogo.png in Resources */,
@@ -377,8 +387,10 @@
 				18C903C21A85424000C65489 /* noAlbumArt.png in Resources */,
 				186DDF3F1A78297800B4EF16 /* exit.png in Resources */,
 				186DDF3D1A7828FB00B4EF16 /* remote-enabled.png in Resources */,
+				1883F3CF1A890CEB00D9357B /* search25.png in Resources */,
+				1883F3D11A890CF400D9357B /* search30.png in Resources */,
 				18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */,
-				1895D5D01A881FFC00A1B243 /* slider.png in Resources */,
+				1883F3CD1A890CD500D9357B /* slider.png in Resources */,
 				18EC3D041A6B135B00AFD97F /* ironAndWineShepardArt.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
