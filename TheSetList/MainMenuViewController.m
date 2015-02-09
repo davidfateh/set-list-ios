@@ -12,6 +12,7 @@
 #import "SetListRoomViewController.h"
 #import "RadialGradiantView.h"
 
+#define HOST_URL @"http://54.152.215.221/"
 
 @interface MainMenuViewController ()
 @property (strong, nonatomic) SIOSocket *socket;
@@ -42,9 +43,25 @@
     visualEffectView.alpha = 0;
     [self.menuView addSubview:visualEffectView];
     self.blurEffectView = visualEffectView;
-
     
+    
+    
+    /////////JOIN ROOM VIEW///////////
+    //Create a toolbar to push to the next view.
+    UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
+    numberToolbar.barStyle = UIBarStyleDefault;
+    UIBarButtonItem *joinButton = [[UIBarButtonItem alloc]initWithTitle:@"\u279e" style:UIBarButtonItemStyleDone target:self action:@selector(doneWithNumberPad)];
+    
+    numberToolbar.items = [NSArray arrayWithObjects:
+                           [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                           joinButton, [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                           nil];
+    [numberToolbar sizeToFit];
+    self.roomCodeTextField.delegate = self;
+    self.roomCodeTextField.inputAccessoryView = numberToolbar;
+    self.roomCodeTextField.tintColor = [UIColor whiteColor];
 }
+
 
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -64,6 +81,14 @@
                                              selector:@selector(receiveOnHostRoomConnectNotification:)
                                                  name:kOnHostRoomConnect
                                                object:nil];
+    
+    SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
+    NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@",HOST_URL];
+    [socketSingleton startSocketWithHost:hostURLwithRoomCode];
+
+    [self returnedToMenu];
+    self.roomCodeTextField.inputAccessoryView.hidden = YES;
+    self.roomCodeTextField.text = nil;
 }
 
 
@@ -107,11 +132,40 @@
     //Send the room code to be displayed on the respective view controllers.
     if ([segue.identifier isEqualToString:@"toSetListRoomVC"]) {
         SetListRoomViewController *setListVC = segue.destinationViewController;
+        setListVC.roomCode = self.roomCodeTextField.text;
     }
     
 }
 
+#pragma mark - Room Code
 
+-(void)doneWithNumberPad{
+    
+    NSString *numberFromTheKeyboard = self.roomCodeTextField.text;
+    [self.roomCodeTextField resignFirstResponder];
+    NSDictionary *startDic = @{@"room" :numberFromTheKeyboard};
+    NSArray *startArray = @[startDic];
+    [self.socket emit:@"mobile connect" args:startArray];
+}
+
+//The user should not be allowed to enter more than 4 digits.
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+
+{
+    //Room Codes are only 4 digits.
+    if (textField.tag == 2) {
+        // Prevent crashing undo bug – see note below.
+        if(range.length + range.location > textField.text.length)
+        {
+            return NO;
+        }
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        return (newLength > 4) ? NO : YES;
+    }
+    
+    return YES;
+}
 
 -(IBAction)handlePan:(UIPanGestureRecognizer *)recognizer
 {
@@ -176,6 +230,8 @@
                 self.blurEffectView.alpha = 1;
             } completion:^(BOOL finished) {
                 self.menuView.hidden = YES;
+                self.roomCodeTextField.inputAccessoryView.hidden = NO;
+                [self.roomCodeTextField becomeFirstResponder];
                 [self returnSliderWithRecognizer:recognizer];
                 [self returnJoinLabel];
                 self.exitJoinRoomImageView.center = CGPointMake(self.exitJoinRoomImageView.center.x, self.exitJoinRoomImageView.center.y -75);
@@ -234,6 +290,8 @@
 
 - (IBAction)exitJoinRoomViewButtonPressed:(UIButton *)sender
 {
+    [self.roomCodeTextField resignFirstResponder];
+    self.roomCodeTextField.text = nil;
     self.joinLabelPushed = NO;
     self.joinLabelSelected = NO;
     self.menuView.alpha = 0;
@@ -245,6 +303,16 @@
     } completion:^(BOOL finished) {
         self.roomCodeView.hidden = YES;
     }];
+}
+
+-(void)returnedToMenu
+{
+    self.joinLabelPushed = NO;
+    self.joinLabelSelected = NO;
+    self.menuView.alpha = 1;
+    self.menuView.hidden = NO;
+    self.blurEffectView.alpha = 0;
+    self.roomCodeView.hidden = YES;
 }
 
 -(void)returnSliderWithRecognizer:(UIPanGestureRecognizer *)recognizer

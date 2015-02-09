@@ -139,7 +139,6 @@
     
     ///////NOT HOST///////
     else {
-        
         // Add a notifcation observer and postNotification name for updating the tracks.
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveQueueUpdatedNotification:)
@@ -685,7 +684,8 @@
 -(void)viewForNoCurrentArtistAsHost
 {
     NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
-    
+    if (self.isHost)
+    {
     self.currentSongLabel.text = @"";
     self.currentArtistLabel.text = @"";
     self.durationProgressView.hidden = YES;
@@ -699,7 +699,23 @@
     self.hostCodeMessageLabel.hidden = NO;
     self.hostRoomCodeLabel.hidden = NO;
     self.hostRoomCodeLabel.text = roomCodeAsHost;
-    
+    }
+}
+
+-(void)viewForNoCurrentArtistAsGuest
+{
+    if (!self.isHost) {
+        self.currentSongLabel.text = @"";
+        self.currentArtistLabel.text = @"";
+        self.durationProgressView.hidden = YES;
+        self.currentArtistViewBackground.hidden = YES;
+        self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
+        self.currentArtistViewBackground.hidden = YES;
+        self.playPauseButton.hidden = YES;
+        self.skipButton.hidden = YES;
+        self.playButtonPressed.hidden = YES;
+        self.skipButtonPressed.hidden = YES;
+    }
 }
 
 //for formating the tracks durations.
@@ -800,15 +816,20 @@
     NSDictionary *track = currentArtist;
     //If there is no current track, clear the current artist display.
     if (track == NULL) {
-        
-        [self viewForNoCurrentArtistAsHost];
+        if (self.isHost) {
+            [self viewForNoCurrentArtistAsHost];
+        }
+        else [self viewForNoCurrentArtistAsGuest];
     }
     //else, If there is a current track, display its contents as current user
     else
     {
         if (![track objectForKey:@"user"])
         {
-            [self viewForNoCurrentArtistAsHost];
+            if (self.isHost) {
+                [self viewForNoCurrentArtistAsHost];
+            }
+            else [self viewForNoCurrentArtistAsGuest];
         }
         else
         {

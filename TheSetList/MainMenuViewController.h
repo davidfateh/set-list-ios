@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface MainMenuViewController : UIViewController
+@interface MainMenuViewController : UIViewController <UITextFieldDelegate>
 
 /////MAIN MENU VIEW
 @property (strong, nonatomic) IBOutlet UIView *menuView;

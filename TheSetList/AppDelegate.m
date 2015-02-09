@@ -11,8 +11,6 @@
 #import "SocketKeeperSingleton.h"
 #import <AVFoundation/AVFoundation.h>
 
-#define HOST_URL @"http://54.152.215.221/"
-
 @interface AppDelegate ()
 
 @end
@@ -38,11 +36,7 @@
         NSString *uuid = [[NSUUID UUID] UUIDString];
         [[NSUserDefaults standardUserDefaults]setObject:uuid forKey:@"UUID"];
     }
-    
-    SocketKeeperSingleton *socketSingleton = [SocketKeeperSingleton sharedInstance];
-    NSString *hostURLwithRoomCode = [NSString stringWithFormat:@"%@",HOST_URL];
-    [socketSingleton startSocketWithHost:hostURLwithRoomCode];
-    
+
     return YES;
 }
 
