@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface MainMenuViewController : UIViewController
+@property (strong, nonatomic) IBOutlet UIView *mainMenuView;
 @property (strong, nonatomic) IBOutlet UIView *backgroundView;
 @property (weak, nonatomic) IBOutlet UIImageView *sliderImageView;
 @property (strong, nonatomic) IBOutlet UILabel *joinLabel;

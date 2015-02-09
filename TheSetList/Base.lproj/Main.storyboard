@@ -85,6 +85,7 @@
                         <outlet property="joinLabel" destination="zGX-Im-3e2" id="FSm-vR-u3X"/>
                         <outlet property="lineView1" destination="J5P-9n-hFb" id="7dv-hc-ybs"/>
                         <outlet property="lineView2" destination="gw3-2a-hir" id="Xej-b6-J8w"/>
+                        <outlet property="mainMenuView" destination="2Ko-wz-YRu" id="jxN-1Z-LXK"/>
                         <outlet property="sliderImageView" destination="fJ8-z9-2MB" id="ghk-EB-ofN"/>
                         <segue destination="q9E-CL-jM1" kind="show" identifier="toSetListRoomVC" id="8b3-MQ-DUP"/>
                     </connections>
@@ -713,6 +714,45 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R4a-eb-EFL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1362" y="136"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="yiG-ra-hy0">
+            <objects>
+                <viewController id="63N-OY-GWb" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fuy-fD-3YS"/>
+                        <viewControllerLayoutGuide type="bottom" id="XDr-kc-m6a"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dvY-xN-o0r">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2345" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EEq-Bt-RYW">
+                                <rect key="frame" x="88" y="220" width="147" height="75"/>
+                                <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="64"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enter room code" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p86-h0-S1W">
+                                <rect key="frame" x="71" y="191" width="181" height="21"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="utB-AX-Ek7">
+                                <rect key="frame" x="25" y="30" width="26" height="26"/>
+                                <state key="normal" image="plusButton">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.56965988874435425" green="0.56974464654922485" blue="0.5696413516998291" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nQQ-VD-Svj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1899" y="152"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zDW-MG-o0y">

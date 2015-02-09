@@ -18,6 +18,8 @@
 @property (nonatomic) BOOL isHost;
 @property (nonatomic) BOOL joinLabelPushed;
 @property (nonatomic) BOOL hostLabelPushed;
+@property (nonatomic) BOOL joinLabelSelected;
+@property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @end
 
 @implementation MainMenuViewController
@@ -28,6 +30,17 @@
     //Add the radial gradient subview to the background.
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.backgroundView addSubview:radiantBackgroundView];
+    
+    //Create A blur
+    UIVisualEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    UIVisualEffectView *visualEffectView;
+    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    visualEffectView.frame = self.view.bounds;
+    visualEffectView.alpha = 0;
+    [self.mainMenuView addSubview:visualEffectView];
+    self.blurEffectView = visualEffectView;
+
     
 }
 
@@ -114,7 +127,7 @@
             self.joinLabel.alpha = 1;
             self.joinLabelPushed = YES;
         } completion:^(BOOL finished) {
-            //completion
+            self.joinLabelSelected = YES;
         }];
     }
     else
@@ -124,8 +137,9 @@
                 [self.joinLabel setCenter:CGPointMake(222,267)];
                 self.joinLabel.alpha = .5;
                 self.joinLabelPushed = NO;
+                self.joinLabelSelected = NO;
             } completion:^(BOOL finished) {
-                //completion
+                
             }];
             
         }
@@ -153,22 +167,24 @@
     }
         
     }
+
     
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         
-        //Release the join or host labels from push animation.
-        [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            [self.joinLabel setCenter:CGPointMake(222,267)];
-            self.joinLabel.alpha = .5;
-        } completion:^(BOOL finished) {
-            //completion
-        }];
-        [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            [self.hostLabel setCenter:CGPointMake(219.5f, 336)];
-            self.hostLabel.alpha = .5;
-        } completion:^(BOOL finished) {
-            //completion
-        }];
+        if (self.joinLabelSelected) {
+            [UIView animateWithDuration:.25 animations:^{
+                self.hostLabel.alpha = 0;
+                self.lineView1.alpha = 0;
+                self.lineView2.alpha = 0;
+                self.sliderImageView.alpha = 0;
+                self.joinLabel.alpha = 0;
+                self.blurEffectView.alpha = 1;
+            }];
+        }
+        else if (self.hostLabelPushed) {
+            //do everything that allows the user to join the room.
+        }
+        else {
         
         [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
@@ -190,6 +206,7 @@
                                  }];
                              
                          }];
+    }
     }
 }
 
