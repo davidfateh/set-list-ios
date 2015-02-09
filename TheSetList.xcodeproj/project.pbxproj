@@ -12,6 +12,7 @@
 		186DDF3D1A7828FB00B4EF16 /* remote-enabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */; };
 		186DDF3F1A78297800B4EF16 /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 186DDF3E1A78297800B4EF16 /* exit.png */; };
 		1873CDA21A7305A100D8CBC0 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 1873CDA11A7305A100D8CBC0 /* check.png */; };
+		1881C8361A88583D00A50523 /* CustomSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1881C8351A88583D00A50523 /* CustomSegue.m */; };
 		18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B881A76D0FC00C388B5 /* purple-glow.png */; };
 		18956B901A770B8E00C388B5 /* dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8F1A770B8E00C388B5 /* dot.png */; };
 		18956B921A7734C200C388B5 /* remote.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B911A7734C200C388B5 /* remote.png */; };
@@ -65,6 +66,8 @@
 		186DDF3C1A7828FA00B4EF16 /* remote-enabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "remote-enabled.png"; sourceTree = "<group>"; };
 		186DDF3E1A78297800B4EF16 /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
 		1873CDA11A7305A100D8CBC0 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
+		1881C8341A88583D00A50523 /* CustomSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomSegue.h; sourceTree = "<group>"; };
+		1881C8351A88583D00A50523 /* CustomSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomSegue.m; sourceTree = "<group>"; };
 		18956B881A76D0FC00C388B5 /* purple-glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-glow.png"; sourceTree = "<group>"; };
 		18956B8F1A770B8E00C388B5 /* dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot.png; sourceTree = "<group>"; };
 		18956B911A7734C200C388B5 /* remote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remote.png; sourceTree = "<group>"; };
@@ -172,6 +175,8 @@
 				18EC3D081A6C68B500AFD97F /* SetList View Controller */,
 				18EC3D091A6C699400AFD97F /* SocketKeeperSingleton.h */,
 				18EC3D0A1A6C699400AFD97F /* SocketKeeperSingleton.m */,
+				1881C8341A88583D00A50523 /* CustomSegue.h */,
+				1881C8351A88583D00A50523 /* CustomSegue.m */,
 				18EC3CC91A65F64C00AFD97F /* Images.xcassets */,
 				18EC3CCB1A65F64C00AFD97F /* LaunchScreen.xib */,
 				18EC3CC01A65F64C00AFD97F /* TheSetList.xcdatamodeld */,
@@ -431,6 +436,7 @@
 				18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */,
 				18EC3CBC1A65F64B00AFD97F /* main.m in Sources */,
 				1895D5D31A88221400A1B243 /* MainMenuViewController.m in Sources */,
+				1881C8361A88583D00A50523 /* CustomSegue.m in Sources */,
 				18EC3D071A6C67E200AFD97F /* SetListTableViewCell.m in Sources */,
 				18EC3D001A67413B00AFD97F /* SetListRoomViewController.m in Sources */,
 				18EC3D0B1A6C699400AFD97F /* SocketKeeperSingleton.m in Sources */,

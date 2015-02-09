@@ -20,6 +20,7 @@
 @property (nonatomic) BOOL joinLabelPushed;
 @property (nonatomic) BOOL hostLabelPushed;
 @property (nonatomic) BOOL joinLabelSelected;
+@property (nonatomic) BOOL hostLabelSelected;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @end
 
@@ -49,7 +50,7 @@
     /////////JOIN ROOM VIEW///////////
     //Create a toolbar to push to the next view.
     UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
-    numberToolbar.barStyle = UIBarStyleDefault;
+    numberToolbar.barStyle = UIBarStyleBlackTranslucent;
     UIBarButtonItem *joinButton = [[UIBarButtonItem alloc]initWithTitle:@"\u279e" style:UIBarButtonItemStyleDone target:self action:@selector(doneWithNumberPad)];
     
     numberToolbar.items = [NSArray arrayWithObjects:
@@ -89,8 +90,18 @@
     [self returnedToMenu];
     self.roomCodeTextField.inputAccessoryView.hidden = YES;
     self.roomCodeTextField.text = nil;
+    self.menuView.alpha = 0;
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [UIView animateWithDuration:.5 delay:.6 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.menuView.alpha = 1;
+    } completion:^(BOOL finished) {
+        //completed
+    }];
+
+}
 
 
 #pragma mark - Notifications
@@ -102,7 +113,7 @@
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnConnect object:nil];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+            [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
     });
 }
 
@@ -117,12 +128,27 @@
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kInitialize     object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnHostRoomConnect object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kOnConnect object:nil];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
-        
-    });
-    
+    if (self.joinLabelSelected) {
+        self.roomCodeTextField.inputAccessoryView.hidden = YES;
+        [self.roomCodeTextField resignFirstResponder];
+        self.menuView.hidden = YES;
+        [self returnJoinLabel];
+        [UIView animateWithDuration:.25 animations:^{
+            self.roomCodeView.alpha = 0;
+            self.blurEffectView.alpha = 0;
+        } completion:^(BOOL finished) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+            });
+            
+        }];
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+        });
+    }
 }
 
 #pragma mark - Navigation
@@ -199,21 +225,14 @@
             self.hostLabel.alpha = 1;
             self.hostLabelPushed = YES;
         } completion:^(BOOL finished) {
-            //completion
+            
         }];
         
     }
     else
-    {   if(self.hostLabelPushed) {
-        [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            [self.hostLabel setCenter:CGPointMake(219.5f, 336)];
-            self.hostLabel.alpha = .5;
-            self.hostLabelPushed = NO;
-        } completion:^(BOOL finished) {
-            //completion
-        }];
-    }
-        
+    {   if(self.hostLabelPushed){
+            [self returnHostLabel];
+        }
     }
 
     
@@ -233,7 +252,6 @@
                 self.roomCodeTextField.inputAccessoryView.hidden = NO;
                 [self.roomCodeTextField becomeFirstResponder];
                 [self returnSliderWithRecognizer:recognizer];
-                [self returnJoinLabel];
                 self.exitJoinRoomImageView.center = CGPointMake(self.exitJoinRoomImageView.center.x, self.exitJoinRoomImageView.center.y -75);
                 self.exitJoinRoomImageView.hidden = NO;
                 [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -247,7 +265,15 @@
         
         //when the user selects the host room option
         else if (self.hostLabelPushed) {
-            //do everything that allows the user to join the room.
+            [self.socket emit:@"start room"];
+            [UIView animateWithDuration:.25 animations:^{
+                self.menuView.alpha = 0;
+            } completion:^(BOOL finished)
+            {
+                [self returnSliderWithRecognizer:recognizer];
+                [self returnHostLabel];
+            }];
+
         }
         
         
@@ -290,6 +316,9 @@
 
 - (IBAction)exitJoinRoomViewButtonPressed:(UIButton *)sender
 {
+    
+    [self.joinLabel setCenter:CGPointMake(222,267)];
+    self.joinLabel.alpha = .5;
     [self.roomCodeTextField resignFirstResponder];
     self.roomCodeTextField.text = nil;
     self.joinLabelPushed = NO;
@@ -349,6 +378,19 @@
         self.joinLabelSelected = NO;
     } completion:^(BOOL finished) {
         self.joinLabelSelected = NO;
+    }];
+
+}
+
+-(void)returnHostLabel
+{
+    [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        [self.hostLabel setCenter:CGPointMake(219.5f, 336)];
+        self.hostLabel.alpha = .5;
+        self.hostLabelPushed = NO;
+        self.hostLabelSelected = NO;
+    } completion:^(BOOL finished) {
+        self.hostLabelSelected = NO;
     }];
 
 }

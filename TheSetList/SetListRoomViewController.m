@@ -188,10 +188,23 @@
             self.tracks = setListTracks;
         }
     }
+    
+    self.setListView.alpha = 0;
+    self.searchView.alpha = 0;
+    
 }
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
+    
+    
+    [UIView animateWithDuration:.5 delay:.35 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.searchView.alpha = 1;
+        self.setListView.alpha = 1;
+    } completion:^(BOOL finished) {
+        //completed
+    }];
+    
     if (self.isHost){
         NSError *sessionError = nil;
         NSError *activationError = nil;
@@ -760,7 +773,14 @@
     //close the socket.
     [self.socket close];
     //pop out
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+    [UIView animateWithDuration:.35 animations:^{
+        self.setListView.alpha = 0;
+        self.settingsView.alpha = 0;
+        self.blurEffectView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self.navigationController popToRootViewControllerAnimated:NO];
+    }];
     
 }
 
