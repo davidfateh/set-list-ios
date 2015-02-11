@@ -616,7 +616,17 @@
         }
         else if (self.leaveLabelSelected)
         {
-            //perform methods allowing the user to leave the current room. 
+            self.setListView.hidden = YES;
+            self.searchView.hidden = YES;
+            [UIView animateWithDuration:.1 animations:^{
+                self.blurEffectView.alpha = 0;
+                self.menuView.alpha = 0;
+                self.sliderView.alpha = 0;
+            } completion:^(BOOL finished) {
+                self.menuView.hidden = YES;
+                self.sliderView.hidden = YES;
+                [self disconnectSocketAndPopOut];
+            }];
         }
         
         
@@ -778,7 +788,7 @@
 //When remote text field returns
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    //Joing to the remote host, emit the password, if correct password allow the user to be the remote host and pause, play and skip songs.
+    //Join to the remote host, emit the password, if correct password allow the user to be the remote host and pause, play and skip songs.
     UIImage *playImage = [UIImage imageNamed:@"Play"];
     UIImage *pauseImage = [UIImage imageNamed:@"Pause"];
     NSString *remotePassword = self.remoteTextField.text;
@@ -790,8 +800,9 @@
         NSDictionary *key = [args objectAtIndex:0];
         
         if ([key objectForKey:@"error"]) {
-            self.remoteTextField.text = [key objectForKey:@"error"];
+            self.remoteTextLabel.text = [key objectForKey:@"error"];
         }
+        
         //if the password is a correct, and connection is successful, make the remote host's views appear.
         else{
             NSLog(@"Remote Host Connection Succesful");
@@ -813,7 +824,6 @@
             self.playButtonPressed.hidden = NO;
             self.skipButtonPressed.hidden = NO;
             self.remoteTextField.hidden = YES;
-            self.remoteTextField.text = @"Remote connected";
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 0;
                 self.setListTableViewHeightConst.constant = 264;
