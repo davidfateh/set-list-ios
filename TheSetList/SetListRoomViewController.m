@@ -51,14 +51,6 @@
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
     
-    self.exitSettingsViewButton.transform = CGAffineTransformMakeRotation(M_PI/4);
-    
-    //Set the remotePasswords textfield font colors etc.
-    [self.remotePasswordTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
-    self.remotePasswordTextField.tintColor = [UIColor whiteColor];
-    self.remotePasswordTextField.delegate = self;
-    self.remotePasswordTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    
     //Set the delegates for the search view.
     self.searchBar.delegate = self;
     self.searchTableView.delegate = self;
@@ -78,9 +70,6 @@
     self.tableView.layoutMargins = UIEdgeInsetsZero;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    //Set the number of the namespace/roomCode. Sent from creation VC.
-    self.roomCodeLabel.text = self.roomCode;
-    
     //Set the UUID for the user
     self.UUIDString = [[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"];
     
@@ -90,6 +79,10 @@
     self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
     
     self.longPressRec.minimumPressDuration = 0;
+    self.exitRemotePlusImage.transform = CGAffineTransformMakeRotation(M_PI/4);
+    self.remoteTextField.tintColor = [UIColor whiteColor];
+    self.remoteTextField.delegate = self;
+    self.remoteTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     
     //Add a blur effect view in order to blur the background upon opening the search view.
     UIVisualEffect *blurEffect;
@@ -132,7 +125,7 @@
         NSLog(@"User is the host of this room");
         self.isHost = YES;
         [self viewForNoCurrentArtistAsHost];
-        self.roomCodeLabel.text = roomCodeAsHost;
+        self.hostRoomCodeLabel.text = roomCodeAsHost;
         
         if (!self.hostQueue) {
             self.hostQueue = [[NSMutableArray alloc]init];
@@ -197,6 +190,7 @@
     
     self.setListView.alpha = 0;
     self.searchView.alpha = 0;
+    self.sliderView.alpha = 0;
     
 }
 -(void)viewDidAppear:(BOOL)animated
@@ -207,6 +201,7 @@
     [UIView animateWithDuration:.5 delay:.35 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.searchView.alpha = 1;
         self.setListView.alpha = 1;
+        self.sliderView.alpha = 1;
     } completion:^(BOOL finished) {
         //completed
     }];
@@ -550,21 +545,20 @@
                 self.remoteLabel.alpha = 1;
                 self.remoteLabelPushed = YES;
             } completion:^(BOOL finished) {
-                //completion
+                self.remoteLabelSelected = YES;
             }];
         }
         else
         {
-            if (self.remoteLabelPushed) {
-                [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                    [self.remoteLabel setFrame:CGRectMake(181, 236, 60, 20)];
-                    self.remoteLabel.alpha = .5;
-                    self.remoteLabelPushed = NO;
-                } completion:^(BOOL finished) {
-                    //completion
-                }];
-                
-            }
+            self.remoteLabelSelected = NO;
+            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self.remoteLabel setFrame:CGRectMake(181, 236, 60, 20)];
+                self.remoteLabel.alpha = .5;
+                self.remoteLabelPushed = NO;
+            } completion:^(BOOL finished) {
+                //completion
+            }];
+            
         }
         
         if ((recognizer.view.center.y + point.y)>392 && (recognizer.view.center.y + point.y)<442) {
@@ -574,21 +568,19 @@
                 self.leaveLabel.alpha = 1;
                 self.leaveLabelPushed = YES;
             } completion:^(BOOL finished) {
-                //completion
+                self.leaveLabelSelected = YES;
             }];
         }
         else
         {
-            if (self.leaveLabelPushed) {
-                [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                    [self.leaveLabel setFrame:CGRectMake(195,410, 46, 21)];
-                    self.leaveLabel.alpha = .5;
-                    self.leaveLabelPushed = NO;
-                } completion:^(BOOL finished) {
-                    //completion
-                }];
-                
-            }
+            self.leaveLabelSelected = NO;
+            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self.leaveLabel setFrame:CGRectMake(195,410, 46, 21)];
+                self.leaveLabel.alpha = .5;
+                self.leaveLabelPushed = NO;
+            } completion:^(BOOL finished) {
+                //completion
+            }];
         }
         
     }
@@ -596,39 +588,76 @@
     {
         self.searchView.hidden = NO;
         self.purpleGlowImageView.alpha = 0;
-        [UIView animateWithDuration:.3 animations:^{
-            [self.sliderView setFrame:CGRectMake(263,
-                                                 20,
-                                                 self.sliderView.frame.size.width,
-                                                 self.sliderView.frame.size.height)];
-            
-            CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
-            [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
-                                                line1Loc,
-                                                self.lineView1.frame.size.width,
-                                                self.lineView1.frame.size.height)];
-            CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
-            [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
-                                                line2Loc,
-                                                self.lineView2.frame.size.width,
-                                                self.lineView2.frame.size.height)];
-            
-            self.blurEffectView.alpha = 0;
-            self.sliderImageView.alpha = .2;
-            self.menuView.alpha = 0;
-            [self.sliderImageView setTransform:CGAffineTransformMakeScale(1.0, 1.0)];
-            self.sliderImageView.center = CGPointMake(30 , 25);
-            self.searchView.alpha = 1;
-        } completion:^(BOOL finished) {
-            double time = 0;
-            [self purpleGlowAnimationFromBottomWithDelay:&time];
-            self.sliderImageView.alpha = 1;
-            self.menuView.hidden = YES;
-            [self.sliderImageView setImage:menuImage];
-        }];
         
-    }
+        //If the user has the remote selected, make the remote view appear and allow the user to put in the remote password.
+        if (self.remoteLabelSelected) {
+            self.remoteCodeView.alpha = 0;
+            self.remoteCodeView.hidden = NO;
+            self.exitRemotePlusImage.hidden = YES;
+            [UIView animateWithDuration:.3 animations:^{
+                self.menuView.alpha = 0;
+                self.sliderView.alpha = 0;
+                self.remoteCodeView.alpha = 1;
+                self.blurEffectView.alpha = 1;
+            } completion:^(BOOL finished) {
+                self.menuView.hidden = YES;
+                [self.remoteTextField becomeFirstResponder];
+                self.exitRemotePlusImage.center = CGPointMake(self.exitRemotePlusImage.center.x,
+                                                              self.exitRemotePlusImage.center.y -75);
+                self.exitRemotePlusImage.hidden = NO;
+                [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    self.exitRemotePlusImage.center = CGPointMake(self.exitRemotePlusImage.center.x, self.exitRemotePlusImage.center.y + 75);
+                } completion:^(BOOL finished) {
+                    [self returnMenuSlider];
+                }];
+                
+            }];
 
+        }
+        else if (self.leaveLabelSelected)
+        {
+            //perform methods allowing the user to leave the current room. 
+        }
+        
+        
+        
+        
+        
+        else {
+            //If the user does not have a selection, animate the slider back to its bar button position. Clear the menu view and animate the purple glow upon return.
+            [UIView animateWithDuration:.3 animations:^{
+                [self.sliderView setFrame:CGRectMake(263,
+                                                     20,
+                                                     self.sliderView.frame.size.width,
+                                                     self.sliderView.frame.size.height)];
+                
+                CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
+                [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
+                                                    line1Loc,
+                                                    self.lineView1.frame.size.width,
+                                                    self.lineView1.frame.size.height)];
+                CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
+                [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
+                                                    line2Loc,
+                                                    self.lineView2.frame.size.width,
+                                                    self.lineView2.frame.size.height)];
+                
+                self.blurEffectView.alpha = 0;
+                self.sliderImageView.alpha = .2;
+                self.menuView.alpha = 0;
+                [self.sliderImageView setTransform:CGAffineTransformMakeScale(1.0, 1.0)];
+                self.sliderImageView.center = CGPointMake(30 , 25);
+                self.searchView.alpha = 1;
+            } completion:^(BOOL finished) {
+                double time = 0;
+                [self purpleGlowAnimationFromBottomWithDelay:&time];
+                self.sliderImageView.alpha = 1;
+                self.menuView.hidden = YES;
+                [self.sliderImageView setImage:menuImage];
+            }];
+            
+        }
+    }
 }
 
 #pragma mark - Custom Buttons
@@ -752,7 +781,7 @@
     //Joing to the remote host, emit the password, if correct password allow the user to be the remote host and pause, play and skip songs.
     UIImage *playImage = [UIImage imageNamed:@"Play"];
     UIImage *pauseImage = [UIImage imageNamed:@"Pause"];
-    NSString *remotePassword = self.remotePasswordTextField.text;
+    NSString *remotePassword = self.remoteTextField.text;
     NSDictionary *passwordDic = @{@"password" : remotePassword};
     NSArray *argsArray = @[passwordDic];
     [self.socket emit:kRemoteAdd args:argsArray];
@@ -761,7 +790,7 @@
         NSDictionary *key = [args objectAtIndex:0];
         
         if ([key objectForKey:@"error"]) {
-            self.remotePasswordInfoLabel.text = [key objectForKey:@"error"];
+            self.remoteTextField.text = [key objectForKey:@"error"];
         }
         //if the password is a correct, and connection is successful, make the remote host's views appear.
         else{
@@ -770,7 +799,7 @@
             
             __weak typeof(self) weakSelf = self;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.remotePasswordTextField resignFirstResponder];
+                [weakSelf.remoteTextField resignFirstResponder];
             });
             [self.socket on:@"playing" callback:^(NSArray *args) {
                 [self.playPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
@@ -783,9 +812,8 @@
             self.skipButton.hidden = NO;
             self.playButtonPressed.hidden = NO;
             self.skipButtonPressed.hidden = NO;
-            [self exitSettingsAnimation];
-            self.remotePasswordTextField.hidden = YES;
-            self.remotePasswordInfoLabel.text = @"Remote connected";
+            self.remoteTextField.hidden = YES;
+            self.remoteTextField.text = @"Remote connected";
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 0;
                 self.setListTableViewHeightConst.constant = 264;
@@ -801,39 +829,44 @@
     return YES;
 }
 
-- (IBAction)setListlogoPressed:(UIButton *)sender
-{
-    //Bring up the remote view with an animation, and blur the background. Hide the search view.
-    self.settingsView.hidden = NO;
-    self.searchView.hidden = YES;
-    [UIView animateWithDuration:.5 animations:^{
-        self.blurEffectView.alpha = 1;
-        self.roomCodeLabel.alpha = 1;
-        self.roomCodeTextLabel.alpha = 1;
-        self.whiteBorderView1.alpha  = 1;
-        self.whiteBorderView2.alpha = 1;
-        self.remotePasswordInfoLabel.alpha = 1;
-        self.leaveRoomButton.alpha = 1;
-        self.remoteImageView.alpha = 1;
-        self.exitSettingsViewButton.alpha = 1;
-        self.remotePasswordTextField.alpha = 1;
-        }];
-    
-}
-- (IBAction)exitSettingsButtonPressed:(UIButton *)sender
-{
-    [self exitSettingsAnimation];
-    double time = .3;
-    [self purpleGlowAnimationFromBottomWithDelay:&time];
-    [self.remotePasswordTextField resignFirstResponder];
-}
-
-- (IBAction)leaveRoomButtonPressed:(UIButton *)sender
-{
-    [self disconnectSocketAndPopOut];
-}
-
 #pragma mark - Helper Methods
+
+-(void)returnMenuSlider
+{
+    UIImage *menuImage = [UIImage imageNamed:@"menu-button.png"];
+    [UIView animateWithDuration:.3 animations:^{
+        [self.sliderView setFrame:CGRectMake(263,
+                                             20,
+                                             self.sliderView.frame.size.width,
+                                             self.sliderView.frame.size.height)];
+        
+        CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
+        [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
+                                            line1Loc,
+                                            self.lineView1.frame.size.width,
+                                            self.lineView1.frame.size.height)];
+        CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
+        [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
+                                            line2Loc,
+                                            self.lineView2.frame.size.width,
+                                            self.lineView2.frame.size.height)];
+        
+        self.blurEffectView.alpha = 0;
+        self.sliderImageView.alpha = .2;
+        self.menuView.alpha = 0;
+        [self.sliderImageView setTransform:CGAffineTransformMakeScale(1.0, 1.0)];
+        self.sliderImageView.center = CGPointMake(30 , 25);
+        self.searchView.alpha = 1;
+    } completion:^(BOOL finished)
+    {
+        double time = 0;
+        [self purpleGlowAnimationFromBottomWithDelay:&time];
+        self.sliderView.alpha = 1;
+        self.sliderImageView.alpha = 1;
+        self.menuView.hidden = YES;
+        [self.sliderImageView setImage:menuImage];
+    }];
+}
 
 
 -(void)viewForNoCurrentArtistAsHost
@@ -917,8 +950,6 @@
     //pop out
     
     [UIView animateWithDuration:.35 animations:^{
-        self.setListView.alpha = 0;
-        self.settingsView.alpha = 0;
         self.blurEffectView.alpha = 0;
     } completion:^(BOOL finished) {
         [self.navigationController popToRootViewControllerAnimated:NO];
@@ -926,36 +957,6 @@
     
 }
 
--(void)exitSettingsAnimation
-{
-    self.plusButton.alpha = 0;
-    self.searchView.hidden = NO;
-    [UIView animateWithDuration:.3 animations:^{
-        self.blurEffectView.alpha = 0;
-        self.roomCodeLabel.alpha = 0;
-        self.roomCodeTextLabel.alpha = 0;
-        self.whiteBorderView1.alpha  = 0;
-        self.whiteBorderView2.alpha = 0;
-        self.remotePasswordInfoLabel.alpha = 0;
-        self.leaveRoomButton.alpha = 0;
-        self.remoteImageView.alpha = 0;
-        self.exitSettingsViewButton.alpha = 0;
-        self.remotePasswordTextField.alpha = 0;
-        self.plusButton.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-        self.settingsView.hidden = YES;
-        if (self.isRemoteHost) {
-            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
-            self.remoteImageView.image = purpleHostIndicator;
-            self.remoteImageVertConst.constant = 201;
-            self.remoteLabelVertConst.constant = 230;
-        }
-
-        [self purpleGlowImageView];
-    }];
-
-}
 
 -(void)purpleGlowAnimationFromBottomWithDelay:(NSTimeInterval *)delay
 {
@@ -1134,4 +1135,16 @@
     NSLog(@"Memory warning!");
 }
 
+- (IBAction)exitRemoteButtonPressed:(UIButton *)sender
+{
+    [self.remoteTextField resignFirstResponder];
+    self.remoteTextField.text = nil;
+    [UIView animateWithDuration:.3 animations:^{
+        self.remoteCodeView.alpha = 0;
+        self.blurEffectView.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.remoteCodeView.hidden = YES;
+    }];
+
+}
 @end

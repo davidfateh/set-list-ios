@@ -22,8 +22,6 @@
 @property (strong, nonatomic) IBOutlet UIView *setListView;
 @property (strong, nonatomic) NSArray *tracks;
 @property (strong, nonatomic) IBOutlet UIView *currentArtistViewBackground;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteLabelVertConst;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *remoteImageVertConst;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;
 @property (strong, nonatomic) NSString *UUIDString; 
@@ -50,7 +48,6 @@
 - (IBAction)playPauseButtonPressed:(UIButton *)sender;
 - (IBAction)skipButtonPressed:(UIButton *)sender;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewHeightConst;
-- (IBAction)setListlogoPressed:(UIButton *)sender;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewVertConst;
 @property (strong, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (strong, nonatomic) IBOutlet UILabel *hostRoomCodeLabel;
@@ -63,22 +60,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *skipButtonPressed;
 
 
-//SETTINGS VIEW properties and methods
-@property (strong, nonatomic) IBOutlet UIView *settingsView;
-@property (strong, nonatomic) IBOutlet UITextField *remotePasswordTextField;
-@property (strong, nonatomic) IBOutlet UIImageView *remoteImageView;
-@property (strong, nonatomic) IBOutlet UIButton *exitSettingsViewButton;
-@property (strong, nonatomic) IBOutlet UIView *whiteBorderView2;
-@property (strong, nonatomic) IBOutlet UILabel *remotePasswordInfoLabel;
-@property (strong, nonatomic) IBOutlet UILabel *roomCodeTextLabel;
-@property (strong, nonatomic) IBOutlet UIView *whiteBorderView1;
-@property (strong, nonatomic) IBOutlet UILabel *roomCodeLabel;
-@property (strong, nonatomic) IBOutlet UIButton *leaveRoomButton;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *leaveRoomButtonVertConst;
-- (IBAction)exitSettingsButtonPressed:(UIButton *)sender;
-- (IBAction)leaveRoomButtonPressed:(UIButton *)sender;
-
-
 //MENU VIEW properties and methods
 @property (strong, nonatomic) IBOutlet UIImageView *sliderImageView;
 @property (strong, nonatomic) IBOutlet UIView *sliderView;
@@ -89,6 +70,16 @@
 @property (strong, nonatomic) IBOutlet UILabel *remoteLabel;
 @property (strong, nonatomic) IBOutlet UILabel *leaveLabel;
 -(IBAction)handleLongPress:(UILongPressGestureRecognizer *)recognizer;
+
+//REMOTE PASSWORD VIEW properties and methods
+@property (strong, nonatomic) IBOutlet UIView *remoteCodeView;
+@property (strong, nonatomic) IBOutlet UITextField *remoteTextField;
+@property (strong, nonatomic) IBOutlet UILabel *remoteTextLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *exitRemotePlusImage;
+
+- (IBAction)exitRemoteButtonPressed:(UIButton *)sender;
+
+
 
 
 @end

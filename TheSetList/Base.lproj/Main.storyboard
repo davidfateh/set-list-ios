@@ -253,20 +253,6 @@
                                             <action selector="skipButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="oXp-xX-sd1"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk7-qf-x4X">
-                                        <rect key="frame" x="93" y="22" width="138" height="45"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="45" id="GRO-kH-omi"/>
-                                            <constraint firstAttribute="width" constant="138" id="upR-87-a4B"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <state key="normal">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="setListlogoPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="Vga-b4-o7w"/>
-                                        </connections>
-                                    </button>
                                     <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ddj-u0-EjL">
                                         <rect key="frame" x="9" y="304" width="302" height="264"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="deviceRGB"/>
@@ -397,7 +383,6 @@
                                     <constraint firstItem="4CT-dz-BcD" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="170" id="Fgk-Lp-9ll"/>
                                     <constraint firstItem="1xR-U8-lzH" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="180" id="GPW-6p-51y"/>
                                     <constraint firstItem="kmt-KZ-vGe" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="109" id="Lct-Rx-weS"/>
-                                    <constraint firstItem="bk7-qf-x4X" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="93" id="M8z-NR-36B"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="216" id="MOk-54-a4e"/>
                                     <constraint firstItem="QRe-J8-h5x" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="18" id="Qfr-po-DDI"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="100" id="Syl-JA-PNr"/>
@@ -405,7 +390,6 @@
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="XBF-1d-B9r"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="29" id="XzW-i3-fjz"/>
                                     <constraint firstItem="Rpy-ls-d7e" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="70" id="YQn-Xy-DpS"/>
-                                    <constraint firstItem="bk7-qf-x4X" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="22" id="a8O-g2-7Ho"/>
                                     <constraint firstItem="G7J-l7-Cmn" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="29" id="aSm-qz-G2J"/>
                                     <constraint firstItem="4CT-dz-BcD" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="82" id="fuB-eO-EBI"/>
                                     <constraint firstItem="Lwh-Rq-NrE" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="250" id="iT6-xD-xVU"/>
@@ -419,125 +403,6 @@
                                     <constraint firstItem="ddj-u0-EjL" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="9" id="qZL-uY-RgK"/>
                                     <constraint firstItem="Uho-uL-8JY" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="166" id="sez-qc-rJ9"/>
                                     <constraint firstAttribute="height" constant="568" id="xKx-cB-yz7"/>
-                                </constraints>
-                            </view>
-                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wWG-NW-vCz" userLabel="Settings View">
-                                <rect key="frame" x="-320" y="0.0" width="320" height="568"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" background="TextBoxBorder" translatesAutoresizingMaskIntoConstraints="NO" id="UMZ-gG-6Qe">
-                                        <rect key="frame" x="74" y="212" width="172" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="E0X-OJ-Q5V"/>
-                                            <constraint firstAttribute="width" constant="172" id="ddL-kP-KOw"/>
-                                        </constraints>
-                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="join"/>
-                                    </textField>
-                                    <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DZT-1t-Rze">
-                                        <rect key="frame" x="285" y="29" width="25" height="25"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="25" id="c7U-3W-6dL"/>
-                                            <constraint firstAttribute="width" constant="25" id="nv5-tf-sZK"/>
-                                        </constraints>
-                                        <state key="normal" backgroundImage="plusButton">
-                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.31" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="exitSettingsButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="ybL-yG-BV5"/>
-                                        </connections>
-                                    </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter the remote password to connect as host." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uhk-DG-jFR">
-                                        <rect key="frame" x="34" y="250" width="252" height="14"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="252" id="ZRk-9Y-Uek"/>
-                                            <constraint firstAttribute="height" constant="14" id="iah-Ji-e38"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
-                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <imageView userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="remote.png" translatesAutoresizingMaskIntoConstraints="NO" id="9wE-xP-O11">
-                                        <rect key="frame" x="148" y="181" width="25" height="18"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="25" id="US8-ko-0o1"/>
-                                            <constraint firstAttribute="height" constant="18" id="igx-eR-Ndi"/>
-                                        </constraints>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1743" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lei-CJ-7q1">
-                                        <rect key="frame" x="134" y="110" width="52" height="25"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="52" id="BHz-Gc-Rfx"/>
-                                            <constraint firstAttribute="height" constant="25" id="Gn0-Ia-i2w"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="21"/>
-                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Room Code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bku-Xw-h7V">
-                                        <rect key="frame" x="114" y="93" width="92" height="20"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="20" id="FIA-TY-oub"/>
-                                            <constraint firstAttribute="width" constant="92" id="Fcd-F0-cVW"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                        <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gnn-PE-c1r">
-                                        <rect key="frame" x="38" y="155" width="244" height="1"/>
-                                        <color key="backgroundColor" white="1" alpha="0.46999999999999997" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="1Vb-0y-2vM"/>
-                                            <constraint firstAttribute="width" constant="244" id="q1S-hw-MdS"/>
-                                        </constraints>
-                                    </view>
-                                    <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HgJ-rE-qhq">
-                                        <rect key="frame" x="38" y="294" width="244" height="1"/>
-                                        <color key="backgroundColor" white="1" alpha="0.46999999999999997" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="244" id="bnc-Sb-4UJ"/>
-                                            <constraint firstAttribute="height" constant="1" id="gDy-fG-Szw"/>
-                                        </constraints>
-                                    </view>
-                                    <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HWh-Mc-EGE">
-                                        <rect key="frame" x="74" y="325" width="172" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="4ls-91-Bcl"/>
-                                            <constraint firstAttribute="width" constant="172" id="rHa-uR-ZIN"/>
-                                        </constraints>
-                                        <state key="normal" title="Leave Room" backgroundImage="ExitButtonBackground">
-                                            <color key="titleColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.71999999999999997" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <color key="titleShadowColor" red="0.67119109630584717" green="0.5864253044128418" blue="0.58480453491210938" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="leaveRoomButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="ila-J9-R2F"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="0.02" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="320" id="4GJ-UZ-Jxd"/>
-                                    <constraint firstItem="lei-CJ-7q1" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="110" id="5Ja-hJ-n8N"/>
-                                    <constraint firstItem="9wE-xP-O11" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="181" id="BGF-Zy-QV3"/>
-                                    <constraint firstItem="Uhk-DG-jFR" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="250" id="Dic-Me-Qie"/>
-                                    <constraint firstItem="gnn-PE-c1r" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="38" id="FHO-Zr-fmP"/>
-                                    <constraint firstItem="Uhk-DG-jFR" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="34" id="I4U-rT-rdJ"/>
-                                    <constraint firstAttribute="height" constant="568" id="MQn-mx-Mag"/>
-                                    <constraint firstItem="HWh-Mc-EGE" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="325" id="MsF-pd-Jl8"/>
-                                    <constraint firstItem="UMZ-gG-6Qe" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="212" id="PIk-VM-54c"/>
-                                    <constraint firstItem="HWh-Mc-EGE" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="74" id="PVi-rh-jce"/>
-                                    <constraint firstItem="UMZ-gG-6Qe" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="74" id="QUG-Gv-NF1"/>
-                                    <constraint firstItem="HgJ-rE-qhq" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="294" id="Tot-tX-zGo"/>
-                                    <constraint firstItem="9wE-xP-O11" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="148" id="Wcq-9M-9qt"/>
-                                    <constraint firstItem="DZT-1t-Rze" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="285" id="Ylg-nc-c25"/>
-                                    <constraint firstItem="Bku-Xw-h7V" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="93" id="etz-AR-t1x"/>
-                                    <constraint firstItem="Bku-Xw-h7V" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="114" id="kfc-DA-Hzg"/>
-                                    <constraint firstItem="gnn-PE-c1r" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="155" id="pwW-b4-oce"/>
-                                    <constraint firstItem="lei-CJ-7q1" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="134" id="tus-4v-7nI"/>
-                                    <constraint firstItem="DZT-1t-Rze" firstAttribute="top" secondItem="wWG-NW-vCz" secondAttribute="top" constant="29" id="v6E-Pf-3ii"/>
-                                    <constraint firstItem="HgJ-rE-qhq" firstAttribute="leading" secondItem="wWG-NW-vCz" secondAttribute="leading" constant="38" id="wP6-Yh-7qZ"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YXq-UI-Cxq" userLabel="Search View">
@@ -748,14 +613,42 @@
                                     <outletCollection property="gestureRecognizers" destination="3TH-Qj-0JI" appends="YES" id="FAE-KW-fWM"/>
                                 </connections>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MX3-QF-afE" userLabel="Remote Code View">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jcu-SN-HBD">
+                                        <rect key="frame" x="8" y="210" width="304" height="75"/>
+                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="64"/>
+                                        <textInputTraits key="textInputTraits" keyboardAppearance="alert"/>
+                                    </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Remote password" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O7V-39-KCh" userLabel="Enter password">
+                                        <rect key="frame" x="71" y="181" width="181" height="21"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TjP-w6-y6F" userLabel="Exit Room Code Button">
+                                        <rect key="frame" x="25" y="30" width="44" height="44"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="exitRemoteButtonPressed:" destination="q9E-CL-jM1" eventType="touchUpInside" id="mgt-g5-8Y1"/>
+                                        </connections>
+                                    </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="plusButton" translatesAutoresizingMaskIntoConstraints="NO" id="mtg-cE-fUg">
+                                        <rect key="frame" x="37" y="39" width="25" height="25"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.56965988869999995" green="0.56974464650000001" blue="0.56964135169999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.083672411739826202" green="0.083691217005252838" blue="0.0836682990193367" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6aW-cm-ATO" firstAttribute="top" secondItem="vUJ-Bg-PtF" secondAttribute="topMargin" id="2Ep-or-L3X"/>
-                            <constraint firstItem="wWG-NW-vCz" firstAttribute="leading" secondItem="vUJ-Bg-PtF" secondAttribute="leadingMargin" constant="-16" id="Feq-62-bza"/>
                             <constraint firstItem="YXq-UI-Cxq" firstAttribute="top" secondItem="xSI-kO-IjS" secondAttribute="bottom" constant="509" id="P3E-kh-QyO"/>
                             <constraint firstItem="6aW-cm-ATO" firstAttribute="leading" secondItem="vUJ-Bg-PtF" secondAttribute="leadingMargin" constant="-16" id="beY-HU-Eew"/>
-                            <constraint firstItem="wWG-NW-vCz" firstAttribute="top" secondItem="vUJ-Bg-PtF" secondAttribute="topMargin" id="fJq-vj-Eio"/>
                             <constraint firstItem="YXq-UI-Cxq" firstAttribute="leading" secondItem="vUJ-Bg-PtF" secondAttribute="leadingMargin" constant="-16" id="reC-iR-BgL"/>
                         </constraints>
                     </view>
@@ -766,12 +659,10 @@
                         <outlet property="currentArtistViewBackground" destination="Sep-1q-gCc" id="2gd-8c-QXs"/>
                         <outlet property="currentSongLabel" destination="QRe-J8-h5x" id="tUC-U9-1Cg"/>
                         <outlet property="durationProgressView" destination="Lwh-Rq-NrE" id="2Rm-tb-2Zf"/>
-                        <outlet property="exitSettingsViewButton" destination="DZT-1t-Rze" id="KwG-GY-wYB"/>
+                        <outlet property="exitRemotePlusImage" destination="mtg-cE-fUg" id="syh-1S-9Pf"/>
                         <outlet property="hostCodeMessageLabel" destination="7Gp-5w-m49" id="p5g-O2-Sdc"/>
                         <outlet property="hostRoomCodeLabel" destination="4CT-dz-BcD" id="cah-qa-9aO"/>
                         <outlet property="leaveLabel" destination="D2P-OS-xtq" id="puw-rl-OCb"/>
-                        <outlet property="leaveRoomButton" destination="HWh-Mc-EGE" id="9Mo-LF-V1N"/>
-                        <outlet property="leaveRoomButtonVertConst" destination="MsF-pd-Jl8" id="e8F-xq-ibI"/>
                         <outlet property="lineView1" destination="50v-jb-nLA" id="hKV-bK-teV"/>
                         <outlet property="lineView2" destination="1li-4k-DHA" id="3Tv-zm-E0b"/>
                         <outlet property="longPressRec" destination="3TH-Qj-0JI" id="GBW-hW-7ZM"/>
@@ -781,14 +672,10 @@
                         <outlet property="plusButton" destination="umd-Uh-BeV" id="yUh-rI-34n"/>
                         <outlet property="purpleGlowImageView" destination="8Xb-Vu-eG3" id="pRg-S4-ZFL"/>
                         <outlet property="purpleGlowVertConst" destination="SNS-uk-ZJM" id="88a-91-nJS"/>
-                        <outlet property="remoteImageVertConst" destination="BGF-Zy-QV3" id="u7D-nh-GTt"/>
-                        <outlet property="remoteImageView" destination="9wE-xP-O11" id="JBh-pS-uxM"/>
-                        <outlet property="remoteLabel" destination="eKF-AS-93C" id="jKz-GH-Yxs"/>
-                        <outlet property="remoteLabelVertConst" destination="Dic-Me-Qie" id="7no-ht-tEm"/>
-                        <outlet property="remotePasswordInfoLabel" destination="Uhk-DG-jFR" id="a6j-ag-ecv"/>
-                        <outlet property="remotePasswordTextField" destination="UMZ-gG-6Qe" id="40i-GG-Pec"/>
-                        <outlet property="roomCodeLabel" destination="lei-CJ-7q1" id="dTw-E8-T86"/>
-                        <outlet property="roomCodeTextLabel" destination="Bku-Xw-h7V" id="YQo-pZ-RYU"/>
+                        <outlet property="remoteCodeView" destination="MX3-QF-afE" id="vbW-bW-t1N"/>
+                        <outlet property="remoteLabel" destination="eKF-AS-93C" id="cAd-aZ-M31"/>
+                        <outlet property="remoteTextField" destination="jcu-SN-HBD" id="ETO-d6-7Wc"/>
+                        <outlet property="remoteTextLabel" destination="O7V-39-KCh" id="0Fv-sl-DX0"/>
                         <outlet property="searchBackgroundView" destination="LrO-4T-FYi" id="EBO-Ex-Ymt"/>
                         <outlet property="searchBar" destination="Efp-0W-ly7" id="VsY-rJ-7yD"/>
                         <outlet property="searchTableView" destination="Z6A-MA-WkI" id="gqh-nX-nWw"/>
@@ -798,14 +685,11 @@
                         <outlet property="setListTableViewHeightConst" destination="0Yv-Zt-T52" id="GSq-Bo-WU8"/>
                         <outlet property="setListTableViewVertConst" destination="k5n-rC-AmB" id="E4i-4r-5PY"/>
                         <outlet property="setListView" destination="6aW-cm-ATO" id="XdU-94-VpJ"/>
-                        <outlet property="settingsView" destination="wWG-NW-vCz" id="wV8-bX-O4R"/>
                         <outlet property="skipButton" destination="1xR-U8-lzH" id="a8a-mR-H6D"/>
                         <outlet property="skipButtonPressed" destination="Uho-uL-8JY" id="FVr-9F-5Yy"/>
                         <outlet property="sliderImageView" destination="gNL-lh-T9e" id="vqJ-tZ-am8"/>
                         <outlet property="sliderView" destination="e6n-8p-gjd" id="Aue-Qd-Br1"/>
                         <outlet property="tableView" destination="ddj-u0-EjL" id="p1w-Cx-Jlc"/>
-                        <outlet property="whiteBorderView1" destination="gnn-PE-c1r" id="GYT-xB-JdA"/>
-                        <outlet property="whiteBorderView2" destination="HgJ-rE-qhq" id="Ibr-cE-oKW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R4a-eb-EFL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -847,6 +731,36 @@
                                 <rect key="frame" x="0.0" y="68" width="320" height="1"/>
                                 <color key="backgroundColor" white="1" alpha="0.23000000000000001" colorSpace="calibratedWhite"/>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gah-AD-KvP" userLabel="Remote Code View">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zm6-Wb-8cG">
+                                        <rect key="frame" x="8" y="210" width="304" height="75"/>
+                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="64"/>
+                                        <textInputTraits key="textInputTraits" keyboardAppearance="alert"/>
+                                    </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enter room code" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u20-kS-Iqc">
+                                        <rect key="frame" x="71" y="181" width="181" height="21"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="67f-Pn-7sv" userLabel="Exit Room Code Button">
+                                        <rect key="frame" x="25" y="30" width="44" height="44"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="exitJoinRoomViewButtonPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="iPA-xZ-goL"/>
+                                        </connections>
+                                    </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="plusButton" translatesAutoresizingMaskIntoConstraints="NO" id="6gi-AI-heE">
+                                        <rect key="frame" x="37" y="39" width="25" height="25"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.56965988869999995" green="0.56974464650000001" blue="0.56964135169999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
@@ -877,15 +791,12 @@
         </scene>
     </scenes>
     <resources>
-        <image name="ExitButtonBackground" width="97" height="20"/>
         <image name="Play" width="36" height="47"/>
         <image name="Skip" width="43" height="48"/>
-        <image name="TextBoxBorder" width="170" height="37"/>
         <image name="dot.png" width="9" height="9"/>
         <image name="menu-button.png" width="60" height="60"/>
         <image name="plusButton" width="26" height="26"/>
         <image name="purple-glow.png" width="607" height="128"/>
-        <image name="remote.png" width="25" height="18"/>
         <image name="searchBoxThin" width="151" height="25"/>
         <image name="slider.png" width="110" height="110"/>
         <image name="xButtonThick" width="23" height="22"/>
