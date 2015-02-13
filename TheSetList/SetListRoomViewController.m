@@ -289,11 +289,11 @@
         [self.socket emit:kCurrentArtistChange args:songAddedArray];
         
         //Unhide host capabilities
-        self.playPauseButton.hidden = NO;
-        self.skipButton.hidden = NO;
+        self.playPauseImage.hidden = NO;
+        self.skipImage.hidden = NO;
         self.skipButtonPressed.hidden = NO;
         self.playButtonPressed.hidden = NO;
-        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+        [self.playPauseImage setImage:pauseButtonImage];
         self.setListTableViewVertConst.constant = 0;
         self.setListTableViewHeightConst.constant = 264;
 
@@ -550,15 +550,7 @@
         }
         else
         {
-            self.remoteLabelSelected = NO;
-            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                [self.remoteLabel setFrame:CGRectMake(181, 236, 60, 20)];
-                self.remoteLabel.alpha = .5;
-                self.remoteLabelPushed = NO;
-            } completion:^(BOOL finished) {
-                //completion
-            }];
-            
+            [self returnRemoteLabel];
         }
         
         if ((recognizer.view.center.y + point.y)>392 && (recognizer.view.center.y + point.y)<442) {
@@ -601,7 +593,13 @@
                 self.blurEffectView.alpha = 1;
             } completion:^(BOOL finished) {
                 self.menuView.hidden = YES;
-                [self.remoteTextField becomeFirstResponder];
+                if (!self.isRemoteHost) {
+                    [self.remoteTextField becomeFirstResponder];
+                }
+                else
+                {
+                    self.remoteTextField.hidden = YES;
+                }
                 self.exitRemotePlusImage.center = CGPointMake(self.exitRemotePlusImage.center.x,
                                                               self.exitRemotePlusImage.center.y -75);
                 self.exitRemotePlusImage.hidden = NO;
@@ -609,8 +607,8 @@
                     self.exitRemotePlusImage.center = CGPointMake(self.exitRemotePlusImage.center.x, self.exitRemotePlusImage.center.y + 75);
                 } completion:^(BOOL finished) {
                     [self returnMenuSlider];
+                    [self returnRemoteLabel];
                 }];
-                
             }];
 
         }
@@ -746,15 +744,15 @@
 {
     UIImage *playButtonImage = [UIImage imageNamed:@"Play"];
     UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
-    UIImage *currentButton = [self.playPauseButton backgroundImageForState:UIControlStateNormal];
+    UIImage *currentButton = [self.playPauseImage image];
     if (self.isHost) {
         if([currentButton isEqual:pauseButtonImage])
         {
             [self.player pause];
-            [self.playPauseButton setBackgroundImage:playButtonImage forState:UIControlStateNormal];
+            [self.playPauseImage setImage:playButtonImage];
         } else {
             [self.player play];
-            [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+            [self.playPauseImage setImage:pauseButtonImage];
         }
 
     }
@@ -800,7 +798,9 @@
         NSDictionary *key = [args objectAtIndex:0];
         
         if ([key objectForKey:@"error"]) {
-            self.remoteTextLabel.text = [key objectForKey:@"error"];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                self.remoteTextLabel.text = [key objectForKey:@"error"];
+            });
         }
         
         //if the password is a correct, and connection is successful, make the remote host's views appear.
@@ -813,17 +813,17 @@
                 [weakSelf.remoteTextField resignFirstResponder];
             });
             [self.socket on:@"playing" callback:^(NSArray *args) {
-                [self.playPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
+                [self.playPauseImage setImage:pauseImage];
             }];
             [self.socket on:@"paused" callback:^(NSArray *args) {
-                 [self.playPauseButton setBackgroundImage:playImage forState:UIControlStateNormal];
+                [self.playPauseImage setImage:playImage];
             }];
             
-            self.playPauseButton.hidden = NO;
-            self.skipButton.hidden = NO;
-            self.playButtonPressed.hidden = NO;
-            self.skipButtonPressed.hidden = NO;
-            self.remoteTextField.hidden = YES;
+            [self exitRemoteButtonPressed:nil];
+            [self hideRemoteCapabilites:NO];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                self.remoteTextLabel.text = @"Remote host enabled";
+            });
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.setListTableViewVertConst.constant = 0;
                 self.setListTableViewHeightConst.constant = 264;
@@ -840,6 +840,23 @@
 }
 
 #pragma mark - Helper Methods
+
+-(void)hideRemoteCapabilites:(BOOL)boolean
+{
+    if (boolean == YES) {
+        self.playPauseImage.hidden = YES;
+        self.skipImage.hidden = YES;
+        self.playButtonPressed.hidden = YES;
+        self.skipButtonPressed.hidden = YES;
+    }
+    else
+    {
+        self.playPauseImage.hidden = NO;
+        self.skipImage.hidden = NO;
+        self.playButtonPressed.hidden = NO;
+        self.skipButtonPressed.hidden = NO;
+    }
+}
 
 -(void)returnMenuSlider
 {
@@ -878,6 +895,18 @@
     }];
 }
 
+-(void)returnRemoteLabel
+{
+    self.remoteLabelSelected = NO;
+    [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        [self.remoteLabel setFrame:CGRectMake(181, 236, 60, 20)];
+        self.remoteLabel.alpha = .5;
+        self.remoteLabelPushed = NO;
+    } completion:^(BOOL finished) {
+        //completion
+    }];
+}
+
 
 -(void)viewForNoCurrentArtistAsHost
 {
@@ -890,8 +919,8 @@
     self.currentArtistViewBackground.hidden = YES;
     self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
     self.currentArtistViewBackground.hidden = YES;
-    self.playPauseButton.hidden = YES;
-    self.skipButton.hidden = YES;
+    self.playPauseImage.hidden = YES;
+    self.skipImage.hidden = YES;
     self.playButtonPressed.hidden = YES;
     self.skipButtonPressed.hidden = YES;
     self.hostCodeMessageLabel.hidden = NO;
@@ -909,10 +938,7 @@
         self.currentArtistViewBackground.hidden = YES;
         self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
         self.currentArtistViewBackground.hidden = YES;
-        self.playPauseButton.hidden = YES;
-        self.skipButton.hidden = YES;
-        self.playButtonPressed.hidden = YES;
-        self.skipButtonPressed.hidden = YES;
+        [self hideRemoteCapabilites:YES];
     }
 }
 
@@ -1006,6 +1032,9 @@
         }
         else
         {
+            if (self.isRemoteHost) {
+                [self hideRemoteCapabilites:NO];
+            }
             self.currentArtistViewBackground.hidden = NO;
             self.hostCodeMessageLabel.hidden = YES;
             self.currentSongLabel.text = [track objectForKey:@"title"];
@@ -1029,7 +1058,7 @@
     self.durationProgressView.progress = (current/duration);
     if (self.durationProgressView.progress == 0)
     {
-        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+        [self.playPauseImage setImage:pauseButtonImage];
     }
     
 }
@@ -1126,7 +1155,7 @@
         
         [self playCurrentArtist:self.hostCurrentArtist];
         
-        [self.playPauseButton setBackgroundImage:pausedButtonImage forState:UIControlStateNormal];
+        [self.playPauseImage setImage:pausedButtonImage];
         self.durationProgressView.hidden = NO;
         self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
 
@@ -1148,12 +1177,12 @@
 - (IBAction)exitRemoteButtonPressed:(UIButton *)sender
 {
     [self.remoteTextField resignFirstResponder];
-    self.remoteTextField.text = nil;
     [UIView animateWithDuration:.3 animations:^{
         self.remoteCodeView.alpha = 0;
         self.blurEffectView.alpha = 0;
     } completion:^(BOOL finished) {
         self.remoteCodeView.hidden = YES;
+        self.remoteTextField.text = nil;
     }];
 
 }
