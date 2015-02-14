@@ -74,7 +74,7 @@
     self.UUIDString = [[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"];
     
     self.searchTracks = [[NSMutableArray alloc]init];
-    self.tracks = [[NSArray alloc]init];
+    self.tracks = [[NSMutableArray alloc]init];
     self.currentArtist = [[NSMutableDictionary alloc]init];
     self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
     
@@ -183,8 +183,9 @@
         
         //Set the current tracks, if there is one.
         NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+        NSMutableArray *tracks = [setListTracks mutableCopy];
         if (setListTracks) {
-            self.tracks = setListTracks;
+            self.tracks = tracks;
         }
     }
     
@@ -317,6 +318,7 @@
     
     if (!self.isHost) {
         NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+        self.currentArtist = currentArtist;
         [self setCurrentArtistFromCurrentArtist:currentArtist];
     }
     
@@ -327,7 +329,8 @@
 {
     NSLog(@"recieved update B notification");
     if (!self.isHost) {
-        self.tracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+        NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+        self.tracks = [setListTracks mutableCopy];
         [self.tableView reloadData];
     }
 }
@@ -340,16 +343,21 @@
     SetListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReusableIdentifier forIndexPath:indexPath];
     
     cell.delegate = self;
+    cell.deleteSongImage.transform = CGAffineTransformMakeRotation(M_PI/4);
     if (tableView.tag == 1) {
         
         //tableview for if the user is the host.
         if (self.isHost) {
             
+            cell.userSelectedSongImageView.hidden= YES;
+            cell.deleteSongImage.hidden = NO;
+            cell.deleteSongButton.hidden = NO;
             NSDictionary *track = [self.hostQueue objectAtIndex:indexPath.row];
             NSString *songTitle = [track objectForKey:@"title"];
             NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
             cell.artistLabel.text = artist;
             cell.songLabel.text = songTitle;
+            cell.tag = indexPath.row;
             
         }
         //set list table for if user is not the host.
@@ -503,6 +511,9 @@
     self.menuView.hidden = NO;
     self.searchView.hidden = YES;
     self.searchView.alpha = 0;
+    if (self.isHost) {
+        self.remoteLabel.hidden = YES;
+    }
     if (recognizer.state == UIGestureRecognizerStateBegan)
     {
         [UIView animateWithDuration:.3 animations:^{
@@ -538,7 +549,7 @@
                                             self.lineView2.frame.size.height)];
         
         
-        if ((recognizer.view.center.y + point.y)>226 && (recognizer.view.center.y + point.y)<273) {
+        if ((recognizer.view.center.y + point.y)>226 && (recognizer.view.center.y + point.y)<273 && !self.isHost) {
             
             [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 [self.remoteLabel setFrame:CGRectMake(141, 236, 60, 20)];
@@ -582,7 +593,7 @@
         self.purpleGlowImageView.alpha = 0;
         
         //If the user has the remote selected, make the remote view appear and allow the user to put in the remote password.
-        if (self.remoteLabelSelected) {
+        if (self.remoteLabelSelected && !self.isHost) {
             self.remoteCodeView.alpha = 0;
             self.remoteCodeView.hidden = NO;
             self.exitRemotePlusImage.hidden = YES;
@@ -738,6 +749,14 @@
     [self.socket emit:kQueueRequest args:arrayWithTrack];
     
 }
+
+-(void)deleteSongButtonPressedOnCell:(id)sender
+{
+    NSInteger index =  ((UITableViewCell *)sender).tag;
+    NSLog(@"%ld", (long)index);
+    [self.hostQueue removeObjectAtIndex:index];
+    [self.tableView reloadData];
+}
 #pragma mark - Remote Host Methods
 
 - (IBAction)playPauseButtonPressed:(UIButton *)sender
@@ -806,34 +825,36 @@
         //if the password is a correct, and connection is successful, make the remote host's views appear.
         else{
             NSLog(@"Remote Host Connection Succesful");
+
             self.isRemoteHost = YES;
-            
             __weak typeof(self) weakSelf = self;
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                weakSelf.remoteTextLabel.text = @"Remote host enabled";
                 [weakSelf.remoteTextField resignFirstResponder];
+                [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    weakSelf.setListTableViewVertConst.constant = 0;
+                    weakSelf.setListTableViewHeightConst.constant = 264;
+                } completion:^(BOOL finished) {
+                    
+                }];
+                
+                [weakSelf exitRemoteButtonPressed:nil];
+                if (weakSelf.currentArtist[@"user"]) {
+                    [weakSelf hideRemoteCapabilites:NO];
+                }
             });
+            
             [self.socket on:@"playing" callback:^(NSArray *args) {
+                dispatch_sync(dispatch_get_main_queue(), ^{
                 [self.playPauseImage setImage:pauseImage];
+                });
             }];
             [self.socket on:@"paused" callback:^(NSArray *args) {
+                 dispatch_sync(dispatch_get_main_queue(), ^{
                 [self.playPauseImage setImage:playImage];
+                 });
             }];
-            
-            [self exitRemoteButtonPressed:nil];
-            [self hideRemoteCapabilites:NO];
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                self.remoteTextLabel.text = @"Remote host enabled";
-            });
-            [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.setListTableViewVertConst.constant = 0;
-                self.setListTableViewHeightConst.constant = 264;
-            } completion:^(BOOL finished) {
-                
-            }];
-            
         }
-        
-
     }];
 
     return YES;
@@ -1176,14 +1197,13 @@
 
 - (IBAction)exitRemoteButtonPressed:(UIButton *)sender
 {
-    [self.remoteTextField resignFirstResponder];
-    [UIView animateWithDuration:.3 animations:^{
-        self.remoteCodeView.alpha = 0;
-        self.blurEffectView.alpha = 0;
-    } completion:^(BOOL finished) {
-        self.remoteCodeView.hidden = YES;
-        self.remoteTextField.text = nil;
-    }];
-
+        [self.remoteTextField resignFirstResponder];
+        [UIView animateWithDuration:.3 animations:^{
+            self.remoteCodeView.alpha = 0;
+            self.blurEffectView.alpha = 0;
+        } completion:^(BOOL finished) {
+            self.remoteCodeView.hidden = YES;
+            self.remoteTextField.text = nil;
+        }];
 }
 @end

@@ -221,7 +221,7 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ddj-u0-EjL">
+                                    <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="54" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ddj-u0-EjL">
                                         <rect key="frame" x="9" y="304" width="302" height="264"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="deviceRGB"/>
                                         <constraints>
@@ -253,6 +253,26 @@
                                                             <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plusButton" translatesAutoresizingMaskIntoConstraints="NO" id="FSH-Tl-2dJ" userLabel="Delete Song Button">
+                                                            <rect key="frame" x="281" y="20" width="14" height="14"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="14" id="0ye-3k-ej2"/>
+                                                                <constraint firstAttribute="height" constant="14" id="anZ-VP-Bus"/>
+                                                            </constraints>
+                                                        </imageView>
+                                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vuc-k4-ArX">
+                                                            <rect key="frame" x="258" y="5" width="44" height="44"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="44" id="0Dt-Ik-x3d"/>
+                                                                <constraint firstAttribute="width" constant="44" id="ahF-3M-8xT"/>
+                                                            </constraints>
+                                                            <state key="normal">
+                                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="deleteSongButtonPressed:" destination="26m-i2-iB1" eventType="touchUpInside" id="LfR-KN-PVN"/>
+                                                            </connections>
+                                                        </button>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dot.png" translatesAutoresizingMaskIntoConstraints="NO" id="4ye-og-cdK">
                                                             <rect key="frame" x="285" y="24" width="5" height="5"/>
                                                             <constraints>
@@ -277,15 +297,21 @@
                                                         <constraint firstItem="AbS-fb-VXG" firstAttribute="leading" secondItem="htD-sf-fYH" secondAttribute="leadingMargin" constant="3" id="9td-Mp-Ruo"/>
                                                         <constraint firstItem="PRg-on-9XS" firstAttribute="top" secondItem="htD-sf-fYH" secondAttribute="topMargin" constant="19" id="JNq-MA-UZB"/>
                                                         <constraint firstItem="PRg-on-9XS" firstAttribute="leading" secondItem="htD-sf-fYH" secondAttribute="leadingMargin" constant="4" id="NVa-bh-6aM"/>
+                                                        <constraint firstItem="Vuc-k4-ArX" firstAttribute="leading" secondItem="htD-sf-fYH" secondAttribute="leadingMargin" constant="250" id="Psq-Pd-mX7"/>
                                                         <constraint firstItem="AbS-fb-VXG" firstAttribute="top" secondItem="htD-sf-fYH" secondAttribute="topMargin" constant="4" id="QTs-eR-BD0"/>
                                                         <constraint firstItem="4ye-og-cdK" firstAttribute="top" secondItem="htD-sf-fYH" secondAttribute="topMargin" constant="16" id="kXy-ux-Qo1"/>
+                                                        <constraint firstItem="FSH-Tl-2dJ" firstAttribute="top" secondItem="htD-sf-fYH" secondAttribute="topMargin" constant="12" id="kar-xb-eeS"/>
                                                         <constraint firstItem="s1F-gF-HfV" firstAttribute="top" secondItem="htD-sf-fYH" secondAttribute="topMargin" constant="-5" id="mxz-bz-CpQ"/>
+                                                        <constraint firstItem="Vuc-k4-ArX" firstAttribute="top" secondItem="htD-sf-fYH" secondAttribute="topMargin" constant="-3" id="tnw-dX-EUa"/>
+                                                        <constraint firstItem="FSH-Tl-2dJ" firstAttribute="leading" secondItem="htD-sf-fYH" secondAttribute="leadingMargin" constant="273" id="ug7-V2-siW"/>
                                                         <constraint firstItem="s1F-gF-HfV" firstAttribute="leading" secondItem="htD-sf-fYH" secondAttribute="leadingMargin" constant="-8" id="x0k-Z3-02U"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
                                                 <color key="backgroundColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
                                                     <outlet property="artistLabel" destination="PRg-on-9XS" id="CKD-Dz-R3z"/>
+                                                    <outlet property="deleteSongButton" destination="Vuc-k4-ArX" id="5sJ-DP-1wu"/>
+                                                    <outlet property="deleteSongImage" destination="FSH-Tl-2dJ" id="07k-FZ-up3"/>
                                                     <outlet property="songLabel" destination="AbS-fb-VXG" id="KPo-Pa-kTP"/>
                                                     <outlet property="userSelectedSongImageView" destination="4ye-og-cdK" id="lsr-sp-tNi"/>
                                                 </connections>
@@ -602,7 +628,7 @@
                                         <rect key="frame" x="8" y="210" width="304" height="75"/>
                                         <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="64"/>
-                                        <textInputTraits key="textInputTraits" keyboardAppearance="alert"/>
+                                        <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Remote password" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O7V-39-KCh" userLabel="Enter password">
                                         <rect key="frame" x="71" y="181" width="181" height="21"/>

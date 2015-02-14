@@ -20,7 +20,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *currentArtistLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
 @property (strong, nonatomic) IBOutlet UIView *setListView;
-@property (strong, nonatomic) NSArray *tracks;
+@property (strong, nonatomic) NSMutableArray *tracks;
 @property (strong, nonatomic) IBOutlet UIView *currentArtistViewBackground;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) NSString *roomCode;
