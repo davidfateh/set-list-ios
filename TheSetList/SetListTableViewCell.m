@@ -50,4 +50,8 @@
 
 }
 
+- (IBAction)deleteSongButtonPressed:(UIButton *)sender
+{
+    [self.delegate deleteSongButtonPressedOnCell:self];
+}
 @end

@@ -36,9 +36,7 @@
         NSString *uuid = [[NSUUID UUID] UUIDString];
         [[NSUserDefaults standardUserDefaults]setObject:uuid forKey:@"UUID"];
     }
-    
-    [SocketKeeperSingleton sharedInstance];
-    
+
     return YES;
 }
 

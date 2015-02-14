@@ -31,6 +31,10 @@
 @property (nonatomic) BOOL isRemoteHost;
 @property (strong, nonatomic) NSTimer *timer;
 @property (strong, nonatomic) NSMutableDictionary *dicForInfoCenter;
+@property (nonatomic) BOOL remoteLabelPushed;
+@property (nonatomic) BOOL remoteLabelSelected;
+@property (nonatomic) BOOL leaveLabelPushed;
+@property (nonatomic) BOOL leaveLabelSelected;
 @end
 
 @implementation SetListRoomViewController
@@ -46,14 +50,6 @@
     //Set the text on the search bar to white.
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
-    
-    self.exitSettingsViewButton.transform = CGAffineTransformMakeRotation(M_PI/4);
-    
-    //Set the remotePasswords textfield font colors etc.
-    [self.remotePasswordTextField setValue:[UIColor colorWithRed:0.325 green:0.313 blue:0.317 alpha:1] forKeyPath:@"_placeholderLabel.textColor"];
-    self.remotePasswordTextField.tintColor = [UIColor whiteColor];
-    self.remotePasswordTextField.delegate = self;
-    self.remotePasswordTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     
     //Set the delegates for the search view.
     self.searchBar.delegate = self;
@@ -74,16 +70,19 @@
     self.tableView.layoutMargins = UIEdgeInsetsZero;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    //Set the number of the namespace/roomCode. Sent from creation VC.
-    self.roomCodeLabel.text = self.roomCode;
-    
     //Set the UUID for the user
     self.UUIDString = [[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"];
     
     self.searchTracks = [[NSMutableArray alloc]init];
-    self.tracks = [[NSArray alloc]init];
+    self.tracks = [[NSMutableArray alloc]init];
     self.currentArtist = [[NSMutableDictionary alloc]init];
     self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
+    
+    self.longPressRec.minimumPressDuration = 0;
+    self.exitRemotePlusImage.transform = CGAffineTransformMakeRotation(M_PI/4);
+    self.remoteTextField.tintColor = [UIColor whiteColor];
+    self.remoteTextField.delegate = self;
+    self.remoteTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     
     //Add a blur effect view in order to blur the background upon opening the search view.
     UIVisualEffect *blurEffect;
@@ -126,7 +125,7 @@
         NSLog(@"User is the host of this room");
         self.isHost = YES;
         [self viewForNoCurrentArtistAsHost];
-        self.roomCodeLabel.text = roomCodeAsHost;
+        self.hostRoomCodeLabel.text = roomCodeAsHost;
         
         if (!self.hostQueue) {
             self.hostQueue = [[NSMutableArray alloc]init];
@@ -139,7 +138,6 @@
     
     ///////NOT HOST///////
     else {
-        
         // Add a notifcation observer and postNotification name for updating the tracks.
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveQueueUpdatedNotification:)
@@ -185,14 +183,30 @@
         
         //Set the current tracks, if there is one.
         NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+        NSMutableArray *tracks = [setListTracks mutableCopy];
         if (setListTracks) {
-            self.tracks = setListTracks;
+            self.tracks = tracks;
         }
     }
+    
+    self.setListView.alpha = 0;
+    self.searchView.alpha = 0;
+    self.sliderView.alpha = 0;
+    
 }
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
+    
+    
+    [UIView animateWithDuration:.5 delay:.35 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.searchView.alpha = 1;
+        self.setListView.alpha = 1;
+        self.sliderView.alpha = 1;
+    } completion:^(BOOL finished) {
+        //completed
+    }];
+    
     if (self.isHost){
         NSError *sessionError = nil;
         NSError *activationError = nil;
@@ -276,11 +290,11 @@
         [self.socket emit:kCurrentArtistChange args:songAddedArray];
         
         //Unhide host capabilities
-        self.playPauseButton.hidden = NO;
-        self.skipButton.hidden = NO;
+        self.playPauseImage.hidden = NO;
+        self.skipImage.hidden = NO;
         self.skipButtonPressed.hidden = NO;
         self.playButtonPressed.hidden = NO;
-        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+        [self.playPauseImage setImage:pauseButtonImage];
         self.setListTableViewVertConst.constant = 0;
         self.setListTableViewHeightConst.constant = 264;
 
@@ -304,6 +318,7 @@
     
     if (!self.isHost) {
         NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
+        self.currentArtist = currentArtist;
         [self setCurrentArtistFromCurrentArtist:currentArtist];
     }
     
@@ -314,7 +329,8 @@
 {
     NSLog(@"recieved update B notification");
     if (!self.isHost) {
-        self.tracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+        NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
+        self.tracks = [setListTracks mutableCopy];
         [self.tableView reloadData];
     }
 }
@@ -327,16 +343,21 @@
     SetListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReusableIdentifier forIndexPath:indexPath];
     
     cell.delegate = self;
+    cell.deleteSongImage.transform = CGAffineTransformMakeRotation(M_PI/4);
     if (tableView.tag == 1) {
         
         //tableview for if the user is the host.
         if (self.isHost) {
             
+            cell.userSelectedSongImageView.hidden= YES;
+            cell.deleteSongImage.hidden = NO;
+            cell.deleteSongButton.hidden = NO;
             NSDictionary *track = [self.hostQueue objectAtIndex:indexPath.row];
             NSString *songTitle = [track objectForKey:@"title"];
             NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
             cell.artistLabel.text = artist;
             cell.songLabel.text = songTitle;
+            cell.tag = indexPath.row;
             
         }
         //set list table for if user is not the host.
@@ -479,11 +500,191 @@
     [searchBar resignFirstResponder];
 }
 
+#pragma mark - Menu View and Gesture Recognizer Methods
+
+-(IBAction)handleLongPress:(UILongPressGestureRecognizer *)recognizer
+{
+    recognizer.minimumPressDuration = 0;
+    UIImage *sliderImage = [UIImage imageNamed:@"slider.png"];
+    UIImage *menuImage = [UIImage imageNamed:@"menu-button.png"];
+    self.menuView.alpha = 0;
+    self.menuView.hidden = NO;
+    self.searchView.hidden = YES;
+    self.searchView.alpha = 0;
+    if (self.isHost) {
+        self.remoteLabel.hidden = YES;
+    }
+    if (recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        [UIView animateWithDuration:.3 animations:^{
+            [self.sliderImageView setImage:sliderImage];
+            self.blurEffectView.alpha = 1;
+            self.menuView.alpha = 1;
+            self.sliderImageView.center = CGPointMake(18 , 40);
+            [self.sliderImageView setTransform:CGAffineTransformMakeScale(2.5f, 2.5f)];
+        } completion:^(BOOL finished) {
+        }];
+    }
+    else if (recognizer.state == UIGestureRecognizerStateChanged)
+    {
+        self.menuView.alpha = 1;
+        self.menuView.hidden = NO;
+        UIView *view = recognizer.view;
+        CGPoint point = [recognizer locationInView:view];
+        CGFloat sliderLoc = (self.sliderView.frame.origin.y + point.y) - (self.sliderView.frame.size.width / 2);
+        [self.sliderView setFrame:CGRectMake(self.sliderView.frame.origin.x,
+                                             sliderLoc,
+                                             self.sliderView.frame.size.width,
+                                             self.sliderView.frame.size.height)];
+        
+        CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
+        [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
+                                            line1Loc,
+                                            self.lineView1.frame.size.width,
+                                            self.lineView1.frame.size.height)];
+        CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
+        [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
+                                            line2Loc,
+                                            self.lineView2.frame.size.width,
+                                            self.lineView2.frame.size.height)];
+        
+        
+        if ((recognizer.view.center.y + point.y)>226 && (recognizer.view.center.y + point.y)<273 && !self.isHost) {
+            
+            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self.remoteLabel setFrame:CGRectMake(141, 236, 60, 20)];
+                self.remoteLabel.alpha = 1;
+                self.remoteLabelPushed = YES;
+            } completion:^(BOOL finished) {
+                self.remoteLabelSelected = YES;
+            }];
+        }
+        else
+        {
+            [self returnRemoteLabel];
+        }
+        
+        if ((recognizer.view.center.y + point.y)>392 && (recognizer.view.center.y + point.y)<442) {
+            
+            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self.leaveLabel setFrame:CGRectMake(155,410, 46, 21)];
+                self.leaveLabel.alpha = 1;
+                self.leaveLabelPushed = YES;
+            } completion:^(BOOL finished) {
+                self.leaveLabelSelected = YES;
+            }];
+        }
+        else
+        {
+            self.leaveLabelSelected = NO;
+            [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self.leaveLabel setFrame:CGRectMake(195,410, 46, 21)];
+                self.leaveLabel.alpha = .5;
+                self.leaveLabelPushed = NO;
+            } completion:^(BOOL finished) {
+                //completion
+            }];
+        }
+        
+    }
+    else if (recognizer.state == UIGestureRecognizerStateEnded)
+    {
+        self.searchView.hidden = NO;
+        self.purpleGlowImageView.alpha = 0;
+        
+        //If the user has the remote selected, make the remote view appear and allow the user to put in the remote password.
+        if (self.remoteLabelSelected && !self.isHost) {
+            self.remoteCodeView.alpha = 0;
+            self.remoteCodeView.hidden = NO;
+            self.exitRemotePlusImage.hidden = YES;
+            [UIView animateWithDuration:.3 animations:^{
+                self.menuView.alpha = 0;
+                self.sliderView.alpha = 0;
+                self.remoteCodeView.alpha = 1;
+                self.blurEffectView.alpha = 1;
+            } completion:^(BOOL finished) {
+                self.menuView.hidden = YES;
+                if (!self.isRemoteHost) {
+                    [self.remoteTextField becomeFirstResponder];
+                }
+                else
+                {
+                    self.remoteTextField.hidden = YES;
+                }
+                self.exitRemotePlusImage.center = CGPointMake(self.exitRemotePlusImage.center.x,
+                                                              self.exitRemotePlusImage.center.y -75);
+                self.exitRemotePlusImage.hidden = NO;
+                [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    self.exitRemotePlusImage.center = CGPointMake(self.exitRemotePlusImage.center.x, self.exitRemotePlusImage.center.y + 75);
+                } completion:^(BOOL finished) {
+                    [self returnMenuSlider];
+                    [self returnRemoteLabel];
+                }];
+            }];
+
+        }
+        else if (self.leaveLabelSelected)
+        {
+            self.setListView.hidden = YES;
+            self.searchView.hidden = YES;
+            [UIView animateWithDuration:.1 animations:^{
+                self.blurEffectView.alpha = 0;
+                self.menuView.alpha = 0;
+                self.sliderView.alpha = 0;
+            } completion:^(BOOL finished) {
+                self.menuView.hidden = YES;
+                self.sliderView.hidden = YES;
+                [self disconnectSocketAndPopOut];
+            }];
+        }
+        
+        
+        
+        
+        
+        else {
+            //If the user does not have a selection, animate the slider back to its bar button position. Clear the menu view and animate the purple glow upon return.
+            [UIView animateWithDuration:.3 animations:^{
+                [self.sliderView setFrame:CGRectMake(263,
+                                                     20,
+                                                     self.sliderView.frame.size.width,
+                                                     self.sliderView.frame.size.height)];
+                
+                CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
+                [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
+                                                    line1Loc,
+                                                    self.lineView1.frame.size.width,
+                                                    self.lineView1.frame.size.height)];
+                CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
+                [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
+                                                    line2Loc,
+                                                    self.lineView2.frame.size.width,
+                                                    self.lineView2.frame.size.height)];
+                
+                self.blurEffectView.alpha = 0;
+                self.sliderImageView.alpha = .2;
+                self.menuView.alpha = 0;
+                [self.sliderImageView setTransform:CGAffineTransformMakeScale(1.0, 1.0)];
+                self.sliderImageView.center = CGPointMake(30 , 25);
+                self.searchView.alpha = 1;
+            } completion:^(BOOL finished) {
+                double time = 0;
+                [self purpleGlowAnimationFromBottomWithDelay:&time];
+                self.sliderImageView.alpha = 1;
+                self.menuView.hidden = YES;
+                [self.sliderImageView setImage:menuImage];
+            }];
+            
+        }
+    }
+}
+
 #pragma mark - Custom Buttons
 
 - (IBAction)displaySearchViewButtonPressed:(UIButton *)sender {
     if (!self.plusButtonIsSelected) {
         self.purpleGlowImageView.alpha = 0;
+        self.sliderView.hidden = YES;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(1, -1)];
         self.purpleGlowVertConst.constant = -189;
         self.plusButton.transform = CGAffineTransformMakeRotation(M_PI/4);
@@ -510,6 +711,7 @@
     }
     else {//if plusbutton is selected
         self.purpleGlowImageView.alpha = 0;
+        self.sliderView.hidden = NO;
         [self.purpleGlowImageView.layer setAffineTransform:CGAffineTransformMakeScale(-1, 1)];
         self.purpleGlowVertConst.constant = -338;
         self.plusButton.transform = CGAffineTransformMakeRotation(-M_PI / 2);
@@ -547,21 +749,29 @@
     [self.socket emit:kQueueRequest args:arrayWithTrack];
     
 }
+
+-(void)deleteSongButtonPressedOnCell:(id)sender
+{
+    NSInteger index =  ((UITableViewCell *)sender).tag;
+    NSLog(@"%ld", (long)index);
+    [self.hostQueue removeObjectAtIndex:index];
+    [self.tableView reloadData];
+}
 #pragma mark - Remote Host Methods
 
 - (IBAction)playPauseButtonPressed:(UIButton *)sender
 {
     UIImage *playButtonImage = [UIImage imageNamed:@"Play"];
     UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
-    UIImage *currentButton = [self.playPauseButton backgroundImageForState:UIControlStateNormal];
+    UIImage *currentButton = [self.playPauseImage image];
     if (self.isHost) {
         if([currentButton isEqual:pauseButtonImage])
         {
             [self.player pause];
-            [self.playPauseButton setBackgroundImage:playButtonImage forState:UIControlStateNormal];
+            [self.playPauseImage setImage:playButtonImage];
         } else {
             [self.player play];
-            [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+            [self.playPauseImage setImage:pauseButtonImage];
         }
 
     }
@@ -595,10 +805,10 @@
 //When remote text field returns
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    //Joing to the remote host, emit the password, if correct password allow the user to be the remote host and pause, play and skip songs.
+    //Join to the remote host, emit the password, if correct password allow the user to be the remote host and pause, play and skip songs.
     UIImage *playImage = [UIImage imageNamed:@"Play"];
     UIImage *pauseImage = [UIImage imageNamed:@"Pause"];
-    NSString *remotePassword = self.remotePasswordTextField.text;
+    NSString *remotePassword = self.remoteTextField.text;
     NSDictionary *passwordDic = @{@"password" : remotePassword};
     NSArray *argsArray = @[passwordDic];
     [self.socket emit:kRemoteAdd args:argsArray];
@@ -607,99 +817,150 @@
         NSDictionary *key = [args objectAtIndex:0];
         
         if ([key objectForKey:@"error"]) {
-            self.remotePasswordInfoLabel.text = [key objectForKey:@"error"];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                self.remoteTextLabel.text = [key objectForKey:@"error"];
+            });
         }
+        
         //if the password is a correct, and connection is successful, make the remote host's views appear.
         else{
             NSLog(@"Remote Host Connection Succesful");
+
             self.isRemoteHost = YES;
-            
             __weak typeof(self) weakSelf = self;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.remotePasswordTextField resignFirstResponder];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                weakSelf.remoteTextLabel.text = @"Remote host enabled";
+                [weakSelf.remoteTextField resignFirstResponder];
+                [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    weakSelf.setListTableViewVertConst.constant = 0;
+                    weakSelf.setListTableViewHeightConst.constant = 264;
+                } completion:^(BOOL finished) {
+                    
+                }];
+                
+                [weakSelf exitRemoteButtonPressed:nil];
+                if (weakSelf.currentArtist[@"user"]) {
+                    [weakSelf hideRemoteCapabilites:NO];
+                }
             });
+            
             [self.socket on:@"playing" callback:^(NSArray *args) {
-                [self.playPauseButton setBackgroundImage:pauseImage forState:UIControlStateNormal];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.playPauseImage setImage:pauseImage];
+                });
             }];
             [self.socket on:@"paused" callback:^(NSArray *args) {
-                 [self.playPauseButton setBackgroundImage:playImage forState:UIControlStateNormal];
+                 dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.playPauseImage setImage:playImage];
+                 });
             }];
-            
-            self.playPauseButton.hidden = NO;
-            self.skipButton.hidden = NO;
-            self.playButtonPressed.hidden = NO;
-            self.skipButtonPressed.hidden = NO;
-            [self exitSettingsAnimation];
-            self.remotePasswordTextField.hidden = YES;
-            self.remotePasswordInfoLabel.text = @"Remote connected";
-            [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.setListTableViewVertConst.constant = 0;
-                self.setListTableViewHeightConst.constant = 264;
-            } completion:^(BOOL finished) {
-                
-            }];
-            
         }
-        
-
     }];
 
     return YES;
 }
 
-- (IBAction)setListlogoPressed:(UIButton *)sender
-{
-    //Bring up the remote view with an animation, and blur the background. Hide the search view.
-    self.settingsView.hidden = NO;
-    self.searchView.hidden = YES;
-    [UIView animateWithDuration:.5 animations:^{
-        self.blurEffectView.alpha = 1;
-        self.roomCodeLabel.alpha = 1;
-        self.roomCodeTextLabel.alpha = 1;
-        self.whiteBorderView1.alpha  = 1;
-        self.whiteBorderView2.alpha = 1;
-        self.remotePasswordInfoLabel.alpha = 1;
-        self.leaveRoomButton.alpha = 1;
-        self.remoteImageView.alpha = 1;
-        self.exitSettingsViewButton.alpha = 1;
-        self.remotePasswordTextField.alpha = 1;
-        }];
-    
-}
-- (IBAction)exitSettingsButtonPressed:(UIButton *)sender
-{
-    [self exitSettingsAnimation];
-    double time = .3;
-    [self purpleGlowAnimationFromBottomWithDelay:&time];
-    [self.remotePasswordTextField resignFirstResponder];
-}
-
-- (IBAction)leaveRoomButtonPressed:(UIButton *)sender
-{
-    [self disconnectSocketAndPopOut];
-}
-
 #pragma mark - Helper Methods
+
+-(void)hideRemoteCapabilites:(BOOL)boolean
+{
+    if (boolean == YES) {
+        self.playPauseImage.hidden = YES;
+        self.skipImage.hidden = YES;
+        self.playButtonPressed.hidden = YES;
+        self.skipButtonPressed.hidden = YES;
+    }
+    else
+    {
+        self.playPauseImage.hidden = NO;
+        self.skipImage.hidden = NO;
+        self.playButtonPressed.hidden = NO;
+        self.skipButtonPressed.hidden = NO;
+    }
+}
+
+-(void)returnMenuSlider
+{
+    UIImage *menuImage = [UIImage imageNamed:@"menu-button.png"];
+    [UIView animateWithDuration:.3 animations:^{
+        [self.sliderView setFrame:CGRectMake(263,
+                                             20,
+                                             self.sliderView.frame.size.width,
+                                             self.sliderView.frame.size.height)];
+        
+        CGFloat line1Loc = (self.sliderView.frame.origin.y - 595);
+        [self.lineView1 setFrame:CGRectMake(self.lineView1.frame.origin.x,
+                                            line1Loc,
+                                            self.lineView1.frame.size.width,
+                                            self.lineView1.frame.size.height)];
+        CGFloat line2Loc = (self.sliderView.frame.origin.y + 75);
+        [self.lineView2 setFrame:CGRectMake(self.lineView2.frame.origin.x,
+                                            line2Loc,
+                                            self.lineView2.frame.size.width,
+                                            self.lineView2.frame.size.height)];
+        
+        self.blurEffectView.alpha = 0;
+        self.sliderImageView.alpha = .2;
+        self.menuView.alpha = 0;
+        [self.sliderImageView setTransform:CGAffineTransformMakeScale(1.0, 1.0)];
+        self.sliderImageView.center = CGPointMake(30 , 25);
+        self.searchView.alpha = 1;
+    } completion:^(BOOL finished)
+    {
+        double time = 0;
+        [self purpleGlowAnimationFromBottomWithDelay:&time];
+        self.sliderView.alpha = 1;
+        self.sliderImageView.alpha = 1;
+        self.menuView.hidden = YES;
+        [self.sliderImageView setImage:menuImage];
+    }];
+}
+
+-(void)returnRemoteLabel
+{
+    self.remoteLabelSelected = NO;
+    [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        [self.remoteLabel setFrame:CGRectMake(181, 236, 60, 20)];
+        self.remoteLabel.alpha = .5;
+        self.remoteLabelPushed = NO;
+    } completion:^(BOOL finished) {
+        //completion
+    }];
+}
 
 
 -(void)viewForNoCurrentArtistAsHost
 {
     NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
-    
+    if (self.isHost)
+    {
     self.currentSongLabel.text = @"";
     self.currentArtistLabel.text = @"";
     self.durationProgressView.hidden = YES;
     self.currentArtistViewBackground.hidden = YES;
     self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
     self.currentArtistViewBackground.hidden = YES;
-    self.playPauseButton.hidden = YES;
-    self.skipButton.hidden = YES;
+    self.playPauseImage.hidden = YES;
+    self.skipImage.hidden = YES;
     self.playButtonPressed.hidden = YES;
     self.skipButtonPressed.hidden = YES;
     self.hostCodeMessageLabel.hidden = NO;
     self.hostRoomCodeLabel.hidden = NO;
     self.hostRoomCodeLabel.text = roomCodeAsHost;
-    
+    }
+}
+
+-(void)viewForNoCurrentArtistAsGuest
+{
+    if (!self.isHost) {
+        self.currentSongLabel.text = @"";
+        self.currentArtistLabel.text = @"";
+        self.durationProgressView.hidden = YES;
+        self.currentArtistViewBackground.hidden = YES;
+        self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
+        self.currentArtistViewBackground.hidden = YES;
+        [self hideRemoteCapabilites:YES];
+    }
 }
 
 //for formating the tracks durations.
@@ -744,40 +1005,15 @@
     //close the socket.
     [self.socket close];
     //pop out
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+    [UIView animateWithDuration:.35 animations:^{
+        self.blurEffectView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self.navigationController popToRootViewControllerAnimated:NO];
+    }];
     
 }
 
--(void)exitSettingsAnimation
-{
-    self.plusButton.alpha = 0;
-    self.searchView.hidden = NO;
-    [UIView animateWithDuration:.3 animations:^{
-        self.blurEffectView.alpha = 0;
-        self.roomCodeLabel.alpha = 0;
-        self.roomCodeTextLabel.alpha = 0;
-        self.whiteBorderView1.alpha  = 0;
-        self.whiteBorderView2.alpha = 0;
-        self.remotePasswordInfoLabel.alpha = 0;
-        self.leaveRoomButton.alpha = 0;
-        self.remoteImageView.alpha = 0;
-        self.exitSettingsViewButton.alpha = 0;
-        self.remotePasswordTextField.alpha = 0;
-        self.plusButton.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-        self.settingsView.hidden = YES;
-        if (self.isRemoteHost) {
-            UIImage *purpleHostIndicator = [UIImage imageNamed:@"remote-enabled.png"];
-            self.remoteImageView.image = purpleHostIndicator;
-            self.remoteImageVertConst.constant = 201;
-            self.remoteLabelVertConst.constant = 230;
-        }
-
-        [self purpleGlowImageView];
-    }];
-
-}
 
 -(void)purpleGlowAnimationFromBottomWithDelay:(NSTimeInterval *)delay
 {
@@ -800,18 +1036,26 @@
     NSDictionary *track = currentArtist;
     //If there is no current track, clear the current artist display.
     if (track == NULL) {
-        
-        [self viewForNoCurrentArtistAsHost];
+        if (self.isHost) {
+            [self viewForNoCurrentArtistAsHost];
+        }
+        else [self viewForNoCurrentArtistAsGuest];
     }
     //else, If there is a current track, display its contents as current user
     else
     {
         if (![track objectForKey:@"user"])
         {
-            [self viewForNoCurrentArtistAsHost];
+            if (self.isHost) {
+                [self viewForNoCurrentArtistAsHost];
+            }
+            else [self viewForNoCurrentArtistAsGuest];
         }
         else
         {
+            if (self.isRemoteHost) {
+                [self hideRemoteCapabilites:NO];
+            }
             self.currentArtistViewBackground.hidden = NO;
             self.hostCodeMessageLabel.hidden = YES;
             self.currentSongLabel.text = [track objectForKey:@"title"];
@@ -835,7 +1079,7 @@
     self.durationProgressView.progress = (current/duration);
     if (self.durationProgressView.progress == 0)
     {
-        [self.playPauseButton setBackgroundImage:pauseButtonImage forState:UIControlStateNormal];
+        [self.playPauseImage setImage:pauseButtonImage];
     }
     
 }
@@ -932,7 +1176,7 @@
         
         [self playCurrentArtist:self.hostCurrentArtist];
         
-        [self.playPauseButton setBackgroundImage:pausedButtonImage forState:UIControlStateNormal];
+        [self.playPauseImage setImage:pausedButtonImage];
         self.durationProgressView.hidden = NO;
         self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
 
@@ -951,4 +1195,15 @@
     NSLog(@"Memory warning!");
 }
 
+- (IBAction)exitRemoteButtonPressed:(UIButton *)sender
+{
+        [self.remoteTextField resignFirstResponder];
+        [UIView animateWithDuration:.3 animations:^{
+            self.remoteCodeView.alpha = 0;
+            self.blurEffectView.alpha = 0;
+        } completion:^(BOOL finished) {
+            self.remoteCodeView.hidden = YES;
+            self.remoteTextField.text = nil;
+        }];
+}
 @end
