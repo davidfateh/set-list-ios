@@ -18,6 +18,9 @@
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
 #import <MediaPlayer/MPMediaQuery.h>
 #import "AsyncImageView.h"
+#import "CollectionViewCell.h"
+#import "CurrentArtistHeader.h"
+#import <CSStickyHeaderFlowLayout/CSStickyHeaderFlowLayout.h>
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
@@ -35,9 +38,18 @@
 @property (nonatomic) BOOL remoteLabelSelected;
 @property (nonatomic) BOOL leaveLabelPushed;
 @property (nonatomic) BOOL leaveLabelSelected;
+@property (strong, nonatomic) UINib *headerNib;
 @end
 
 @implementation SetListRoomViewController
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+    self.headerNib = [UINib nibWithNibName:@"AlwaysOnTopHeader" bundle:nil];
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -50,6 +62,31 @@
     //Set the text on the search bar to white.
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
+    
+    
+    
+    CSStickyHeaderFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
+    
+    if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
+        layout.parallaxHeaderReferenceSize = CGSizeMake(self.view.frame.size.width, 233);
+        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(self.view.frame.size.width, 100);
+        layout.parallaxHeaderAlwaysOnTop = YES;
+        
+        // If we want to disable the sticky header effect
+        layout.disableStickyHeaders = YES;
+    }
+    
+    
+    // Also insets the scroll indicator so it appears below the search bar
+    self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+    
+    [self.collectionView registerNib:self.headerNib
+          forSupplementaryViewOfKind:CSStickyHeaderParallaxHeader
+                 withReuseIdentifier:@"header"];
+    
+    self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
+
     
     //Set the delegates for the search view.
     self.searchBar.delegate = self;
@@ -448,6 +485,40 @@
 {
     [self.searchBar resignFirstResponder];
 }
+
+#pragma mark UICollectionViewDataSource
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    if (self.isHost) {
+            return [self.hostQueue count];
+        }
+        else return [self.tracks count];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
+                                                                         forIndexPath:indexPath];
+    return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([kind isEqualToString:CSStickyHeaderParallaxHeader]) {
+        CurrentArtistHeader *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                               withReuseIdentifier:@"header"
+                                                                      forIndexPath:indexPath];
+        return cell;
+    }
+    return nil;
+}
+
+
+
 
 #pragma mark - Search Bar Configuration
 

@@ -12,17 +12,14 @@
 #import "Constants.h"
 #import <AVFoundation/AVFoundation.h>
 
-@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate>
+@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
 //SET LIST properties and methods. 
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) IBOutlet UILabel *currentSongLabel;
-@property (strong, nonatomic) IBOutlet UILabel *currentArtistLabel;
-@property (strong, nonatomic) IBOutlet UIImageView *currentAlbumArtImage;
+
 @property (strong, nonatomic) IBOutlet UIView *setListView;
 @property (strong, nonatomic) NSMutableArray *tracks;
-@property (strong, nonatomic) IBOutlet UIView *currentArtistViewBackground;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) NSString *roomCode;
 @property (strong, nonatomic) NSString *UUIDString; 
 
@@ -44,21 +41,12 @@
 //HOST Properties and methods
 @property (nonatomic) BOOL isHost;
 @property (strong, nonatomic) IBOutlet UIProgressView *durationProgressView;
-- (IBAction)playPauseButtonPressed:(UIButton *)sender;
-- (IBAction)skipButtonPressed:(UIButton *)sender;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewHeightConst;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *setListTableViewVertConst;
 @property (strong, nonatomic) IBOutlet UILabel *hostRoomCodeLabel;
-@property (strong, nonatomic) IBOutlet UIImageView *skipImage;
-@property (strong, nonatomic) IBOutlet UIImageView *playPauseImage;
 @property (strong, nonatomic) IBOutlet UILabel *hostCodeMessageLabel;
 @property (strong, nonatomic) NSMutableArray *hostQueue;
 @property (strong, nonatomic) NSMutableDictionary *hostCurrentArtist;
 @property (strong, nonatomic) AVPlayer *player;
 @property (strong, nonatomic) NSData *trackData;
-@property (strong, nonatomic) IBOutlet UIButton *playButtonPressed;
-@property (strong, nonatomic) IBOutlet UIButton *skipButtonPressed;
-
 
 //MENU VIEW properties and methods
 @property (strong, nonatomic) IBOutlet UIImageView *sliderImageView;

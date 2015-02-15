@@ -17,6 +17,9 @@
 		1883F3CF1A890CEB00D9357B /* search25.png in Resources */ = {isa = PBXBuildFile; fileRef = 1883F3CE1A890CEB00D9357B /* search25.png */; };
 		1883F3D11A890CF400D9357B /* search30.png in Resources */ = {isa = PBXBuildFile; fileRef = 1883F3D01A890CF400D9357B /* search30.png */; };
 		1883F3DA1A895F0E00D9357B /* menu-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 1883F3D91A895F0E00D9357B /* menu-button.png */; };
+		1883F4C61A915ACE00D9357B /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1883F4C51A915ACE00D9357B /* CollectionViewCell.m */; };
+		1883F4CA1A915B5A00D9357B /* CurrentArtistHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1883F4C91A915B5A00D9357B /* CurrentArtistHeader.m */; };
+		1883F4CC1A915B8200D9357B /* AlwaysOnTopHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1883F4CB1A915B8200D9357B /* AlwaysOnTopHeader.xib */; };
 		18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B881A76D0FC00C388B5 /* purple-glow.png */; };
 		18956B901A770B8E00C388B5 /* dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B8F1A770B8E00C388B5 /* dot.png */; };
 		18956B921A7734C200C388B5 /* remote.png in Resources */ = {isa = PBXBuildFile; fileRef = 18956B911A7734C200C388B5 /* remote.png */; };
@@ -75,6 +78,11 @@
 		1883F3CE1A890CEB00D9357B /* search25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search25.png; sourceTree = "<group>"; };
 		1883F3D01A890CF400D9357B /* search30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search30.png; sourceTree = "<group>"; };
 		1883F3D91A895F0E00D9357B /* menu-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "menu-button.png"; sourceTree = "<group>"; };
+		1883F4C41A915ACE00D9357B /* CollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionViewCell.h; sourceTree = "<group>"; };
+		1883F4C51A915ACE00D9357B /* CollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewCell.m; sourceTree = "<group>"; };
+		1883F4C81A915B5A00D9357B /* CurrentArtistHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurrentArtistHeader.h; sourceTree = "<group>"; };
+		1883F4C91A915B5A00D9357B /* CurrentArtistHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurrentArtistHeader.m; sourceTree = "<group>"; };
+		1883F4CB1A915B8200D9357B /* AlwaysOnTopHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlwaysOnTopHeader.xib; sourceTree = "<group>"; };
 		18956B881A76D0FC00C388B5 /* purple-glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple-glow.png"; sourceTree = "<group>"; };
 		18956B8F1A770B8E00C388B5 /* dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dot.png; sourceTree = "<group>"; };
 		18956B911A7734C200C388B5 /* remote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = remote.png; sourceTree = "<group>"; };
@@ -148,6 +156,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1883F4C71A915AE200D9357B /* Collection View */ = {
+			isa = PBXGroup;
+			children = (
+				1883F4C41A915ACE00D9357B /* CollectionViewCell.h */,
+				1883F4C51A915ACE00D9357B /* CollectionViewCell.m */,
+				1883F4C81A915B5A00D9357B /* CurrentArtistHeader.h */,
+				1883F4C91A915B5A00D9357B /* CurrentArtistHeader.m */,
+				1883F4CB1A915B8200D9357B /* AlwaysOnTopHeader.xib */,
+			);
+			name = "Collection View";
+			sourceTree = "<group>";
+		};
 		18EC3CAD1A65F64B00AFD97F = {
 			isa = PBXGroup;
 			children = (
@@ -179,6 +199,7 @@
 				1895D5D11A88221400A1B243 /* MainMenuViewController.h */,
 				1895D5D21A88221400A1B243 /* MainMenuViewController.m */,
 				18EC3D081A6C68B500AFD97F /* SetList View Controller */,
+				1883F4C71A915AE200D9357B /* Collection View */,
 				18EC3D091A6C699400AFD97F /* SocketKeeperSingleton.h */,
 				18EC3D0A1A6C699400AFD97F /* SocketKeeperSingleton.m */,
 				1881C8341A88583D00A50523 /* CustomSegue.h */,
@@ -387,6 +408,7 @@
 				18C903C21A85424000C65489 /* noAlbumArt.png in Resources */,
 				186DDF3F1A78297800B4EF16 /* exit.png in Resources */,
 				186DDF3D1A7828FB00B4EF16 /* remote-enabled.png in Resources */,
+				1883F4CC1A915B8200D9357B /* AlwaysOnTopHeader.xib in Resources */,
 				1883F3CF1A890CEB00D9357B /* search25.png in Resources */,
 				1883F3D11A890CF400D9357B /* search30.png in Resources */,
 				18956B891A76D0FC00C388B5 /* purple-glow.png in Resources */,
@@ -448,10 +470,12 @@
 				18EC3CC21A65F64C00AFD97F /* TheSetList.xcdatamodeld in Sources */,
 				18EC3CBC1A65F64B00AFD97F /* main.m in Sources */,
 				1895D5D31A88221400A1B243 /* MainMenuViewController.m in Sources */,
+				1883F4C61A915ACE00D9357B /* CollectionViewCell.m in Sources */,
 				1881C8361A88583D00A50523 /* CustomSegue.m in Sources */,
 				18EC3D071A6C67E200AFD97F /* SetListTableViewCell.m in Sources */,
 				18EC3D001A67413B00AFD97F /* SetListRoomViewController.m in Sources */,
 				18EC3D0B1A6C699400AFD97F /* SocketKeeperSingleton.m in Sources */,
+				1883F4CA1A915B5A00D9357B /* CurrentArtistHeader.m in Sources */,
 				185A0A121A7EA2F8007F2177 /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
