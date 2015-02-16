@@ -69,9 +69,10 @@
             </constraints>
             <size key="customSize" width="451" height="255"/>
             <connections>
+                <outlet property="albumArt" destination="AU2-3Q-a5a" id="HSP-Vh-tza"/>
                 <outlet property="artistLabel" destination="Dw1-Vc-Fx4" id="RFb-Iq-Mt6"/>
                 <outlet property="artworkImage" destination="AU2-3Q-a5a" id="M4R-DE-7RE"/>
-                <outlet property="controlsBackgroundView" destination="nap-x1-dew" id="tt5-0k-CDJ"/>
+                <outlet property="controlsBackgroundView" destination="nap-x1-dew" id="nEd-bo-tEl"/>
                 <outlet property="playPauseImageView" destination="te8-vp-Ha6" id="iTr-o3-mmC"/>
                 <outlet property="skipImageView" destination="IRX-K3-Qqa" id="unE-kB-FrT"/>
                 <outlet property="songTitleLabel" destination="ZE7-sd-6pO" id="4sA-XC-c5T"/>
