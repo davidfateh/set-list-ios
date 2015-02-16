@@ -160,6 +160,8 @@
         self.isHost = YES;
         self.playerIsPlaying = NO;
         self.hostRoomCodeLabel.text = roomCodeAsHost;
+        self.hostRoomCodeLabel.hidden = NO;
+        self.hostCodeMessageLabel.hidden = NO;
         
         if (!self.hostQueue) {
             self.hostQueue = [[NSMutableArray alloc]init];
@@ -227,7 +229,7 @@
 {
     [super viewDidAppear:YES];
     
-    
+    //fade animation in for a nice load in effect
     [UIView animateWithDuration:.5 delay:.35 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.searchView.alpha = 1;
         self.setListView.alpha = 1;
@@ -347,6 +349,7 @@
     //else, if there isnt a current artist, add the song as current artist.
     else
     {
+        self.collectionView.hidden = NO;
         self.hostCurrentArtist = [songAdded mutableCopy];
         NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
         [self playCurrentArtist:self.hostCurrentArtist];
