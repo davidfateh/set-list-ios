@@ -7,7 +7,6 @@
     <customFonts key="customFonts">
         <mutableArray key="Lobster-Regular.ttf">
             <string>Lobster-Regular</string>
-            <string>Lobster-Regular</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -267,7 +266,6 @@
                                                 <connections>
                                                     <outlet property="artistLabel" destination="VpR-dD-1Di" id="uJA-Eu-7P1"/>
                                                     <outlet property="songTitleLabel" destination="Y0g-bO-NkN" id="4VT-H4-hEx"/>
-                                                    <outlet property="trackLabel" destination="Y0g-bO-NkN" id="WgG-Ig-EUq"/>
                                                 </connections>
                                             </collectionViewCell>
                                         </cells>
@@ -571,75 +569,6 @@
                 </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1362" y="136"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="oge-Jg-QLZ">
-            <objects>
-                <viewController id="oDg-O8-2EE" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="4H8-P7-F7Z"/>
-                        <viewControllerLayoutGuide type="bottom" id="hP1-n9-SBO"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="GMQ-yM-EcH" customClass="RadialGradiantView">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t06-SV-FfG" userLabel="Slider View">
-                                <rect key="frame" x="263" y="22" width="52" height="48"/>
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="slider.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ed3-dQ-PMP">
-                                        <rect key="frame" x="11" y="9" width="30" height="30"/>
-                                    </imageView>
-                                </subviews>
-                            </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6sq-g8-mWA">
-                                <rect key="frame" x="100" y="29" width="121" height="32"/>
-                                <fontDescription key="fontDescription" name="Lobster-Regular" family="Lobster" pointSize="28"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tS7-3F-aQO">
-                                <rect key="frame" x="0.0" y="68" width="320" height="1"/>
-                                <color key="backgroundColor" white="1" alpha="0.23000000000000001" colorSpace="calibratedWhite"/>
-                            </view>
-                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gah-AD-KvP" userLabel="Remote Code View">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zm6-Wb-8cG">
-                                        <rect key="frame" x="8" y="210" width="304" height="75"/>
-                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="64"/>
-                                        <textInputTraits key="textInputTraits" keyboardAppearance="alert"/>
-                                    </textField>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enter room code" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u20-kS-Iqc">
-                                        <rect key="frame" x="71" y="181" width="181" height="21"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                        <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="67f-Pn-7sv" userLabel="Exit Room Code Button">
-                                        <rect key="frame" x="25" y="30" width="44" height="44"/>
-                                        <state key="normal">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="exitJoinRoomViewButtonPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="iPA-xZ-goL"/>
-                                        </connections>
-                                    </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="plusButton" translatesAutoresizingMaskIntoConstraints="NO" id="6gi-AI-heE">
-                                        <rect key="frame" x="37" y="39" width="25" height="25"/>
-                                    </imageView>
-                                </subviews>
-                                <color key="backgroundColor" red="0.56965988869999995" green="0.56974464650000001" blue="0.56964135169999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="NHM-o5-gAn" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1764" y="136"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zDW-MG-o0y">

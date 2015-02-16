@@ -7,7 +7,29 @@
 //
 
 #import "CurrentArtistHeader.h"
+#import <CSStickyHeaderFlowLayoutAttributes.h>
 
 @implementation CurrentArtistHeader
 
+- (void)applyLayoutAttributes:(CSStickyHeaderFlowLayoutAttributes *)layoutAttributes {
+    
+    [UIView beginAnimations:@"" context:nil];
+    if (layoutAttributes.progressiveness <= 0.58) {
+        self.self.controlsBackgroundView.alpha = .85;
+    } else {
+        self.controlsBackgroundView.alpha = 0;
+    }
+    [UIView commitAnimations];
+}
+
+
+- (IBAction)playPauseButtonPressed:(UIButton *)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"playPausePressed" object:nil];
+}
+
+- (IBAction)skipButtonPressed:(UIButton *)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"skipPressed" object:nil];
+}
 @end

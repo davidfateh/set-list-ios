@@ -15,5 +15,7 @@
 @property (strong, nonatomic) IBOutlet UIView *controlsBackgroundView;
 @property (strong, nonatomic) IBOutlet UIImageView *skipImageView;
 @property (strong, nonatomic) IBOutlet UIImageView *playPauseImageView;
+- (IBAction)playPauseButtonPressed:(UIButton *)sender;
+- (IBAction)skipButtonPressed:(UIButton *)sender;
 
 @end

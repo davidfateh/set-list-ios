@@ -22,6 +22,7 @@
 #import "CurrentArtistHeader.h"
 #import <CSStickyHeaderFlowLayout/CSStickyHeaderFlowLayout.h>
 
+
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
 
 @interface SetListRoomViewController ()
@@ -39,6 +40,8 @@
 @property (nonatomic) BOOL leaveLabelPushed;
 @property (nonatomic) BOOL leaveLabelSelected;
 @property (strong, nonatomic) UINib *headerNib;
+@property (strong, nonatomic) CurrentArtistHeader *currentArtistHeader;
+@property (nonatomic) BOOL playerIsPlaying;
 @end
 
 @implementation SetListRoomViewController
@@ -76,7 +79,6 @@
         layout.disableStickyHeaders = YES;
     }
     
-    
     // Also insets the scroll indicator so it appears below the search bar
     self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     
@@ -86,26 +88,11 @@
     
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
-
     
     //Set the delegates for the search view.
     self.searchBar.delegate = self;
     self.searchTableView.delegate = self;
     self.searchTableView.dataSource = self;
-    
-    
-    //Set the tableview position and functionality for if the user is not the host. No space between header and tableViews
-    self.setListTableViewHeightConst.constant = 294;
-    self.setListTableViewVertConst.constant = 0;
-    
-    
-    //set the delegates for the set list view. 
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    
-    
-    self.tableView.layoutMargins = UIEdgeInsetsZero;
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     //Set the UUID for the user
     self.UUIDString = [[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"];
@@ -157,11 +144,21 @@
                                                  selector:@selector(receiveUserJoinedNotification:)
                                                      name:kUserJoined
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(skipPressedNotification:)
+                                                     name:@"skipPressed"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(playPausePressedNotification:)
+                                                     name:@"playPausePressed"
+                                                   object:nil];
+
+
         
         self.dicForInfoCenter = [[NSMutableDictionary alloc]init];
         NSLog(@"User is the host of this room");
         self.isHost = YES;
-        [self viewForNoCurrentArtistAsHost];
+        self.playerIsPlaying = NO;
         self.hostRoomCodeLabel.text = roomCodeAsHost;
         
         if (!self.hostQueue) {
@@ -211,11 +208,6 @@
         //Add some animations upon load up. Purple glow and tableview animation.
         double delay = .4;
         [self purpleGlowAnimationFromBottomWithDelay:&delay];
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationBottom];
-        
-        //Set Current artist, if there is one.
-        NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
-        [self setCurrentArtistFromCurrentArtist:currentArtist];
         
         
         //Set the current tracks, if there is one.
@@ -269,6 +261,44 @@
 
 #pragma mark - Notification Center
 
+-(void)playPausePressedNotification:(NSNotification *)notificaiton
+{
+    if (self.isHost) {
+        if(self.playerIsPlaying == YES)
+        {
+            [self.player pause];
+            self.playerIsPlaying = NO;
+        } else {
+            [self.player play];
+            self.playerIsPlaying = YES;
+        }
+    }
+    
+    //If the user is the host, allow them to togglepause the songs.
+    if (self.isRemoteHost) {
+        NSDictionary *togglePauseDic = @{@"action" : @"togglePause"};
+        NSArray *argsArray = @[togglePauseDic];
+        [self.socket emit:kRemoteAction args:argsArray];
+    }
+    [self.collectionView reloadData];
+}
+
+-(void)skipPressedNotification:(NSNotification *)notificaiton
+{
+    if (self.isHost) {
+        if (!self.hostQueue)
+        {
+            self.durationProgressView.hidden = NO;
+        }else self.durationProgressView.hidden = YES;
+        [self playNextSongInQueue];
+    }
+    //if the user is the host, allow them to skip songs.
+    if (self.isRemoteHost) {
+        NSDictionary *skipDic = @{@"action" : @"skip"};
+        NSArray *argsArray = @[skipDic];
+        [self.socket emit:kRemoteAction args:argsArray];
+    }
+}
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
     NSLog(@"reconnected");
@@ -298,7 +328,6 @@
 -(void)receiveHostSongAddedNotification:(NSNotification *)notification
 {
     
-    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
     if (!self.hostRoomCodeLabel.hidden) {
         self.hostRoomCodeLabel.hidden = YES;
         self.hostCodeMessageLabel.hidden = YES;
@@ -309,7 +338,7 @@
     if ([self.hostCurrentArtist objectForKey:@"user"]) {
         
         [self.hostQueue addObject:songAdded];
-        [self.tableView reloadData];
+        [self.collectionView reloadData];
         //Emit the added song so the client can recieve it.
         NSArray *queueArray = @[self.hostQueue];
         [self.socket emit:kQueueChange args:queueArray];
@@ -320,21 +349,11 @@
     {
         self.hostCurrentArtist = [songAdded mutableCopy];
         NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
-        [self setCurrentArtistFromCurrentArtist:songAddedForCurrent];
         [self playCurrentArtist:self.hostCurrentArtist];
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
         [self.socket emit:kCurrentArtistChange args:songAddedArray];
         
-        //Unhide host capabilities
-        self.playPauseImage.hidden = NO;
-        self.skipImage.hidden = NO;
-        self.skipButtonPressed.hidden = NO;
-        self.playButtonPressed.hidden = NO;
-        [self.playPauseImage setImage:pauseButtonImage];
-        self.setListTableViewVertConst.constant = 0;
-        self.setListTableViewHeightConst.constant = 264;
-
     }
 }
 
@@ -356,7 +375,6 @@
     if (!self.isHost) {
         NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
         self.currentArtist = currentArtist;
-        [self setCurrentArtistFromCurrentArtist:currentArtist];
     }
     
     
@@ -368,7 +386,7 @@
     if (!self.isHost) {
         NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
         self.tracks = [setListTracks mutableCopy];
-        [self.tableView reloadData];
+        [self.collectionView reloadData];
     }
 }
 
@@ -380,86 +398,45 @@
     SetListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReusableIdentifier forIndexPath:indexPath];
     
     cell.delegate = self;
-    cell.deleteSongImage.transform = CGAffineTransformMakeRotation(M_PI/4);
-    if (tableView.tag == 1) {
+    
+    // Configure the cell...
+    
+    NSDictionary *track = [self.searchTracks objectAtIndex:indexPath.row];
+    
+    cell.searchSongTitle.text = [track objectForKey:@"title"];
+    
+    NSString *artistName = [[track objectForKey:@"user"]objectForKey:@"username"];
+    cell.searchArtist.text = artistName;
+    
+    //Format the tracks duration into a string and set the label.
+    int duration = [[track objectForKey:@"duration"]intValue];
+    NSString *durationString = [self timeFormatted:duration];
+    cell.searchDurationLabel.text = durationString;
+    
+    
+    //If there is no picture available. Adds a Custom picture.
+    if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
         
-        //tableview for if the user is the host.
-        if (self.isHost) {
-            
-            cell.userSelectedSongImageView.hidden= YES;
-            cell.deleteSongImage.hidden = NO;
-            cell.deleteSongButton.hidden = NO;
-            NSDictionary *track = [self.hostQueue objectAtIndex:indexPath.row];
-            NSString *songTitle = [track objectForKey:@"title"];
-            NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
-            cell.artistLabel.text = artist;
-            cell.songLabel.text = songTitle;
-            cell.tag = indexPath.row;
-            
-        }
-        //set list table for if user is not the host.
-        else
-        {
-            NSDictionary *track = [self.tracks objectAtIndex:indexPath.row];
-            
-            if ([[track objectForKey:@"UUID"]isEqualToString:self.UUIDString]) {
-                cell.userSelectedSongImageView.hidden = NO;
-            }
-            else
-            {
-                cell.userSelectedSongImageView.hidden = YES;
-            }
-            
-            NSString *songTitle = [track objectForKey:@"title"];
-            NSString *artist = [[track objectForKey:@"user"]objectForKey:@"username"];
-            
-            cell.artistLabel.text = artist;
-            cell.songLabel.text = songTitle;
-            
-        }
-  
-        }
-        //search table view
-            else if (tableView.tag == 2)
-        {
-            // Configure the cell...
-            
-            NSDictionary *track = [self.searchTracks objectAtIndex:indexPath.row];
-            
-            cell.searchSongTitle.text = [track objectForKey:@"title"];
-            
-            NSString *artistName = [[track objectForKey:@"user"]objectForKey:@"username"];
-            cell.searchArtist.text = artistName;
-            
-            //Format the tracks duration into a string and set the label.
-            int duration = [[track objectForKey:@"duration"]intValue];
-            NSString *durationString = [self timeFormatted:duration];
-            cell.searchDurationLabel.text = durationString;
-            
-            
-            //If there is no picture available. Adds a Custom picture.
-            if ([[track objectForKey:@"artwork_url"] isEqual:[NSNull null]]){
-                
-                cell.searchAlbumArtImage.image = [UIImage imageNamed:@"noAlbumArt.png"];
-                
-            }
-            else{
-                NSURL *artworkURL = [NSURL URLWithString:track[@"artwork_url"] ];
-                [cell.searchAlbumArtImage sd_setImageWithURL:artworkURL placeholderImage:[UIImage imageNamed:@"noAlbumArt.png"]];
-                
-            }
-            //if the row is selected make sure the check mark is the background image. 
-            UIImage *checkImage = [UIImage imageNamed:@"check.png"];
-            UIImage *plusImage  = [UIImage imageNamed:@"plusButton"];
-            
-            if ([self.selectedRows containsIndex:indexPath.row]) {
-                [cell.addSongPlusImageView setImage:checkImage];
-            }
-            else {
-                [cell.addSongPlusImageView setImage:plusImage];
-            }
-            cell.tag = indexPath.row;
-        }
+        cell.searchAlbumArtImage.image = [UIImage imageNamed:@"noAlbumArt.png"];
+        
+    }
+    else{
+        NSURL *artworkURL = [NSURL URLWithString:track[@"artwork_url"] ];
+        [cell.searchAlbumArtImage sd_setImageWithURL:artworkURL placeholderImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+        
+    }
+    //if the row is selected make sure the check mark is the background image.
+    UIImage *checkImage = [UIImage imageNamed:@"check.png"];
+    UIImage *plusImage  = [UIImage imageNamed:@"plusButton"];
+    
+    if ([self.selectedRows containsIndex:indexPath.row]) {
+        [cell.addSongPlusImageView setImage:checkImage];
+    }
+    else {
+        [cell.addSongPlusImageView setImage:plusImage];
+    }
+    cell.tag = indexPath.row;
+    
     
     return cell;
 }
@@ -467,13 +444,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView.tag == 1) {
-        if (self.isHost) {
-            return [self.hostQueue count];
-        }
-        else return [self.tracks count];
-    }
-    else return [self.searchTracks count];
+    return  self.searchTracks.count;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -488,7 +459,8 @@
 
 #pragma mark UICollectionViewDataSource
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
     return 1;
 }
 
@@ -503,6 +475,13 @@
     
     CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
                                                                          forIndexPath:indexPath];
+    if ([self.hostQueue count])
+    {
+        NSDictionary *track = self.hostQueue[indexPath.row];
+        cell.songTitleLabel.text = track[@"title"];
+        cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+    }
+
     return cell;
 }
 
@@ -512,6 +491,19 @@
         CurrentArtistHeader *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                withReuseIdentifier:@"header"
                                                                       forIndexPath:indexPath];
+        if (self.hostCurrentArtist[@"user"]) {
+            NSDictionary *track = self.hostCurrentArtist;
+            cell.songTitleLabel.text = track[@"title"];
+            cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
+            [cell.artworkImage sd_setImageWithURL:artworkURL];
+            
+            if (self.playerIsPlaying) {
+                cell.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
+            }
+            else cell.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+        }
+        
         return cell;
     }
     return nil;
@@ -821,64 +813,12 @@
     
 }
 
--(void)deleteSongButtonPressedOnCell:(id)sender
-{
-    NSInteger index =  ((UITableViewCell *)sender).tag;
-    NSLog(@"%ld", (long)index);
-    [self.hostQueue removeObjectAtIndex:index];
-    [self.tableView reloadData];
-}
 #pragma mark - Remote Host Methods
-
-- (IBAction)playPauseButtonPressed:(UIButton *)sender
-{
-    UIImage *playButtonImage = [UIImage imageNamed:@"Play"];
-    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
-    UIImage *currentButton = [self.playPauseImage image];
-    if (self.isHost) {
-        if([currentButton isEqual:pauseButtonImage])
-        {
-            [self.player pause];
-            [self.playPauseImage setImage:playButtonImage];
-        } else {
-            [self.player play];
-            [self.playPauseImage setImage:pauseButtonImage];
-        }
-
-    }
-    
-    //If the user is the host, allow them to togglepause the songs.
-    if (self.isRemoteHost) {
-        NSDictionary *togglePauseDic = @{@"action" : @"togglePause"};
-        NSArray *argsArray = @[togglePauseDic];
-        [self.socket emit:kRemoteAction args:argsArray];
-    }
-}
-
-- (IBAction)skipButtonPressed:(UIButton *)sender
-{
-    
-    if (self.isHost) {
-        if (!self.hostQueue)
-        {
-            self.durationProgressView.hidden = NO;
-        }else self.durationProgressView.hidden = YES;
-        [self playNextSongInQueue];
-    }
-    //if the user is the host, allow them to skip songs.
-    if (self.isRemoteHost) {
-        NSDictionary *skipDic = @{@"action" : @"skip"};
-        NSArray *argsArray = @[skipDic];
-        [self.socket emit:kRemoteAction args:argsArray];
-    }
-}
 
 //When remote text field returns
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     //Join to the remote host, emit the password, if correct password allow the user to be the remote host and pause, play and skip songs.
-    UIImage *playImage = [UIImage imageNamed:@"Play"];
-    UIImage *pauseImage = [UIImage imageNamed:@"Pause"];
     NSString *remotePassword = self.remoteTextField.text;
     NSDictionary *passwordDic = @{@"password" : remotePassword};
     NSArray *argsArray = @[passwordDic];
@@ -903,27 +843,18 @@
                 weakSelf.remoteTextLabel.text = @"Remote host enabled";
                 [weakSelf.remoteTextField resignFirstResponder];
                 [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                    weakSelf.setListTableViewVertConst.constant = 0;
-                    weakSelf.setListTableViewHeightConst.constant = 264;
+                
                 } completion:^(BOOL finished) {
                     
                 }];
                 
                 [weakSelf exitRemoteButtonPressed:nil];
-                if (weakSelf.currentArtist[@"user"]) {
-                    [weakSelf hideRemoteCapabilites:NO];
-                }
             });
             
             [self.socket on:@"playing" callback:^(NSArray *args) {
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.playPauseImage setImage:pauseImage];
-                });
+              
             }];
             [self.socket on:@"paused" callback:^(NSArray *args) {
-                 dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.playPauseImage setImage:playImage];
-                 });
             }];
         }
     }];
@@ -932,24 +863,6 @@
 }
 
 #pragma mark - Helper Methods
-
--(void)hideRemoteCapabilites:(BOOL)boolean
-{
-    if (boolean == YES) {
-        self.playPauseImage.hidden = YES;
-        self.skipImage.hidden = YES;
-        self.playButtonPressed.hidden = YES;
-        self.skipButtonPressed.hidden = YES;
-    }
-    else
-    {
-        self.playPauseImage.hidden = NO;
-        self.skipImage.hidden = NO;
-        self.playButtonPressed.hidden = NO;
-        self.skipButtonPressed.hidden = NO;
-    }
-}
-
 -(void)returnMenuSlider
 {
     UIImage *menuImage = [UIImage imageNamed:@"menu-button.png"];
@@ -999,41 +912,6 @@
     }];
 }
 
-
--(void)viewForNoCurrentArtistAsHost
-{
-    NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
-    if (self.isHost)
-    {
-    self.currentSongLabel.text = @"";
-    self.currentArtistLabel.text = @"";
-    self.durationProgressView.hidden = YES;
-    self.currentArtistViewBackground.hidden = YES;
-    self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
-    self.currentArtistViewBackground.hidden = YES;
-    self.playPauseImage.hidden = YES;
-    self.skipImage.hidden = YES;
-    self.playButtonPressed.hidden = YES;
-    self.skipButtonPressed.hidden = YES;
-    self.hostCodeMessageLabel.hidden = NO;
-    self.hostRoomCodeLabel.hidden = NO;
-    self.hostRoomCodeLabel.text = roomCodeAsHost;
-    }
-}
-
--(void)viewForNoCurrentArtistAsGuest
-{
-    if (!self.isHost) {
-        self.currentSongLabel.text = @"";
-        self.currentArtistLabel.text = @"";
-        self.durationProgressView.hidden = YES;
-        self.currentArtistViewBackground.hidden = YES;
-        self.currentAlbumArtImage.image = [UIImage imageNamed:@""];
-        self.currentArtistViewBackground.hidden = YES;
-        [self hideRemoteCapabilites:YES];
-    }
-}
-
 //for formating the tracks durations.
 - (NSString *)timeFormatted:(int)totalSeconds
 {
@@ -1046,8 +924,6 @@
     }else
         return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
 }
-
-
 
 -(void)disconnectSocketAndPopOut
 {
@@ -1102,55 +978,17 @@
 
 }
 
--(void)setCurrentArtistFromCurrentArtist:(NSDictionary *)currentArtist {
-    
-    NSDictionary *track = currentArtist;
-    //If there is no current track, clear the current artist display.
-    if (track == NULL) {
-        if (self.isHost) {
-            [self viewForNoCurrentArtistAsHost];
-        }
-        else [self viewForNoCurrentArtistAsGuest];
-    }
-    //else, If there is a current track, display its contents as current user
-    else
-    {
-        if (![track objectForKey:@"user"])
-        {
-            if (self.isHost) {
-                [self viewForNoCurrentArtistAsHost];
-            }
-            else [self viewForNoCurrentArtistAsGuest];
-        }
-        else
-        {
-            if (self.isRemoteHost) {
-                [self hideRemoteCapabilites:NO];
-            }
-            self.currentArtistViewBackground.hidden = NO;
-            self.hostCodeMessageLabel.hidden = YES;
-            self.currentSongLabel.text = [track objectForKey:@"title"];
-            self.currentArtistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-            //If there is no picture available. Adds a Custom picture.
-            //Init the cell image with the track's artwork.
-            NSURL *artworkURL = [NSURL URLWithString:[track objectForKey:@"highRes"]];
-            [self.currentAlbumArtImage sd_setImageWithURL:artworkURL];
-        }
-    }
-}
 
 #pragma mark - Playing Songs
 
 - (void)updateTime {
     
-    UIImage *pauseButtonImage = [UIImage imageNamed:@"Pause"];
     float duration = CMTimeGetSeconds(self.player.currentItem.duration);
     float current = CMTimeGetSeconds(self.player.currentTime);
     
     self.durationProgressView.progress = (current/duration);
     if (self.durationProgressView.progress == 0)
     {
-        [self.playPauseImage setImage:pauseButtonImage];
     }
     
 }
@@ -1163,6 +1001,7 @@
     self.player = [AVPlayer playerWithURL:URLFromString];
     self.player.allowsExternalPlayback = NO;
     [self.player play];
+    self.playerIsPlaying = YES;
     self.durationProgressView.hidden = NO;
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
@@ -1201,15 +1040,12 @@
         {
             if (event.subtype == UIEventSubtypeRemoteControlPlay)
             {
-                [self playPauseButtonPressed:nil];
             }
             else if (event.subtype == UIEventSubtypeRemoteControlPause)
             {
-                [self playPauseButtonPressed:nil];
             }
             else if (event.subtype == UIEventSubtypeRemoteControlNextTrack)
             {
-                [self skipButtonPressed:nil];
             }
             
         }
@@ -1221,15 +1057,14 @@
     //if there are no tracks in queue
     if (![self.hostQueue count]) {
         NSLog(@"nothing in queue upon song finishing");
+        self.playerIsPlaying = NO;
         [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
         [self.hostCurrentArtist removeAllObjects];
-        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
         NSArray *argsCurrentArray = @[self.hostCurrentArtist];
         [self.socket emit:kCurrentArtistChange args:argsCurrentArray];
     }
     else {
         [self playNextSongInQueue];
-        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
     };
 }
 
@@ -1238,22 +1073,19 @@
     if ([self.hostQueue count]) {
         [self.timer invalidate];
         [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
-        UIImage *pausedButtonImage = [UIImage imageNamed:@"Pause"];
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
         self.hostCurrentArtist = [currentTrack mutableCopy];
         [self.hostQueue removeObjectAtIndex:0];
-        [self.tableView reloadData];
+        [self.collectionView reloadData];
         
         [self playCurrentArtist:self.hostCurrentArtist];
         
-        [self.playPauseImage setImage:pausedButtonImage];
         self.durationProgressView.hidden = NO;
         self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
 
         NSArray *argsWithQueue = @[self.hostQueue];
         NSArray *arrayWithTrack = @[currentTrack];
-        [self setCurrentArtistFromCurrentArtist:self.hostCurrentArtist];
         [self.socket emit:kCurrentArtistChange args:arrayWithTrack];
         [self.socket emit:kQueueChange args:argsWithQueue];
        
@@ -1277,4 +1109,5 @@
             self.remoteTextField.text = nil;
         }];
 }
+
 @end
