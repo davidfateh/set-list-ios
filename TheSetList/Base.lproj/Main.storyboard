@@ -250,21 +250,54 @@
                                                             <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eDd-Cc-SJV">
-                                                            <rect key="frame" x="285" y="24" width="5" height="5"/>
+                                                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dot.png" translatesAutoresizingMaskIntoConstraints="NO" id="eDd-Cc-SJV" userLabel="purpleDot">
+                                                            <rect key="frame" x="280" y="22" width="5" height="5"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="5" id="Q41-ct-beh"/>
+                                                                <constraint firstAttribute="height" constant="5" id="dLh-BL-ICv"/>
+                                                            </constraints>
                                                         </imageView>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plusButton" translatesAutoresizingMaskIntoConstraints="NO" id="q9R-Fg-o2Y" userLabel="deleteSongFromQueue">
+                                                            <rect key="frame" x="275" y="17" width="15" height="15"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="15" id="KeZ-yb-bk4"/>
+                                                                <constraint firstAttribute="width" constant="15" id="c5q-TM-B5g"/>
+                                                            </constraints>
+                                                        </imageView>
+                                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1eu-ob-rcg" userLabel="deleteSongButton">
+                                                            <rect key="frame" x="256" y="5" width="44" height="44"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="44" id="ABY-Di-hh1"/>
+                                                                <constraint firstAttribute="width" constant="44" id="DSm-sk-OG9"/>
+                                                            </constraints>
+                                                            <state key="normal">
+                                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="deleteSongButtonPressed:" destination="WvV-qL-bfs" eventType="touchUpInside" id="xPT-mh-9KN"/>
+                                                            </connections>
+                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
                                                 <color key="backgroundColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.080000000000000002" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
+                                                    <constraint firstItem="eDd-Cc-SJV" firstAttribute="top" secondItem="WvV-qL-bfs" secondAttribute="topMargin" constant="14" id="9Hc-Rw-83j"/>
+                                                    <constraint firstAttribute="trailingMargin" secondItem="1eu-ob-rcg" secondAttribute="trailing" constant="-8" id="I1O-hx-VZl"/>
+                                                    <constraint firstItem="q9R-Fg-o2Y" firstAttribute="top" secondItem="WvV-qL-bfs" secondAttribute="topMargin" constant="9" id="MOu-uU-CtC"/>
                                                     <constraint firstItem="Y0g-bO-NkN" firstAttribute="leading" secondItem="WvV-qL-bfs" secondAttribute="leadingMargin" constant="3" id="XYq-f8-2jv"/>
+                                                    <constraint firstAttribute="trailingMargin" secondItem="q9R-Fg-o2Y" secondAttribute="trailing" constant="2" id="Xkg-q1-6k7"/>
                                                     <constraint firstItem="Y0g-bO-NkN" firstAttribute="top" secondItem="WvV-qL-bfs" secondAttribute="topMargin" constant="3" id="ZaP-II-PHk"/>
+                                                    <constraint firstAttribute="trailingMargin" secondItem="eDd-Cc-SJV" secondAttribute="trailing" constant="7" id="beu-3v-zrE"/>
                                                     <constraint firstItem="VpR-dD-1Di" firstAttribute="top" secondItem="WvV-qL-bfs" secondAttribute="topMargin" constant="16" id="d97-Ge-bEW"/>
                                                     <constraint firstItem="VpR-dD-1Di" firstAttribute="leading" secondItem="WvV-qL-bfs" secondAttribute="leadingMargin" constant="4" id="j2c-Ot-s86"/>
+                                                    <constraint firstItem="1eu-ob-rcg" firstAttribute="top" secondItem="WvV-qL-bfs" secondAttribute="topMargin" constant="-3" id="ktD-hr-98s"/>
                                                 </constraints>
                                                 <connections>
                                                     <outlet property="artistLabel" destination="VpR-dD-1Di" id="uJA-Eu-7P1"/>
+                                                    <outlet property="deleteSongButton" destination="1eu-ob-rcg" id="LeB-Cm-HVl"/>
+                                                    <outlet property="deleteSongImageView" destination="q9R-Fg-o2Y" id="vW7-WK-8K3"/>
+                                                    <outlet property="purpleDotIndicator" destination="eDd-Cc-SJV" id="uyS-ib-gJ5"/>
                                                     <outlet property="songTitleLabel" destination="Y0g-bO-NkN" id="4VT-H4-hEx"/>
                                                 </connections>
                                             </collectionViewCell>
@@ -591,6 +624,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="dot.png" width="9" height="9"/>
         <image name="menu-button.png" width="60" height="60"/>
         <image name="plusButton" width="26" height="26"/>
         <image name="purple-glow.png" width="607" height="128"/>

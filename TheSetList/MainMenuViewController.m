@@ -371,26 +371,24 @@
 
 -(void)returnJoinLabel
 {
+    self.joinLabelSelected = NO;
     [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         [self.joinLabel setCenter:CGPointMake(222,267)];
         self.joinLabel.alpha = .5;
         self.joinLabelPushed = NO;
-        self.joinLabelSelected = NO;
     } completion:^(BOOL finished) {
-        self.joinLabelSelected = NO;
     }];
 
 }
 
 -(void)returnHostLabel
 {
+    self.joinLabelSelected = NO;
     [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         [self.hostLabel setCenter:CGPointMake(219.5f, 336)];
         self.hostLabel.alpha = .5;
         self.hostLabelPushed = NO;
-        self.hostLabelSelected = NO;
     } completion:^(BOOL finished) {
-        self.hostLabelSelected = NO;
     }];
 
 }

@@ -265,41 +265,12 @@
 
 -(void)playPausePressedNotification:(NSNotification *)notificaiton
 {
-    if (self.isHost) {
-        if(self.playerIsPlaying == YES)
-        {
-            [self.player pause];
-            self.playerIsPlaying = NO;
-        } else {
-            [self.player play];
-            self.playerIsPlaying = YES;
-        }
-    }
-    
-    //If the user is the host, allow them to togglepause the songs.
-    if (self.isRemoteHost) {
-        NSDictionary *togglePauseDic = @{@"action" : @"togglePause"};
-        NSArray *argsArray = @[togglePauseDic];
-        [self.socket emit:kRemoteAction args:argsArray];
-    }
-    [self.collectionView reloadData];
+    [self playPauseButtonPressed];
 }
 
 -(void)skipPressedNotification:(NSNotification *)notificaiton
 {
-    if (self.isHost) {
-        if (!self.hostQueue)
-        {
-            self.durationProgressView.hidden = NO;
-        }else self.durationProgressView.hidden = YES;
-        [self playNextSongInQueue];
-    }
-    //if the user is the host, allow them to skip songs.
-    if (self.isRemoteHost) {
-        NSDictionary *skipDic = @{@"action" : @"skip"};
-        NSArray *argsArray = @[skipDic];
-        [self.socket emit:kRemoteAction args:argsArray];
-    }
+    [self skipButtonPressed];
 }
 -(void)receiveInitializeNotification:(NSNotification *)notificaiton
 {
@@ -477,12 +448,17 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
-                                                                         forIndexPath:indexPath];
+                                                forIndexPath:indexPath];
+    cell.delegate = self;
     if ([self.hostQueue count])
     {
+        cell.deleteSongImageView.hidden = NO;
+        cell.deleteSongButton.hidden = NO;
         NSDictionary *track = self.hostQueue[indexPath.row];
         cell.songTitleLabel.text = track[@"title"];
         cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+        cell.tag = indexPath.row;
+        cell.deleteSongImageView.transform = CGAffineTransformMakeRotation(M_PI/4);
     }
 
     return cell;
@@ -816,6 +792,13 @@
     
 }
 
+-(void)deleteSongButtonPressedOnCell:(id)sender
+{
+    NSInteger index =  ((UICollectionViewCell *)sender).tag;
+    [self.hostQueue removeObjectAtIndex:index];
+    [self.collectionView reloadData];
+}
+
 #pragma mark - Remote Host Methods
 
 //When remote text field returns
@@ -951,6 +934,8 @@
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kQueueAdd    object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kUserJoined object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"skipPressed"    object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"playPausePressed" object:nil];
     
     //close the socket.
     [self.socket close];
@@ -1005,6 +990,7 @@
     self.player.allowsExternalPlayback = NO;
     [self.player play];
     self.playerIsPlaying = YES;
+    [self.collectionView reloadData];
     self.durationProgressView.hidden = NO;
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
@@ -1021,6 +1007,7 @@
         [self.dicForInfoCenter setObject:[NSNumber numberWithFloat:playerDuration] forKey:MPMediaItemPropertyPlaybackDuration];
         [self.dicForInfoCenter setObject:[NSNumber numberWithFloat:playerCurrent] forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
         [self.dicForInfoCenter setObject:[NSNumber numberWithFloat:1.0f] forKey:MPNowPlayingInfoPropertyPlaybackRate];
+        //download the artwork url and set it as the background of lockscreen when recievied.
         [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:artworkURL options:kNilOptions
     progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         //size;
@@ -1043,15 +1030,57 @@
         {
             if (event.subtype == UIEventSubtypeRemoteControlPlay)
             {
+                [self playPauseButtonPressed];
             }
             else if (event.subtype == UIEventSubtypeRemoteControlPause)
             {
+                [self playPauseButtonPressed];
             }
             else if (event.subtype == UIEventSubtypeRemoteControlNextTrack)
             {
+                [self skipButtonPressed];
             }
-            
         }
+    }
+}
+-(void)skipButtonPressed
+{
+    if (self.isHost) {
+        if (!self.hostQueue)
+        {
+            self.durationProgressView.hidden = NO;
+        }else self.durationProgressView.hidden = YES;
+        [self playNextSongInQueue];
+    }
+    //if the user is the host, allow them to skip songs.
+    if (self.isRemoteHost) {
+        NSDictionary *skipDic = @{@"action" : @"skip"};
+        NSArray *argsArray = @[skipDic];
+        [self.socket emit:kRemoteAction args:argsArray];
+    }
+
+}
+
+-(void)playPauseButtonPressed
+{
+    if (self.isHost) {
+        if(self.playerIsPlaying == YES)
+        {
+            [self.player pause];
+            self.playerIsPlaying = NO;
+        } else {
+            [self.player play];
+            self.playerIsPlaying = YES;
+        }
+        [self.collectionView reloadData];
+    }
+    
+    //If the user is the host, allow them to togglepause the songs.
+    if (self.isRemoteHost) {
+        NSDictionary *togglePauseDic = @{@"action" : @"togglePause"};
+        NSArray *argsArray = @[togglePauseDic];
+        [self.socket emit:kRemoteAction args:argsArray];
+        [self.collectionView reloadData];
     }
 }
 

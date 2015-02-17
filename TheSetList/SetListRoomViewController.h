@@ -11,9 +11,10 @@
 #import <AVFoundation/AVFoundation.h>
 #import "Constants.h"
 #import <AVFoundation/AVFoundation.h>
+#import "CollectionViewCell.h"
 
 
-@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, CollectionViewCellDelegate>
 
 //SET LIST properties and methods. 
 

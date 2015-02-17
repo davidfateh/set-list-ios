@@ -7,9 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@protocol CollectionViewCellDelegate <NSObject>
+@optional
+-(void)deleteSongButtonPressedOnCell:(id)sender;
+@end
 @interface CollectionViewCell : UICollectionViewCell
+@property (weak, nonatomic) id delegate;
 @property (strong, nonatomic) IBOutlet UILabel *songTitleLabel;
 @property (strong, nonatomic) IBOutlet UILabel *artistLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *deleteSongImageView;
+@property (strong, nonatomic) IBOutlet UIButton *deleteSongButton;
+@property (strong, nonatomic) IBOutlet UIImageView *purpleDotIndicator;
 
+- (IBAction)deleteSongButtonPressed:(UIButton *)sender;
 @end
