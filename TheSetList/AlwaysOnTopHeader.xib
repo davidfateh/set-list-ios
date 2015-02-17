@@ -19,7 +19,7 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AU2-3Q-a5a">
                                 <rect key="frame" x="0.0" y="0.0" width="300" height="180"/>
                             </imageView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G2O-3G-YES">
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G2O-3G-YES" userLabel="artistView">
                                 <rect key="frame" x="0.0" y="133" width="300" height="47"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZE7-sd-6pO">
@@ -87,8 +87,10 @@
             <size key="customSize" width="451" height="255"/>
             <connections>
                 <outlet property="artistLabel" destination="Dw1-Vc-Fx4" id="RFb-Iq-Mt6"/>
+                <outlet property="artistView" destination="G2O-3G-YES" id="La2-1B-33s"/>
                 <outlet property="artworkImage" destination="AU2-3Q-a5a" id="M4R-DE-7RE"/>
                 <outlet property="controlsBackgroundView" destination="nap-x1-dew" id="nEd-bo-tEl"/>
+                <outlet property="controlsView" destination="z4f-Tp-h2g" id="A5H-bE-Gz1"/>
                 <outlet property="playPauseImageView" destination="te8-vp-Ha6" id="iTr-o3-mmC"/>
                 <outlet property="skipImageView" destination="IRX-K3-Qqa" id="unE-kB-FrT"/>
                 <outlet property="songTitleLabel" destination="ZE7-sd-6pO" id="4sA-XC-c5T"/>

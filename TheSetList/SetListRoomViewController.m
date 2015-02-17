@@ -98,7 +98,7 @@
     self.UUIDString = [[NSUserDefaults standardUserDefaults]objectForKey:@"UUID"];
     
     self.searchTracks = [[NSMutableArray alloc]init];
-    self.tracks = [[NSMutableArray alloc]init];
+    self.guestQueue = [[NSMutableArray alloc]init];
     self.currentArtist = [[NSMutableDictionary alloc]init];
     self.hostCurrentArtist = [[NSMutableDictionary alloc]init];
     
@@ -153,7 +153,11 @@
                                                      name:@"playPausePressed"
                                                    object:nil];
 
-
+        if (!self.player)
+        {
+            self.player = [[AVPlayer alloc]init];
+            self.player.allowsExternalPlayback = NO;
+        }
         
         self.dicForInfoCenter = [[NSMutableDictionary alloc]init];
         NSLog(@"User is the host of this room");
@@ -201,23 +205,25 @@
                                                      name:kInitialize
                                                    object:nil];
         
-        if (!self.player)
-        {
-            self.player = [[AVPlayer alloc]init];
-            self.player.allowsExternalPlayback = NO;
-        }
-        
         //Add some animations upon load up. Purple glow and tableview animation.
         double delay = .4;
         [self purpleGlowAnimationFromBottomWithDelay:&delay];
         
         
-        //Set the current tracks, if there is one.
+        //Set the queue, if there is one.
         NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
         NSMutableArray *tracks = [setListTracks mutableCopy];
         if (setListTracks) {
-            self.tracks = tracks;
+            self.guestQueue = tracks;
         }
+        //if there is a current artist track, set it.
+        NSDictionary *currentTrack = [[SocketKeeperSingleton sharedInstance]currentArtist];
+        if (currentTrack)
+        {
+            self.currentArtist = currentTrack;
+        }
+        //reload the collection view to display the data.
+        [self.collectionView reloadData];
     }
     
     self.setListView.alpha = 0;
@@ -345,13 +351,13 @@
 
 -(void)receiveCurrentArtistUpdateNotification:(NSNotification *)notification
 {
-    
+    NSLog(@"recieved current artist update");
     if (!self.isHost) {
+        self.collectionView.hidden = NO;
         NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
         self.currentArtist = currentArtist;
+        [self.collectionView reloadData];
     }
-    
-    
 }
 
 - (void)receiveQueueUpdatedNotification:(NSNotification *)notification
@@ -359,7 +365,7 @@
     NSLog(@"recieved update B notification");
     if (!self.isHost) {
         NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
-        self.tracks = [setListTracks mutableCopy];
+        self.guestQueue = [setListTracks mutableCopy];
         [self.collectionView reloadData];
     }
 }
@@ -442,25 +448,39 @@
     if (self.isHost) {
             return [self.hostQueue count];
         }
-        else return [self.tracks count];
+        else return [self.guestQueue count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
                                                 forIndexPath:indexPath];
-    cell.delegate = self;
+    //configure the cell for if the user is the host of the room.
     if ([self.hostQueue count])
     {
+        cell.delegate = self;
         cell.deleteSongImageView.hidden = NO;
         cell.deleteSongButton.hidden = NO;
         NSDictionary *track = self.hostQueue[indexPath.row];
         cell.songTitleLabel.text = track[@"title"];
         cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-        cell.tag = indexPath.row;
         cell.deleteSongImageView.transform = CGAffineTransformMakeRotation(M_PI/4);
+        cell.tag = indexPath.row;
     }
-
+    //configure the room for if the user is the guest of a room.
+    else if ([self.guestQueue count])
+    {
+        NSDictionary *track = self.guestQueue[indexPath.row];
+        cell.songTitleLabel.text = track[@"title"];
+        cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+        if ([[track objectForKey:@"UUID"]isEqualToString:self.UUIDString]) {
+            cell.purpleDotIndicator.hidden = NO;
+        }
+        else
+        {
+            cell.purpleDotIndicator.hidden = YES;
+        }
+    }
     return cell;
 }
 
@@ -471,6 +491,8 @@
                                                                withReuseIdentifier:@"header"
                                                                       forIndexPath:indexPath];
         if (self.hostCurrentArtist[@"user"]) {
+            
+            cell.artistView.hidden = NO;
             NSDictionary *track = self.hostCurrentArtist;
             cell.songTitleLabel.text = track[@"title"];
             cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
@@ -483,11 +505,22 @@
             else cell.playPauseImageView.image = [UIImage imageNamed:@"Play"];
         }
         
+        else if (self.currentArtist[@"user"])
+        {
+            cell.controlsView.hidden = YES;
+            cell.artistView.hidden = NO;
+            NSDictionary *track = self.currentArtist;
+            cell.songTitleLabel.text = track[@"title"];
+            cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
+            [cell.artworkImage sd_setImageWithURL:artworkURL];
+
+        }
+        
         return cell;
     }
     return nil;
 }
-
 
 
 

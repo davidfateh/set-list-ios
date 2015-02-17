@@ -19,7 +19,7 @@
 //SET LIST properties and methods. 
 
 @property (strong, nonatomic) IBOutlet UIView *setListView;
-@property (strong, nonatomic) NSMutableArray *tracks;
+@property (strong, nonatomic) NSMutableArray *guestQueue;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) NSString *roomCode;

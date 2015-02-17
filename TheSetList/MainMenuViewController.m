@@ -383,7 +383,7 @@
 
 -(void)returnHostLabel
 {
-    self.joinLabelSelected = NO;
+    self.hostLabelSelected = NO;
     [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         [self.hostLabel setCenter:CGPointMake(219.5f, 336)];
         self.hostLabel.alpha = .5;

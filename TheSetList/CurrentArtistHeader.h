@@ -10,7 +10,9 @@
 
 @interface CurrentArtistHeader : CollectionViewCell
 @property (strong, nonatomic) IBOutlet UIImageView *artworkImage;
+@property (strong, nonatomic) IBOutlet UIView *artistView;
 @property (strong, nonatomic) IBOutlet UILabel *artistLabel;
+@property (strong, nonatomic) IBOutlet UIView *controlsView;
 @property (strong, nonatomic) IBOutlet UILabel *songTitleLabel;
 @property (strong, nonatomic) IBOutlet UIView *controlsBackgroundView;
 @property (strong, nonatomic) IBOutlet UIImageView *skipImageView;
