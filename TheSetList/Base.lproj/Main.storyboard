@@ -489,7 +489,7 @@
                                 </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kLc-xN-ivn" userLabel="Menu View">
-                                <rect key="frame" x="-320" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="50v-jb-nLA" userLabel="lineView1">
                                         <rect key="frame" x="281" y="-561" width="1" height="600"/>
@@ -526,7 +526,7 @@
                                 </connections>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MX3-QF-afE" userLabel="Remote Code View">
-                                <rect key="frame" x="-320" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jcu-SN-HBD">
                                         <rect key="frame" x="8" y="210" width="304" height="75"/>

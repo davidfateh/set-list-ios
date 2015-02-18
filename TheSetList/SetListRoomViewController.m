@@ -514,7 +514,15 @@
             cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
             NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
             [cell.artworkImage sd_setImageWithURL:artworkURL];
-
+            
+            if (self.isRemoteHost) {
+                cell.controlsView.hidden = NO;
+                if (self.playerIsPlaying)
+                {
+                    cell.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
+                }
+                else cell.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+            }
         }
         
         return cell;
@@ -855,7 +863,15 @@
         //if the password is a correct, and connection is successful, make the remote host's views appear.
         else{
             NSLog(@"Remote Host Connection Succesful");
-
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(skipPressedNotification:)
+                                                         name:@"skipPressed"
+                                                       object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(playPausePressedNotification:)
+                                                         name:@"playPausePressed"
+                                                       object:nil];
             self.isRemoteHost = YES;
             __weak typeof(self) weakSelf = self;
             dispatch_sync(dispatch_get_main_queue(), ^{
@@ -864,16 +880,19 @@
                 [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 
                 } completion:^(BOOL finished) {
-                    
                 }];
                 
                 [weakSelf exitRemoteButtonPressed:nil];
             });
             
             [self.socket on:@"playing" callback:^(NSArray *args) {
-              
+                self.playerIsPlaying = YES;
+                [self.collectionView reloadData];
             }];
-            [self.socket on:@"paused" callback:^(NSArray *args) {
+            [self.socket on:@"paused" callback:^(NSArray *args)
+            {
+                self.playerIsPlaying = NO;
+                [self.collectionView reloadData];
             }];
         }
     }];
@@ -1107,13 +1126,11 @@
         }
         [self.collectionView reloadData];
     }
-    
     //If the user is the host, allow them to togglepause the songs.
     if (self.isRemoteHost) {
         NSDictionary *togglePauseDic = @{@"action" : @"togglePause"};
         NSArray *argsArray = @[togglePauseDic];
         [self.socket emit:kRemoteAction args:argsArray];
-        [self.collectionView reloadData];
     }
 }
 

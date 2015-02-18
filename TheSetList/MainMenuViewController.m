@@ -202,35 +202,37 @@
     [recognizer setTranslation:CGPointMake(0, 0) inView:self.view];
     
     //Animate the joinLabel when the slider comes into the correct coordinates
+
+    
     if ((recognizer.view.center.y + translation.y)>246 && (recognizer.view.center.y + translation.y)<293) {
-        
+        self.joinLabelPushed = YES;
         [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             [self.joinLabel setCenter:CGPointMake(183, 267)];
             self.joinLabel.alpha = 1;
-            self.joinLabelPushed = YES;
         } completion:^(BOOL finished) {
             self.joinLabelSelected = YES;
         }];
     }
     else
     {
-        if (self.joinLabelPushed) {
+        if (self.joinLabelPushed && !((recognizer.view.center.y + translation.y)>246 && (recognizer.view.center.y + translation.y)<293)) {
             [self returnJoinLabel];
         }
     }
     //Animate the host label when slider comes into correct coordinates.
     if ((recognizer.view.center.y + translation.y)>313 && (recognizer.view.center.y + translation.y)<357) {
+        self.hostLabelPushed = YES;
         [UIView animateWithDuration:.25 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             [self.hostLabel setCenter:CGPointMake(179.5f, 336)];
             self.hostLabel.alpha = 1;
-            self.hostLabelPushed = YES;
         } completion:^(BOOL finished) {
-            
+            self.hostLabelSelected = YES;
         }];
         
     }
     else
-    {   if(self.hostLabelPushed){
+    {
+        if (self.hostLabelPushed && !((recognizer.view.center.y + translation.y)>313 && (recognizer.view.center.y + translation.y)<357)) {
             [self returnHostLabel];
         }
     }
@@ -264,7 +266,7 @@
     }
         
         //when the user selects the host room option
-        else if (self.hostLabelPushed) {
+        else if (self.hostLabelSelected) {
             [self.socket emit:@"start room"];
             [UIView animateWithDuration:.25 animations:^{
                 self.menuView.alpha = 0;
@@ -275,9 +277,6 @@
             }];
 
         }
-        
-        
-        
         else {
             //animates the slider back to its original coordinates
             [self returnSliderWithRecognizer:recognizer];
@@ -377,6 +376,7 @@
         self.joinLabel.alpha = .5;
         self.joinLabelPushed = NO;
     } completion:^(BOOL finished) {
+        self.joinLabelSelected = NO;
     }];
 
 }
@@ -389,6 +389,7 @@
         self.hostLabel.alpha = .5;
         self.hostLabelPushed = NO;
     } completion:^(BOOL finished) {
+        self.hostLabelSelected = NO;
     }];
 
 }
