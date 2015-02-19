@@ -13,32 +13,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="300" height="233"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pvM-Hl-9kb">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ironAndWineCoverArt.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="AU2-3Q-a5a" userLabel="album art">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="180"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AU2-3Q-a5a">
-                                <rect key="frame" x="0.0" y="0.0" width="300" height="180"/>
-                            </imageView>
-                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G2O-3G-YES" userLabel="artistView">
-                                <rect key="frame" x="0.0" y="133" width="300" height="47"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZE7-sd-6pO">
-                                        <rect key="frame" x="10" y="7" width="280" height="21"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dw1-Vc-Fx4">
-                                        <rect key="frame" x="39" y="27" width="222" height="12"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.32000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                        </subviews>
-                    </view>
+                    </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z4f-Tp-h2g" userLabel="controls">
                         <rect key="frame" x="0.0" y="180" width="300" height="53"/>
                         <subviews>
@@ -72,19 +49,47 @@
                             </button>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" constant="53" id="UYN-5V-myQ"/>
+                            <constraint firstAttribute="width" constant="300" id="FQL-e2-4wi"/>
+                            <constraint firstAttribute="height" constant="53" id="fAb-IZ-U1c"/>
+                        </constraints>
+                    </view>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G2O-3G-YES" userLabel="artistView">
+                        <rect key="frame" x="0.0" y="133" width="300" height="47"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZE7-sd-6pO">
+                                <rect key="frame" x="10" y="7" width="280" height="21"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dw1-Vc-Fx4">
+                                <rect key="frame" x="39" y="27" width="222" height="12"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.32000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="47" id="1O7-V7-9w2"/>
+                            <constraint firstAttribute="width" constant="300" id="VPc-OI-rza"/>
                         </constraints>
                     </view>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="z4f-Tp-h2g" secondAttribute="bottom" id="7c9-MI-I4k"/>
-                <constraint firstAttribute="trailing" secondItem="z4f-Tp-h2g" secondAttribute="trailing" id="KIj-Ks-osa"/>
-                <constraint firstItem="z4f-Tp-h2g" firstAttribute="leading" secondItem="whj-9G-Obm" secondAttribute="leading" id="cz1-Lb-xY5"/>
-                <constraint firstAttribute="centerX" secondItem="z4f-Tp-h2g" secondAttribute="centerX" id="hai-X6-1F4"/>
+                <constraint firstAttribute="bottom" secondItem="z4f-Tp-h2g" secondAttribute="bottom" id="7MM-6L-9sO"/>
+                <constraint firstAttribute="bottom" secondItem="G2O-3G-YES" secondAttribute="bottom" constant="53" id="97D-fk-jGo"/>
+                <constraint firstItem="AU2-3Q-a5a" firstAttribute="leading" secondItem="whj-9G-Obm" secondAttribute="leading" id="Klq-UE-Bnq"/>
+                <constraint firstAttribute="centerX" secondItem="z4f-Tp-h2g" secondAttribute="centerX" id="OIi-hi-rWc"/>
+                <constraint firstAttribute="bottom" secondItem="AU2-3Q-a5a" secondAttribute="bottom" constant="53" id="dxO-YY-xRW"/>
+                <constraint firstAttribute="centerX" secondItem="G2O-3G-YES" secondAttribute="centerX" id="fKY-A3-ex2"/>
+                <constraint firstAttribute="trailing" secondItem="AU2-3Q-a5a" secondAttribute="trailing" id="gv1-ly-Yly"/>
+                <constraint firstItem="AU2-3Q-a5a" firstAttribute="top" secondItem="whj-9G-Obm" secondAttribute="top" id="kCt-y0-KXQ"/>
+                <constraint firstAttribute="centerX" secondItem="AU2-3Q-a5a" secondAttribute="centerX" id="p2B-6M-T9Q"/>
             </constraints>
-            <size key="customSize" width="451" height="255"/>
+            <size key="customSize" width="484" height="419"/>
             <connections>
                 <outlet property="artistLabel" destination="Dw1-Vc-Fx4" id="RFb-Iq-Mt6"/>
                 <outlet property="artistView" destination="G2O-3G-YES" id="La2-1B-33s"/>
@@ -101,5 +106,6 @@
     <resources>
         <image name="Play" width="36" height="47"/>
         <image name="Skip" width="43" height="48"/>
+        <image name="ironAndWineCoverArt.jpg" width="500" height="494"/>
     </resources>
 </document>
