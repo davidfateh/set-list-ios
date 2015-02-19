@@ -171,7 +171,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0201" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4CT-dz-BcD">
-                                        <rect key="frame" x="82" y="170" width="156" height="58"/>
+                                        <rect key="frame" x="82" y="245" width="156" height="58"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="156" id="302-oi-1kT"/>
                                             <constraint firstAttribute="height" constant="58" id="9CZ-tS-TiQ"/>
@@ -181,7 +181,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is your room code" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Gp-5w-m49">
-                                        <rect key="frame" x="73" y="228" width="174" height="20"/>
+                                        <rect key="frame" x="73" y="303" width="174" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="20" id="Wqp-if-uU7"/>
                                             <constraint firstAttribute="width" constant="174" id="csh-Up-lSb"/>
@@ -305,9 +305,9 @@
                                     </collectionView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="7Gp-5w-m49" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="228" id="2r1-Gp-7b3"/>
+                                    <constraint firstItem="7Gp-5w-m49" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="303" id="2r1-Gp-7b3"/>
                                     <constraint firstAttribute="width" constant="320" id="4rv-Vl-FcV"/>
-                                    <constraint firstItem="4CT-dz-BcD" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="170" id="Fgk-Lp-9ll"/>
+                                    <constraint firstItem="4CT-dz-BcD" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="245" id="Fgk-Lp-9ll"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="100" id="Syl-JA-PNr"/>
                                     <constraint firstItem="7Gp-5w-m49" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="73" id="X1I-Sr-9Fg"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="29" id="XzW-i3-fjz"/>
@@ -535,7 +535,7 @@
                                         <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Remote password" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O7V-39-KCh" userLabel="Enter password">
-                                        <rect key="frame" x="71" y="181" width="181" height="21"/>
+                                        <rect key="frame" x="43" y="181" width="234" height="21"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         <color key="textColor" red="0.99991267920000004" green="1" blue="0.99988144639999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>

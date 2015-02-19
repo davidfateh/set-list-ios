@@ -311,17 +311,14 @@
         self.hostRoomCodeLabel.hidden = YES;
         self.hostCodeMessageLabel.hidden = YES;
     }
-
    NSDictionary *songAdded = [[SocketKeeperSingleton sharedInstance]songAdded];
     //if there is a current artist, add the song to the queue, else, make it the current artist.
     if ([self.hostCurrentArtist objectForKey:@"user"]) {
-        
         [self.hostQueue addObject:songAdded];
         [self.collectionView reloadData];
         //Emit the added song so the client can recieve it.
         NSArray *queueArray = @[self.hostQueue];
         [self.socket emit:kQueueChange args:queueArray];
-        
     }
     //else, if there isnt a current artist, add the song as current artist.
     else
@@ -333,7 +330,6 @@
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
         [self.socket emit:kCurrentArtistChange args:songAddedArray];
-        
     }
 }
 
@@ -523,6 +519,10 @@
                 }
                 else cell.playPauseImageView.image = [UIImage imageNamed:@"Play"];
             }
+        }
+        else
+        {
+            self.collectionView.hidden = YES;
         }
         
         return cell;
@@ -842,6 +842,17 @@
 
 #pragma mark - Remote Host Methods
 
+- (IBAction)exitRemoteButtonPressed:(UIButton *)sender
+{
+    [self.remoteTextField resignFirstResponder];
+    [UIView animateWithDuration:.3 animations:^{
+        self.remoteCodeView.alpha = 0;
+        self.blurEffectView.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.remoteCodeView.hidden = YES;
+        self.remoteTextField.text = nil;
+    }];
+}
 //When remote text field returns
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -876,6 +887,10 @@
             __weak typeof(self) weakSelf = self;
             dispatch_sync(dispatch_get_main_queue(), ^{
                 weakSelf.remoteTextLabel.text = @"Remote host enabled";
+                [weakSelf.remoteTextField setFrame:CGRectMake(
+                                                             weakSelf.remoteTextField.frame.origin.x, 273,
+                                                             weakSelf.remoteTextField.frame.size.width,
+                                                              weakSelf.remoteTextField.frame.size.height)];
                 [weakSelf.remoteTextField resignFirstResponder];
                 [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 
@@ -950,19 +965,6 @@
     }];
 }
 
-//for formating the tracks durations.
-- (NSString *)timeFormatted:(int)totalSeconds
-{
-    int temp = (int)totalSeconds / 1000;
-    int seconds = temp % 60;
-    int minutes = temp / 60;
-    
-    if (seconds < 10) {
-        return [NSString stringWithFormat:@"%i:0%i", minutes, seconds];
-    }else
-        return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
-}
-
 -(void)disconnectSocketAndPopOut
 {
     //stop the music.
@@ -1021,16 +1023,24 @@
 
 #pragma mark - Playing Songs
 
+//for formating the tracks durations.
+- (NSString *)timeFormatted:(int)totalSeconds
+{
+    int temp = (int)totalSeconds / 1000;
+    int seconds = temp % 60;
+    int minutes = temp / 60;
+    
+    if (seconds < 10) {
+        return [NSString stringWithFormat:@"%i:0%i", minutes, seconds];
+    }else
+        return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
+}
+
 - (void)updateTime {
     
     float duration = CMTimeGetSeconds(self.player.currentItem.duration);
     float current = CMTimeGetSeconds(self.player.currentTime);
-    
     self.durationProgressView.progress = (current/duration);
-    if (self.durationProgressView.progress == 0)
-    {
-    }
-    
 }
 
 -(void)playCurrentArtist:(NSDictionary *)currentArtist
@@ -1042,8 +1052,10 @@
     self.player.allowsExternalPlayback = NO;
     [self.player play];
     self.playerIsPlaying = YES;
+    if (self.durationProgressView.hidden) {
+        self.durationProgressView.hidden = NO;
+    }
     [self.collectionView reloadData];
-    self.durationProgressView.hidden = NO;
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
     
@@ -1097,11 +1109,8 @@
 }
 -(void)skipButtonPressed
 {
-    if (self.isHost) {
-        if (!self.hostQueue)
-        {
-            self.durationProgressView.hidden = NO;
-        }else self.durationProgressView.hidden = YES;
+    if (self.isHost)
+    {
         [self playNextSongInQueue];
     }
     //if the user is the host, allow them to skip songs.
@@ -1140,8 +1149,12 @@
     if (![self.hostQueue count]) {
         NSLog(@"nothing in queue upon song finishing");
         self.playerIsPlaying = NO;
+        self.hostRoomCodeLabel.hidden = NO;
+        self.hostCodeMessageLabel.hidden = NO;
+        self.durationProgressView.hidden = YES;
         [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
         [self.hostCurrentArtist removeAllObjects];
+        [self.collectionView reloadData];
         NSArray *argsCurrentArray = @[self.hostCurrentArtist];
         [self.socket emit:kCurrentArtistChange args:argsCurrentArray];
     }
@@ -1153,6 +1166,7 @@
 -(void)playNextSongInQueue
 {
     if ([self.hostQueue count]) {
+        [self.durationProgressView setProgress:0.0 animated:YES];
         [self.timer invalidate];
         [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
         //Rearange tracks and current songs and emit them to the sever.
@@ -1163,9 +1177,6 @@
         
         [self playCurrentArtist:self.hostCurrentArtist];
         
-        self.durationProgressView.hidden = NO;
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-
         NSArray *argsWithQueue = @[self.hostQueue];
         NSArray *arrayWithTrack = @[currentTrack];
         [self.socket emit:kCurrentArtistChange args:arrayWithTrack];
@@ -1174,22 +1185,10 @@
     }
 }
 
+#pragma mark - Memory Management 
 
 -(void)didReceiveMemoryWarning
 {
     NSLog(@"Memory warning!");
 }
-
-- (IBAction)exitRemoteButtonPressed:(UIButton *)sender
-{
-        [self.remoteTextField resignFirstResponder];
-        [UIView animateWithDuration:.3 animations:^{
-            self.remoteCodeView.alpha = 0;
-            self.blurEffectView.alpha = 0;
-        } completion:^(BOOL finished) {
-            self.remoteCodeView.hidden = YES;
-            self.remoteTextField.text = nil;
-        }];
-}
-
 @end
