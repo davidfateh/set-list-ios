@@ -19,12 +19,7 @@
     } else {
         self.controlsBackgroundView.alpha = 0;
     }
-    if (layoutAttributes.progressiveness <= 0.2) {
-        self.self.artistView.alpha = 0;
-    } else {
-        self.artistView.alpha = 1;
-    }
-
+    
     [UIView commitAnimations];
 }
 

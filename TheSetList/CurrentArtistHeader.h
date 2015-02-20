@@ -9,6 +9,8 @@
 #import "CollectionViewCell.h"
 
 @interface CurrentArtistHeader : CollectionViewCell
+@property (strong, nonatomic) UIVisualEffectView *blurEffectView;
+@property (strong, nonatomic) IBOutlet UIView *artistBackgroundView;
 @property (strong, nonatomic) IBOutlet UIImageView *artworkImage;
 @property (strong, nonatomic) IBOutlet UIView *artistView;
 @property (strong, nonatomic) IBOutlet UILabel *artistLabel;
