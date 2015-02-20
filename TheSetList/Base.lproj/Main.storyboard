@@ -190,15 +190,6 @@
                                         <color key="textColor" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="2.7755575615628914e-17" translatesAutoresizingMaskIntoConstraints="NO" id="Lwh-Rq-NrE">
-                                        <rect key="frame" x="0.0" y="250" width="320" height="2"/>
-                                        <color key="tintColor" red="0.38229554891586304" green="0.3657248318195343" blue="0.65916305780410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="320" id="1mC-p6-PbU"/>
-                                            <constraint firstAttribute="height" constant="2" id="Zb2-BT-jJk"/>
-                                        </constraints>
-                                        <color key="trackTintColor" red="0.92941182851791382" green="0.92941182851791382" blue="0.92941182851791382" alpha="0.0" colorSpace="deviceRGB"/>
-                                    </progressView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Set List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SeR-Zn-aCc">
                                         <rect key="frame" x="100" y="29" width="121" height="32"/>
                                         <constraints>
@@ -214,7 +205,7 @@
                                         <color key="backgroundColor" white="1" alpha="0.23000000000000001" colorSpace="calibratedWhite"/>
                                     </view>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hHu-vn-1wr">
-                                        <rect key="frame" x="10" y="70" width="300" height="498"/>
+                                        <rect key="frame" x="0.0" y="70" width="320" height="498"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="6" minimumInteritemSpacing="6" id="Xbh-ro-unu" customClass="CSStickyHeaderFlowLayout">
                                             <size key="itemSize" width="300" height="49"/>
@@ -312,8 +303,6 @@
                                     <constraint firstItem="7Gp-5w-m49" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="73" id="X1I-Sr-9Fg"/>
                                     <constraint firstItem="SeR-Zn-aCc" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="29" id="XzW-i3-fjz"/>
                                     <constraint firstItem="4CT-dz-BcD" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" constant="82" id="fuB-eO-EBI"/>
-                                    <constraint firstItem="Lwh-Rq-NrE" firstAttribute="top" secondItem="6aW-cm-ATO" secondAttribute="top" constant="250" id="iT6-xD-xVU"/>
-                                    <constraint firstItem="Lwh-Rq-NrE" firstAttribute="leading" secondItem="6aW-cm-ATO" secondAttribute="leading" id="lXP-F6-X0R"/>
                                     <constraint firstAttribute="height" constant="568" id="xKx-cB-yz7"/>
                                 </constraints>
                             </view>
@@ -567,7 +556,6 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="collectionView" destination="hHu-vn-1wr" id="ink-K4-Jom"/>
-                        <outlet property="durationProgressView" destination="Lwh-Rq-NrE" id="2Rm-tb-2Zf"/>
                         <outlet property="exitRemotePlusImage" destination="mtg-cE-fUg" id="syh-1S-9Pf"/>
                         <outlet property="hostCodeMessageLabel" destination="7Gp-5w-m49" id="p5g-O2-Sdc"/>
                         <outlet property="hostRoomCodeLabel" destination="4CT-dz-BcD" id="cah-qa-9aO"/>

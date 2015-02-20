@@ -17,12 +17,6 @@
 @interface SetListTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) id delegate;
-@property (strong, nonatomic) IBOutlet UILabel *songLabel;
-@property (strong, nonatomic) IBOutlet UIImageView *userSelectedSongImageView;
-@property (strong, nonatomic) IBOutlet UILabel *artistLabel;
-@property (strong, nonatomic) IBOutlet UIImageView *deleteSongImage;
-- (IBAction)deleteSongButtonPressed:(UIButton *)sender;
-@property (strong, nonatomic) IBOutlet UIButton *deleteSongButton;
 
 //SearchTableViewCell properties
 @property (strong, nonatomic) IBOutlet UIImageView *searchAlbumArtImage;

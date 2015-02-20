@@ -42,7 +42,6 @@
 
 //HOST Properties and methods
 @property (nonatomic) BOOL isHost;
-@property (strong, nonatomic) IBOutlet UIProgressView *durationProgressView;
 @property (strong, nonatomic) IBOutlet UILabel *hostRoomCodeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *hostCodeMessageLabel;
 @property (strong, nonatomic) NSMutableArray *hostQueue;

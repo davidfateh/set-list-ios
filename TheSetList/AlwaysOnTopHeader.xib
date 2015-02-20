@@ -7,30 +7,36 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="whj-9G-Obm" customClass="CurrentArtistHeader">
-            <rect key="frame" x="0.0" y="0.0" width="300" height="233"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="233"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="300" height="233"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="233"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ironAndWineCoverArt.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="AU2-3Q-a5a" userLabel="album art">
-                        <rect key="frame" x="0.0" y="0.0" width="300" height="180"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z4f-Tp-h2g" userLabel="controls">
-                        <rect key="frame" x="0.0" y="180" width="300" height="53"/>
+                        <rect key="frame" x="0.0" y="180" width="320" height="53"/>
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nap-x1-dew" userLabel="controlsBackground">
-                                <rect key="frame" x="0.0" y="0.0" width="300" height="53"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="53"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="19C-cN-K0z">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="2"/>
+                                <color key="tintColor" red="0.37837129831314087" green="0.35750210285186768" blue="0.68050658702850342" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="progressTintColor" red="0.37837129831314087" green="0.35750210285186768" blue="0.68050658702850342" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="trackTintColor" red="0.37837129831314087" green="0.35750210285186768" blue="0.68050658702850342" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                            </progressView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Skip" translatesAutoresizingMaskIntoConstraints="NO" id="IRX-K3-Qqa">
-                                <rect key="frame" x="177" y="19" width="15" height="15"/>
+                                <rect key="frame" x="188" y="19" width="15" height="15"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Play" translatesAutoresizingMaskIntoConstraints="NO" id="te8-vp-Ha6">
-                                <rect key="frame" x="108" y="19" width="15" height="15"/>
+                                <rect key="frame" x="119" y="19" width="15" height="15"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6jw-jL-NFy" userLabel="PlayPauseButtonPressed">
-                                <rect key="frame" x="92" y="5" width="44" height="44"/>
+                                <rect key="frame" x="103" y="5" width="44" height="44"/>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -39,7 +45,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sDc-4k-mlK" userLabel="SkipButtonPressed">
-                                <rect key="frame" x="162" y="5" width="44" height="44"/>
+                                <rect key="frame" x="173" y="5" width="44" height="44"/>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -49,25 +55,25 @@
                             </button>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="width" constant="300" id="FQL-e2-4wi"/>
+                            <constraint firstAttribute="width" constant="320" id="FQL-e2-4wi"/>
                             <constraint firstAttribute="height" constant="53" id="fAb-IZ-U1c"/>
                         </constraints>
                     </view>
                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G2O-3G-YES" userLabel="artistView">
-                        <rect key="frame" x="0.0" y="133" width="300" height="47"/>
+                        <rect key="frame" x="0.0" y="133" width="320" height="47"/>
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="28l-nE-7lB" userLabel="artistViewBackground">
-                                <rect key="frame" x="0.0" y="0.0" width="300" height="47"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="47"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.32000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZE7-sd-6pO" userLabel="songTitle">
-                                <rect key="frame" x="10" y="7" width="280" height="21"/>
+                                <rect key="frame" x="20" y="7" width="280" height="21"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dw1-Vc-Fx4" userLabel="artistLabel">
-                                <rect key="frame" x="39" y="27" width="222" height="12"/>
+                                <rect key="frame" x="49" y="27" width="222" height="12"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -75,7 +81,7 @@
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="height" constant="47" id="1O7-V7-9w2"/>
-                            <constraint firstAttribute="width" constant="300" id="VPc-OI-rza"/>
+                            <constraint firstAttribute="width" constant="320" id="VPc-OI-rza"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -101,6 +107,7 @@
                 <outlet property="controlsBackgroundView" destination="nap-x1-dew" id="nEd-bo-tEl"/>
                 <outlet property="controlsView" destination="z4f-Tp-h2g" id="A5H-bE-Gz1"/>
                 <outlet property="playPauseImageView" destination="te8-vp-Ha6" id="iTr-o3-mmC"/>
+                <outlet property="progressView" destination="19C-cN-K0z" id="eSR-hN-UEZ"/>
                 <outlet property="skipImageView" destination="IRX-K3-Qqa" id="unE-kB-FrT"/>
                 <outlet property="songTitleLabel" destination="ZE7-sd-6pO" id="4sA-XC-c5T"/>
             </connections>

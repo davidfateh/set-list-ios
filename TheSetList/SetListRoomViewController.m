@@ -71,8 +71,8 @@
     CSStickyHeaderFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
     
     if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-        layout.parallaxHeaderReferenceSize = CGSizeMake(300, 233);
-        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(300, 100);
+        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 233);
+        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 100);
         layout.parallaxHeaderAlwaysOnTop = YES;
         
         // If we want to disable the sticky header effect
@@ -487,7 +487,7 @@
                                                                withReuseIdentifier:@"header"
                                                                       forIndexPath:indexPath];
         if (self.hostCurrentArtist[@"user"]) {
-            
+            NSLog(@"%@", indexPath);
             cell.artistView.hidden = NO;
             NSDictionary *track = self.hostCurrentArtist;
             cell.songTitleLabel.text = track[@"title"];
@@ -499,6 +499,7 @@
                 cell.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
             }
             else cell.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+            
         }
         
         else if (self.currentArtist[@"user"])
@@ -1036,11 +1037,15 @@
         return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
 }
 
-- (void)updateTime {
-    
+- (void)updateTime
+{
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    CurrentArtistHeader *cell = [self.collectionView dequeueReusableSupplementaryViewOfKind:CSStickyHeaderParallaxHeader
+                                                                   withReuseIdentifier:@"header"
+                                                                          forIndexPath:indexPath];
     float duration = CMTimeGetSeconds(self.player.currentItem.duration);
     float current = CMTimeGetSeconds(self.player.currentTime);
-    self.durationProgressView.progress = (current/duration);
+    cell.progressView.progress =(current/duration);
 }
 
 -(void)playCurrentArtist:(NSDictionary *)currentArtist
@@ -1049,12 +1054,8 @@
     NSString *urlString = [NSString stringWithFormat:@"%@?client_id=%@", streamString,CLIENT_ID];
     NSURL *URLFromString = [NSURL URLWithString:urlString];
     self.player = [AVPlayer playerWithURL:URLFromString];
-    self.player.allowsExternalPlayback = NO;
     [self.player play];
     self.playerIsPlaying = YES;
-    if (self.durationProgressView.hidden) {
-        self.durationProgressView.hidden = NO;
-    }
     [self.collectionView reloadData];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
@@ -1151,7 +1152,6 @@
         self.playerIsPlaying = NO;
         self.hostRoomCodeLabel.hidden = NO;
         self.hostCodeMessageLabel.hidden = NO;
-        self.durationProgressView.hidden = YES;
         [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
         [self.hostCurrentArtist removeAllObjects];
         [self.collectionView reloadData];
@@ -1166,7 +1166,6 @@
 -(void)playNextSongInQueue
 {
     if ([self.hostQueue count]) {
-        [self.durationProgressView setProgress:0.0 animated:YES];
         [self.timer invalidate];
         [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
         //Rearange tracks and current songs and emit them to the sever.
