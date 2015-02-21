@@ -63,6 +63,12 @@
                     }
                 };
                 
+                 [self.socket on:kRemoteSet callback:^(NSArray *args)
+                  {
+                      self.remoteKey = [args  objectAtIndex:0];
+                      [[NSNotificationCenter defaultCenter] postNotificationName:kRemoteSet object:nil];
+                  }];
+                
                 self.socket.onReconnectionAttempt = ^(NSInteger numberOfAttempts)
                 {
                     if (numberOfAttempts == 5) {
@@ -93,6 +99,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:kCurrentArtistUpdate object:nil];
             
         }];
+        
         
         [self.socket on:kHostDisconnect callback:^(NSArray *args) {
             [[NSNotificationCenter defaultCenter] postNotificationName:kHostDisconnect object:nil];

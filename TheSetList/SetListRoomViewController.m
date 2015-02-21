@@ -204,6 +204,11 @@
                                                  selector:@selector(receiveInitializeNotification:)
                                                      name:kInitialize
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveRemoteSetNotification:)
+                                                     name:kRemoteSet
+                                                   object:nil];
+
         
         //Add some animations upon load up. Purple glow and tableview animation.
         double delay = .4;
@@ -366,6 +371,60 @@
     }
 }
 
+- (void)receiveRemoteSetNotification:(NSNotification *)notification
+{
+    NSDictionary *key = [[SocketKeeperSingleton sharedInstance]remoteKey];
+
+    if ([key objectForKey:@"error"]) {
+        NSLog(@"error on remote connection");
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            self.remoteTextLabel.text = [key objectForKey:@"error"];
+        });
+    }
+    //if the password is a correct, and connection is successful, make the remote host's views appear.
+    else {
+        NSLog(@"Remote Host Connection Succesful");
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(skipPressedNotification:)
+                                                     name:@"skipPressed"
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(playPausePressedNotification:)
+                                                     name:@"playPausePressed"
+                                                   object:nil];
+        self.isRemoteHost = YES;
+        __weak typeof(self) weakSelf = self;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            weakSelf.remoteTextLabel.text = @"Remote host enabled";
+            [weakSelf.remoteTextField setFrame:CGRectMake(
+                                                          weakSelf.remoteTextField.frame.origin.x, 273,
+                                                          weakSelf.remoteTextField.frame.size.width,
+                                                          weakSelf.remoteTextField.frame.size.height)];
+            [weakSelf.remoteTextField resignFirstResponder];
+            [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                
+            } completion:^(BOOL finished) {
+            }];
+            
+            [weakSelf exitRemoteButtonPressed:nil];
+        });
+        
+        [self.socket on:@"playing" callback:^(NSArray *args) {
+            self.playerIsPlaying = YES;
+            [self.collectionView reloadData];
+        }];
+        [self.socket on:@"paused" callback:^(NSArray *args)
+         {
+             self.playerIsPlaying = NO;
+             [self.collectionView reloadData];
+         }];
+    }
+
+}
+
+
+
 #pragma mark - TableView Delegate and DataSource
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -524,6 +583,7 @@
 
             if (self.isRemoteHost) {
                 header.controlsView.hidden = NO;
+                header.progressView.hidden = YES;
                 if (self.playerIsPlaying)
                 {
                     header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
@@ -872,57 +932,6 @@
     NSDictionary *passwordDic = @{@"password" : remotePassword};
     NSArray *argsArray = @[passwordDic];
     [self.socket emit:kRemoteAdd args:argsArray];
-    [self.socket on:kRemoteSet callback:^(NSArray *args) {
-        
-        NSDictionary *key = [args objectAtIndex:0];
-        
-        if ([key objectForKey:@"error"]) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                self.remoteTextLabel.text = [key objectForKey:@"error"];
-            });
-        }
-        
-        //if the password is a correct, and connection is successful, make the remote host's views appear.
-        else{
-            NSLog(@"Remote Host Connection Succesful");
-            
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(skipPressedNotification:)
-                                                         name:@"skipPressed"
-                                                       object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(playPausePressedNotification:)
-                                                         name:@"playPausePressed"
-                                                       object:nil];
-            self.isRemoteHost = YES;
-            __weak typeof(self) weakSelf = self;
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                weakSelf.remoteTextLabel.text = @"Remote host enabled";
-                [weakSelf.remoteTextField setFrame:CGRectMake(
-                                                             weakSelf.remoteTextField.frame.origin.x, 273,
-                                                             weakSelf.remoteTextField.frame.size.width,
-                                                              weakSelf.remoteTextField.frame.size.height)];
-                [weakSelf.remoteTextField resignFirstResponder];
-                [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                
-                } completion:^(BOOL finished) {
-                }];
-                
-                [weakSelf exitRemoteButtonPressed:nil];
-            });
-            
-            [self.socket on:@"playing" callback:^(NSArray *args) {
-                self.playerIsPlaying = YES;
-                [self.collectionView reloadData];
-            }];
-            [self.socket on:@"paused" callback:^(NSArray *args)
-            {
-                self.playerIsPlaying = NO;
-                [self.collectionView reloadData];
-            }];
-        }
-    }];
-
     return YES;
 }
 

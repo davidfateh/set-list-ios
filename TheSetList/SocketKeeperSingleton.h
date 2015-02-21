@@ -21,6 +21,7 @@
 @property (nonatomic) BOOL socketIsConnected;
 @property (strong, nonatomic) NSDictionary *songAdded;
 @property (strong, nonatomic) NSString *clientSocketID;
+@property (strong, nonatomic) NSDictionary *remoteKey;
 
 + (SocketKeeperSingleton *) sharedInstance;
 
