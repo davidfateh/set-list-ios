@@ -483,42 +483,52 @@
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
     if ([kind isEqualToString:CSStickyHeaderParallaxHeader]) {
-        CurrentArtistHeader *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+        CurrentArtistHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                withReuseIdentifier:@"header"
                                                                       forIndexPath:indexPath];
         if (self.hostCurrentArtist[@"user"]) {
-            NSLog(@"%@", indexPath);
-            cell.artistView.hidden = NO;
+            header.tag = 50;
+            header.artistView.hidden = NO;
             NSDictionary *track = self.hostCurrentArtist;
-            cell.songTitleLabel.text = track[@"title"];
-            cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            header.songTitleLabel.text = track[@"title"];
+            header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
             NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
-            [cell.artworkImage sd_setImageWithURL:artworkURL];
+            if (artworkURL == nil) {
+                [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+            }
+            else {
+                [header.artworkImage sd_setImageWithURL:artworkURL];
+            }
             
             if (self.playerIsPlaying) {
-                cell.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
+                header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
             }
-            else cell.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+            else header.playPauseImageView.image = [UIImage imageNamed:@"Play"];
             
         }
         
         else if (self.currentArtist[@"user"])
         {
-            cell.controlsView.hidden = YES;
-            cell.artistView.hidden = NO;
+            header.controlsView.hidden = YES;
+            header.artistView.hidden = NO;
             NSDictionary *track = self.currentArtist;
-            cell.songTitleLabel.text = track[@"title"];
-            cell.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            header.songTitleLabel.text = track[@"title"];
+            header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
             NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
-            [cell.artworkImage sd_setImageWithURL:artworkURL];
-            
+            if (artworkURL == nil) {
+                [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+            }
+            else {
+                [header.artworkImage sd_setImageWithURL:artworkURL];
+            }
+
             if (self.isRemoteHost) {
-                cell.controlsView.hidden = NO;
+                header.controlsView.hidden = NO;
                 if (self.playerIsPlaying)
                 {
-                    cell.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
+                    header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
                 }
-                else cell.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+                else header.playPauseImageView.image = [UIImage imageNamed:@"Play"];
             }
         }
         else
@@ -526,7 +536,7 @@
             self.collectionView.hidden = YES;
         }
         
-        return cell;
+        return header;
     }
     return nil;
 }
@@ -604,7 +614,7 @@
             [self.sliderImageView setImage:sliderImage];
             self.blurEffectView.alpha = 1;
             self.menuView.alpha = 1;
-            self.sliderImageView.center = CGPointMake(18 , 40);
+            self.sliderImageView.center = CGPointMake(15 , 40);
             [self.sliderImageView setTransform:CGAffineTransformMakeScale(2.5f, 2.5f)];
         } completion:^(BOOL finished) {
         }];
@@ -917,6 +927,20 @@
 }
 
 #pragma mark - Helper Methods
+
+//for formating the tracks durations.
+- (NSString *)timeFormatted:(int)totalSeconds
+{
+    int temp = (int)totalSeconds / 1000;
+    int seconds = temp % 60;
+    int minutes = temp / 60;
+    
+    if (seconds < 10) {
+        return [NSString stringWithFormat:@"%i:0%i", minutes, seconds];
+    }else
+        return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
+}
+
 -(void)returnMenuSlider
 {
     UIImage *menuImage = [UIImage imageNamed:@"menu-button.png"];
@@ -1024,28 +1048,18 @@
 
 #pragma mark - Playing Songs
 
-//for formating the tracks durations.
-- (NSString *)timeFormatted:(int)totalSeconds
+- (void)updateTimeAndProgressView
 {
-    int temp = (int)totalSeconds / 1000;
-    int seconds = temp % 60;
-    int minutes = temp / 60;
-    
-    if (seconds < 10) {
-        return [NSString stringWithFormat:@"%i:0%i", minutes, seconds];
-    }else
-        return [NSString stringWithFormat:@"%i:%i", minutes, seconds];
-}
-
-- (void)updateTime
-{
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    CurrentArtistHeader *cell = [self.collectionView dequeueReusableSupplementaryViewOfKind:CSStickyHeaderParallaxHeader
-                                                                   withReuseIdentifier:@"header"
-                                                                          forIndexPath:indexPath];
-    float duration = CMTimeGetSeconds(self.player.currentItem.duration);
-    float current = CMTimeGetSeconds(self.player.currentTime);
-    cell.progressView.progress =(current/duration);
+    if ([self.player currentItem]) {
+        CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
+        float duration = CMTimeGetSeconds(self.player.currentItem.duration);
+        float current = CMTimeGetSeconds(self.player.currentTime);
+        header.progressView.progress = (current/duration);
+        
+        if (header.progressView.progress == 1) {
+            [header.progressView setProgress:0.0 animated:YES];
+        }
+    }
 }
 
 -(void)playCurrentArtist:(NSDictionary *)currentArtist
@@ -1058,7 +1072,7 @@
     self.playerIsPlaying = YES;
     [self.collectionView reloadData];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:.05 target:self selector:@selector(updateTimeAndProgressView) userInfo:nil repeats:YES];
     
     Class playingInfoCenter = NSClassFromString(@"MPNowPlayingInfoCenter");
     
@@ -1077,8 +1091,15 @@
     progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         //size;
     } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+        if (image == nil) {
+            UIImage *noImage = [UIImage imageNamed:@"noAlbumArt.png"];
+            MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc]initWithImage:noImage];
+            [self.dicForInfoCenter setObject:albumArt forKey:MPMediaItemPropertyArtwork];
+        }
+        else {
         MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc]initWithImage:image];
         [self.dicForInfoCenter setObject:albumArt forKey:MPMediaItemPropertyArtwork];
+        }
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.dicForInfoCenter];
     }];
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.dicForInfoCenter];

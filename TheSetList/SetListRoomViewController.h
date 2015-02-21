@@ -48,6 +48,7 @@
 @property (strong, nonatomic) NSMutableDictionary *hostCurrentArtist;
 @property (strong, nonatomic) AVPlayer *player;
 @property (strong, nonatomic) NSData *trackData;
+@property (strong, nonatomic) UIProgressView *progressView;;
 
 //MENU VIEW properties and methods
 @property (strong, nonatomic) IBOutlet UIImageView *sliderImageView;
