@@ -14,7 +14,7 @@
 #import "CollectionViewCell.h"
 
 
-@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, CollectionViewCellDelegate>
+@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate, UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout, CollectionViewCellDelegate>
 
 //SET LIST properties and methods. 
 

@@ -100,9 +100,11 @@
             </constraints>
             <size key="customSize" width="484" height="419"/>
             <connections>
+                <outlet property="albumArtVertConst" destination="dxO-YY-xRW" id="Qnr-TL-let"/>
                 <outlet property="artistBackgroundView" destination="28l-nE-7lB" id="vcd-Ma-pWk"/>
                 <outlet property="artistLabel" destination="Dw1-Vc-Fx4" id="RFb-Iq-Mt6"/>
                 <outlet property="artistView" destination="G2O-3G-YES" id="La2-1B-33s"/>
+                <outlet property="artistViewVertConst" destination="97D-fk-jGo" id="UOv-ut-Jru"/>
                 <outlet property="artworkImage" destination="AU2-3Q-a5a" id="M4R-DE-7RE"/>
                 <outlet property="controlsBackgroundView" destination="nap-x1-dew" id="nEd-bo-tEl"/>
                 <outlet property="controlsView" destination="z4f-Tp-h2g" id="A5H-bE-Gz1"/>
