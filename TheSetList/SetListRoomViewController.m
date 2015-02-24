@@ -514,7 +514,6 @@
     CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
                                                 forIndexPath:indexPath];
     //configure the cell for if the user is the host of the room.
-    cell.tag = 20;
     if ([self.hostQueue count])
     {
         cell.delegate = self;
@@ -599,22 +598,6 @@
     }
     return nil;
 }
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    CGPoint offset = self.collectionView.contentOffset;
-    CGRect bounds = self.collectionView.bounds;
-    CGSize size = self.collectionView.contentSize;
-    UIEdgeInsets inset = self.collectionView.contentInset;
-    float y = offset.y + bounds.size.height - inset.bottom;
-    float h = size.height;
-    float cellOffset = y - h;
-    CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
-    NSLog(@"headerFrame: %@", NSStringFromCGRect(header.frame));
-    NSLog(@"collectionView Bounds: %@", NSStringFromCGRect(bounds));
-    NSLog(@"CellOffset: %f", (55 + cellOffset));
-}
-
 #pragma mark - Search Bar Configuration
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -918,10 +901,18 @@
 
 -(void)deleteSongButtonPressedOnCell:(id)sender
 {
-    NSInteger index =  ((UICollectionViewCell *)sender).tag;
-    [self.hostQueue removeObjectAtIndex:index];
-    [self.collectionView reloadData];
-    [self headerFrameForCellOffset];
+    UICollectionViewCell *cell = (UICollectionViewCell *)sender;
+    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+    [self.collectionView performBatchUpdates:^{
+        //delete item from hostQueue
+        [self.hostQueue removeObjectAtIndex:indexPath.row];
+        // Now delete the items from the collection view.
+        NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+        NSArray *indexPaths = @[indexPath];
+        [self.collectionView deleteItemsAtIndexPaths:indexPaths];
+    } completion:nil];
+    
+    
 }
 
 #pragma mark - Remote Host Methods
@@ -950,6 +941,17 @@
 
 #pragma mark - Helper Methods
 
+-(void)removeFirstItemFromCollectionView
+{
+    [self.collectionView performBatchUpdates:^{
+        [self headerFrameForCellOffset];
+        //delete item from hostQueue
+        [self.hostQueue removeObjectAtIndex:0];
+        // Now delete the items from the collection view.
+        [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+    } completion:nil];
+}
+
 -(void)headerFrameForCellOffset
 {
     float stickyH = self.stickyHeaderFlowLayout.parallaxHeaderReferenceSize.height;
@@ -961,7 +963,6 @@
     float y = offset.y + bounds.size.height - inset.bottom;
     float h = size.height;
     float cellOffset = (y - h) + 55;
-    NSLog(@"%f", cellOffset);
     CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
     if (cellOffset > 0 && header.frame.size.height < stickyH) {
         
@@ -976,13 +977,12 @@
                                           header.frame.origin.y - cellOffset,
                                           header.frame.size.width,
                                           header.frame.size.height);
-        
     }
+
 }
 
 -(void)setCurrentArtistWithTrack:(NSDictionary *)track
 {
-    [self headerFrameForCellOffset];
     
     CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
     header.songTitleLabel.text = track[@"title"];
@@ -1262,7 +1262,7 @@
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
         self.hostCurrentArtist = [currentTrack mutableCopy];
-        [self.hostQueue removeObjectAtIndex:0];
+        [self removeFirstItemFromCollectionView];
         [self.collectionView reloadData];
         [self setCurrentArtistWithTrack:currentTrack];
         
