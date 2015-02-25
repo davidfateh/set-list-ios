@@ -549,6 +549,13 @@
                                                                withReuseIdentifier:@"header"
                                                                       forIndexPath:indexPath];
         header.tag = 50;
+        UIVisualEffect *blurEffect;
+        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        UIVisualEffectView *visualEffectView;
+        visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        visualEffectView.frame = header.artistBackgroundView.bounds;
+        visualEffectView.alpha = .15;
+        [header.artistBackgroundView addSubview:visualEffectView];
         if (self.hostCurrentArtist[@"user"]) {
             header.artistView.hidden = NO;
                     if (self.playerIsPlaying) {
@@ -943,13 +950,16 @@
 
 -(void)removeFirstItemFromCollectionView
 {
-    [self.collectionView performBatchUpdates:^{
-        [self headerFrameForCellOffset];
-        //delete item from hostQueue
-        [self.hostQueue removeObjectAtIndex:0];
-        // Now delete the items from the collection view.
-        [self.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
-    } completion:nil];
+    [UIView animateWithDuration:0 animations:^{
+        [self.collectionView performBatchUpdates:^{
+            //delete item from hostQueue
+            [self.hostQueue removeObjectAtIndex:0];
+            // Now delete the items from the collection view.
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+            NSArray *indexPaths = @[indexPath];
+            [self.collectionView deleteItemsAtIndexPaths:indexPaths];
+        } completion:nil];
+    }];
 }
 
 -(void)headerFrameForCellOffset
