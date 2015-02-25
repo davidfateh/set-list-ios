@@ -30,6 +30,7 @@
 @property (nonatomic) BOOL plusButtonIsSelected;
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
+@property (strong, nonatomic) UIVisualEffectView *headerBlurView;
 @property (strong, nonatomic) SIOSocket *socket;
 @property (strong, nonatomic) NSDictionary *currentArtist;
 @property (nonatomic) BOOL isRemoteHost;
@@ -116,7 +117,7 @@
     visualEffectView.alpha = 0;
     [self.setListView addSubview:visualEffectView];
     self.blurEffectView = visualEffectView;
-    
+
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
@@ -549,13 +550,16 @@
                                                                withReuseIdentifier:@"header"
                                                                       forIndexPath:indexPath];
         header.tag = 50;
-        UIVisualEffect *blurEffect;
-        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        UIVisualEffectView *visualEffectView;
-        visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        visualEffectView.frame = header.artistBackgroundView.bounds;
-        visualEffectView.alpha = .15;
-        [header.artistBackgroundView addSubview:visualEffectView];
+        if (!self.headerBlurView) {
+            UIVisualEffect *headerBlurEffect;
+            headerBlurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+            UIVisualEffectView *headerBlurView;
+            headerBlurView = [[UIVisualEffectView alloc] initWithEffect:headerBlurEffect];
+            headerBlurView.frame = header.artistBackgroundView.bounds;
+            headerBlurView.alpha = .85;
+            self.headerBlurView = headerBlurView;
+            [header.artistBackgroundView addSubview:headerBlurView];
+        }
         if (self.hostCurrentArtist[@"user"]) {
             header.artistView.hidden = NO;
                     if (self.playerIsPlaying) {
@@ -910,16 +914,7 @@
 {
     UICollectionViewCell *cell = (UICollectionViewCell *)sender;
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-    [self.collectionView performBatchUpdates:^{
-        //delete item from hostQueue
-        [self.hostQueue removeObjectAtIndex:indexPath.row];
-        // Now delete the items from the collection view.
-        NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-        NSArray *indexPaths = @[indexPath];
-        [self.collectionView deleteItemsAtIndexPaths:indexPaths];
-    } completion:nil];
-    
-    
+    [self removeItemFromCollectionViewAtIndexPath:indexPath];
 }
 
 #pragma mark - Remote Host Methods
@@ -948,16 +943,17 @@
 
 #pragma mark - Helper Methods
 
--(void)removeFirstItemFromCollectionView
+-(void)removeItemFromCollectionViewAtIndexPath:(NSIndexPath *)indexPath
 {
     [UIView animateWithDuration:0 animations:^{
         [self.collectionView performBatchUpdates:^{
+            [self headerFrameForCellOffset];
             //delete item from hostQueue
-            [self.hostQueue removeObjectAtIndex:0];
+            [self.hostQueue removeObjectAtIndex:indexPath.row];
             // Now delete the items from the collection view.
-            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
             NSArray *indexPaths = @[indexPath];
             [self.collectionView deleteItemsAtIndexPaths:indexPaths];
+            NSLog(@"%i", [self.hostQueue count]);
         } completion:nil];
     }];
 }
@@ -1272,7 +1268,8 @@
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
         self.hostCurrentArtist = [currentTrack mutableCopy];
-        [self removeFirstItemFromCollectionView];
+        NSIndexPath *firstIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+        [self removeItemFromCollectionViewAtIndexPath:firstIndexPath];
         [self.collectionView reloadData];
         [self setCurrentArtistWithTrack:currentTrack];
         
