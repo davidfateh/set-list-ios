@@ -136,9 +136,18 @@
         [UIView animateWithDuration:.25 animations:^{
             self.roomCodeView.alpha = 0;
             self.blurEffectView.alpha = 0;
-        } completion:^(BOOL finished) {  
+        } completion:^(BOOL finished) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+            });
+            
         }];
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+        });
     }
 }
 
