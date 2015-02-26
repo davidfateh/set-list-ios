@@ -42,6 +42,7 @@
 @property (strong, nonatomic) UINib *headerNib;
 @property (strong, nonatomic) CurrentArtistHeader *currentArtistHeader;
 @property (nonatomic) BOOL playerIsPlaying;
+@property (strong, nonatomic) CSStickyHeaderFlowLayout *stickyHeaderLayout;
 @end
 
 @implementation SetListRoomViewController
@@ -68,15 +69,15 @@
     
     
     
-    CSStickyHeaderFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
+    self.stickyHeaderLayout =  (id)self.collectionView.collectionViewLayout;
     
-    if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 233);
-        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 100);
-        layout.parallaxHeaderAlwaysOnTop = YES;
+    if ([self.stickyHeaderLayout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
+        self.stickyHeaderLayout.parallaxHeaderReferenceSize = CGSizeMake(320, 233);
+        self.stickyHeaderLayout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 100);
+        self.stickyHeaderLayout.parallaxHeaderAlwaysOnTop = YES;
         
         // If we want to disable the sticky header effect
-        layout.disableStickyHeaders = YES;
+        self.stickyHeaderLayout.disableStickyHeaders = YES;
     }
     
     // Also insets the scroll indicator so it appears below the search bar
@@ -262,10 +263,9 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:YES];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [self resignFirstResponder];
-
+    [super viewWillDisappear:YES];
 }
 -(BOOL)canBecomeFirstResponder
 {
@@ -331,6 +331,7 @@
         self.collectionView.hidden = NO;
         self.hostCurrentArtist = [songAdded mutableCopy];
         NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
+        [self setCurrentArtistWithTrack:songAddedForCurrent];
         [self playCurrentArtist:self.hostCurrentArtist];
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
@@ -543,22 +544,11 @@
     
     if ([kind isEqualToString:CSStickyHeaderParallaxHeader]) {
         CurrentArtistHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind
-                                                               withReuseIdentifier:@"header"
-                                                                      forIndexPath:indexPath];
+                                                                         withReuseIdentifier:@"header"
+                                                                                forIndexPath:indexPath];
+        header.tag = 50;
         if (self.hostCurrentArtist[@"user"]) {
-            header.tag = 50;
             header.artistView.hidden = NO;
-            NSDictionary *track = self.hostCurrentArtist;
-            header.songTitleLabel.text = track[@"title"];
-            header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-            NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
-            if (artworkURL == nil) {
-                [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
-            }
-            else {
-                [header.artworkImage sd_setImageWithURL:artworkURL];
-            }
-            
             if (self.playerIsPlaying) {
                 header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
             }
@@ -665,7 +655,7 @@
     self.menuView.hidden = NO;
     self.searchView.hidden = YES;
     self.searchView.alpha = 0;
-    if (self.isHost) {
+    if (self.isHost || self.isRemoteHost) {
         self.remoteLabel.hidden = YES;
     }
     if (recognizer.state == UIGestureRecognizerStateBegan)
@@ -747,7 +737,7 @@
         self.purpleGlowImageView.alpha = 0;
         
         //If the user has the remote selected, make the remote view appear and allow the user to put in the remote password.
-        if (self.remoteLabelSelected && !self.isHost) {
+        if (self.remoteLabelSelected && !self.isHost &&!self.isRemoteHost) {
             self.remoteCodeView.alpha = 0;
             self.remoteCodeView.hidden = NO;
             self.exitRemotePlusImage.hidden = YES;
@@ -906,9 +896,9 @@
 
 -(void)deleteSongButtonPressedOnCell:(id)sender
 {
-    NSInteger index =  ((UICollectionViewCell *)sender).tag;
-    [self.hostQueue removeObjectAtIndex:index];
-    [self.collectionView reloadData];
+    UICollectionViewCell *cell = (UICollectionViewCell *)sender;
+    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+    [self removeItemFromCollectionViewAtIndexPath:indexPath];
 }
 
 #pragma mark - Remote Host Methods
@@ -936,6 +926,66 @@
 }
 
 #pragma mark - Helper Methods
+
+-(void)removeItemFromCollectionViewAtIndexPath:(NSIndexPath *)indexPath
+{
+    [UIView animateWithDuration:0 animations:^{
+        [self.collectionView performBatchUpdates:^{
+            [self headerFrameForCellOffset];
+            //delete item from hostQueue
+            [self.hostQueue removeObjectAtIndex:indexPath.row];
+            // Now delete the items from the collection view.
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+            NSArray *indexPaths = @[indexPath];
+            [self.collectionView deleteItemsAtIndexPaths:indexPaths];
+            NSLog(@"%i", [self.hostQueue count]);
+        } completion:nil];
+    }];
+}
+-(void)headerFrameForCellOffset
+{
+    float stickyH = self.stickyHeaderLayout.parallaxHeaderReferenceSize.height;
+    float scrollBoundY = self.stickyHeaderLayout.parallaxHeaderReferenceSize.height -           self.stickyHeaderLayout.parallaxHeaderMinimumReferenceSize.height;
+    CGPoint offset = self.collectionView.contentOffset;
+    CGRect bounds = self.collectionView.bounds;
+    CGSize size = self.collectionView.contentSize;
+    UIEdgeInsets inset = self.collectionView.contentInset;
+    float y = offset.y + bounds.size.height - inset.bottom;
+    float h = size.height;
+    float cellOffset = (y - h) + 55;
+    CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
+    if (cellOffset > 0 && header.frame.size.height < stickyH) {
+        
+        if (header.frame.origin.y < scrollBoundY) {
+            header.frame = CGRectMake(header.frame.origin.x,
+                                      header.frame.origin.y - cellOffset,
+                                      header.frame.size.width,
+                                      header.frame.size.height + cellOffset);
+        }
+        
+        else    header.frame = CGRectMake(header.frame.origin.x,
+                                          header.frame.origin.y - cellOffset,
+                                          header.frame.size.width,
+                                          header.frame.size.height);
+    }
+    
+}
+
+-(void)setCurrentArtistWithTrack:(NSDictionary *)track
+{
+    
+    CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
+    header.songTitleLabel.text = track[@"title"];
+    header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+    NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
+    if (artworkURL == nil) {
+        [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+    }
+    else {
+        [header.artworkImage sd_setImageWithURL:artworkURL];
+    }
+}
+
 
 //for formating the tracks durations.
 - (NSString *)timeFormatted:(int)totalSeconds
@@ -1024,6 +1074,7 @@
     [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"skipPressed"    object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"playPausePressed" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kRemoteSet object:nil];
     
     //close the socket.
     [self.socket close];
@@ -1201,8 +1252,9 @@
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
         self.hostCurrentArtist = [currentTrack mutableCopy];
-        [self.hostQueue removeObjectAtIndex:0];
-        [self.collectionView reloadData];
+        NSIndexPath *firstIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+        [self removeItemFromCollectionViewAtIndexPath:firstIndexPath];
+        [self setCurrentArtistWithTrack:currentTrack];
         
         [self playCurrentArtist:self.hostCurrentArtist];
         

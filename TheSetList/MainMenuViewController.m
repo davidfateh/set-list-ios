@@ -95,12 +95,12 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
     [UIView animateWithDuration:.5 delay:.6 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.menuView.alpha = 1;
     } completion:^(BOOL finished) {
         //completed
     }];
-
 }
 
 
