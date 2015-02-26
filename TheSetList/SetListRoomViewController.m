@@ -30,7 +30,6 @@
 @property (nonatomic) BOOL plusButtonIsSelected;
 @property (strong, nonatomic) NSMutableIndexSet *selectedRows;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
-@property (strong, nonatomic) UIVisualEffectView *headerBlurView;
 @property (strong, nonatomic) SIOSocket *socket;
 @property (strong, nonatomic) NSDictionary *currentArtist;
 @property (nonatomic) BOOL isRemoteHost;
@@ -43,7 +42,6 @@
 @property (strong, nonatomic) UINib *headerNib;
 @property (strong, nonatomic) CurrentArtistHeader *currentArtistHeader;
 @property (nonatomic) BOOL playerIsPlaying;
-@property (nonatomic, strong) CSStickyHeaderFlowLayout *stickyHeaderFlowLayout;
 @end
 
 @implementation SetListRoomViewController
@@ -58,7 +56,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"View Did Load");
     
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.setListBackgroundView addSubview:radiantBackgroundView];
@@ -71,13 +68,15 @@
     
     
     
-    self.stickyHeaderFlowLayout = (id)self.collectionView.collectionViewLayout;
-    if ([self.stickyHeaderFlowLayout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-        self.stickyHeaderFlowLayout.parallaxHeaderReferenceSize = CGSizeMake(320, 233);
-        self.stickyHeaderFlowLayout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 100);
-        self.stickyHeaderFlowLayout.parallaxHeaderAlwaysOnTop = YES;
+    CSStickyHeaderFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
+    
+    if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
+        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 233);
+        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 100);
+        layout.parallaxHeaderAlwaysOnTop = YES;
+        
         // If we want to disable the sticky header effect
-        self.stickyHeaderFlowLayout.disableStickyHeaders = YES;
+        layout.disableStickyHeaders = YES;
     }
     
     // Also insets the scroll indicator so it appears below the search bar
@@ -118,7 +117,7 @@
     visualEffectView.alpha = 0;
     [self.setListView addSubview:visualEffectView];
     self.blurEffectView = visualEffectView;
-
+    
     UIImage *plusImage = [UIImage imageNamed:@"plusButton"];
     [self.plusButton setBackgroundImage:plusImage forState:UIControlStateHighlighted |UIControlStateSelected];
     
@@ -126,8 +125,8 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    NSLog(@"View Will Appear");
+    [super viewWillAppear:YES];
+    
     
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
@@ -205,17 +204,16 @@
                                                  selector:@selector(receiveInitializeNotification:)
                                                      name:kInitialize
                                                    object:nil];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveRemoteSetNotification:)
                                                      name:kRemoteSet
                                                    object:nil];
+
         
+        //Add some animations upon load up. Purple glow and tableview animation.
+        double delay = .4;
+        [self purpleGlowAnimationFromBottomWithDelay:&delay];
         
-//        CSStickyHeaderFlowLayout *layout = self.stickyHeaderFlowLayout;
-//        if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-//            layout.parallaxHeaderReferenceSize = CGSizeMake(320, 193);
-//        }
         
         //Set the queue, if there is one.
         NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
@@ -240,8 +238,7 @@
 }
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
-    NSLog(@"View Did Appear");
+    [super viewDidAppear:YES];
     
     //fade animation in for a nice load in effect
     [UIView animateWithDuration:.5 delay:.35 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -251,10 +248,6 @@
     } completion:^(BOOL finished) {
         //completed
     }];
-    
-    //Add some animations upon load up. Purple glow and tableview animation.
-    double delay = .4;
-    [self purpleGlowAnimationFromBottomWithDelay:&delay];
     
     if (self.isHost){
         NSError *sessionError = nil;
@@ -269,9 +262,10 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:YES];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [self resignFirstResponder];
-    [super viewWillDisappear:animated];
+
 }
 -(BOOL)canBecomeFirstResponder
 {
@@ -337,7 +331,6 @@
         self.collectionView.hidden = NO;
         self.hostCurrentArtist = [songAdded mutableCopy];
         NSDictionary *songAddedForCurrent = self.hostCurrentArtist;
-        [self setCurrentArtistWithTrack:songAddedForCurrent];
         [self playCurrentArtist:self.hostCurrentArtist];
         NSArray *songAddedArray = @[songAddedForCurrent];
         //emit the song for other clients to recieve and add to their current.
@@ -401,18 +394,19 @@
                                                      name:@"playPausePressed"
                                                    object:nil];
         self.isRemoteHost = YES;
-        
-        CSStickyHeaderFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
-        if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-            layout.parallaxHeaderReferenceSize = CGSizeMake(320, 233);
-        }
         __weak typeof(self) weakSelf = self;
         dispatch_sync(dispatch_get_main_queue(), ^{
+            weakSelf.remoteTextLabel.text = @"Remote host enabled";
+            [weakSelf.remoteTextField setFrame:CGRectMake(
+                                                          weakSelf.remoteTextField.frame.origin.x, 273,
+                                                          weakSelf.remoteTextField.frame.size.width,
+                                                          weakSelf.remoteTextField.frame.size.height)];
             [weakSelf.remoteTextField resignFirstResponder];
             [UIView animateWithDuration:.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 
             } completion:^(BOOL finished) {
             }];
+            
             [weakSelf exitRemoteButtonPressed:nil];
         });
         
@@ -551,56 +545,51 @@
         CurrentArtistHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                withReuseIdentifier:@"header"
                                                                       forIndexPath:indexPath];
-        header.tag = 50;
-        if (!self.headerBlurView) {
-            UIVisualEffect *headerBlurEffect;
-            headerBlurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-            UIVisualEffectView *headerBlurView;
-            headerBlurView = [[UIVisualEffectView alloc] initWithEffect:headerBlurEffect];
-            headerBlurView.frame = header.artistBackgroundView.bounds;
-            headerBlurView.alpha = .85;
-            self.headerBlurView = headerBlurView;
-            [header.artistBackgroundView addSubview:headerBlurView];
-        }
         if (self.hostCurrentArtist[@"user"]) {
+            header.tag = 50;
             header.artistView.hidden = NO;
-                    if (self.playerIsPlaying) {
-                    header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
-                }
-                else header.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+            NSDictionary *track = self.hostCurrentArtist;
+            header.songTitleLabel.text = track[@"title"];
+            header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
+            if (artworkURL == nil) {
+                [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+            }
+            else {
+                [header.artworkImage sd_setImageWithURL:artworkURL];
+            }
+            
+            if (self.playerIsPlaying) {
+                header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
+            }
+            else header.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+            
         }
         
         else if (self.currentArtist[@"user"])
         {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                header.artistViewVertConst.constant = 10;
-                header.albumArtVertConst.constant = 10;
-                header.controlsView.hidden = YES;
-                header.artistView.hidden = NO;
-                NSDictionary *track = self.currentArtist;
-                header.songTitleLabel.text = track[@"title"];
-                header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-                NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
-                if (artworkURL == nil) {
-                    [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+            header.controlsView.hidden = YES;
+            header.artistView.hidden = NO;
+            NSDictionary *track = self.currentArtist;
+            header.songTitleLabel.text = track[@"title"];
+            header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
+            if (artworkURL == nil) {
+                [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+            }
+            else {
+                [header.artworkImage sd_setImageWithURL:artworkURL];
+            }
+
+            if (self.isRemoteHost) {
+                header.controlsView.hidden = NO;
+                header.progressView.hidden = YES;
+                if (self.playerIsPlaying)
+                {
+                    header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
                 }
-                else {
-                    [header.artworkImage sd_setImageWithURL:artworkURL];
-                }
-                
-                if (self.isRemoteHost) {
-                    header.controlsView.hidden = NO;
-                    header.progressView.hidden = YES;
-                    header.artistViewVertConst.constant = 53;
-                    header.albumArtVertConst.constant = 53;
-                    if (self.playerIsPlaying)
-                    {
-                        header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
-                    }
-                    else header.playPauseImageView.image = [UIImage imageNamed:@"Play"];
-                }
-                
-            });
+                else header.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+            }
         }
         else
         {
@@ -611,6 +600,9 @@
     }
     return nil;
 }
+
+
+
 #pragma mark - Search Bar Configuration
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -673,7 +665,7 @@
     self.menuView.hidden = NO;
     self.searchView.hidden = YES;
     self.searchView.alpha = 0;
-    if (self.isHost || self.isRemoteHost) {
+    if (self.isHost) {
         self.remoteLabel.hidden = YES;
     }
     if (recognizer.state == UIGestureRecognizerStateBegan)
@@ -755,7 +747,7 @@
         self.purpleGlowImageView.alpha = 0;
         
         //If the user has the remote selected, make the remote view appear and allow the user to put in the remote password.
-        if (self.remoteLabelSelected && !self.isHost && !self.isRemoteHost) {
+        if (self.remoteLabelSelected && !self.isHost) {
             self.remoteCodeView.alpha = 0;
             self.remoteCodeView.hidden = NO;
             self.exitRemotePlusImage.hidden = YES;
@@ -914,9 +906,9 @@
 
 -(void)deleteSongButtonPressedOnCell:(id)sender
 {
-    UICollectionViewCell *cell = (UICollectionViewCell *)sender;
-    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-    [self removeItemFromCollectionViewAtIndexPath:indexPath];
+    NSInteger index =  ((UICollectionViewCell *)sender).tag;
+    [self.hostQueue removeObjectAtIndex:index];
+    [self.collectionView reloadData];
 }
 
 #pragma mark - Remote Host Methods
@@ -944,66 +936,6 @@
 }
 
 #pragma mark - Helper Methods
-
--(void)removeItemFromCollectionViewAtIndexPath:(NSIndexPath *)indexPath
-{
-    [UIView animateWithDuration:0 animations:^{
-        [self.collectionView performBatchUpdates:^{
-            [self headerFrameForCellOffset];
-            //delete item from hostQueue
-            [self.hostQueue removeObjectAtIndex:indexPath.row];
-            // Now delete the items from the collection view.
-            NSArray *indexPaths = @[indexPath];
-            [self.collectionView deleteItemsAtIndexPaths:indexPaths];
-            NSLog(@"%i", [self.hostQueue count]);
-        } completion:nil];
-    }];
-}
-
--(void)headerFrameForCellOffset
-{
-    float stickyH = self.stickyHeaderFlowLayout.parallaxHeaderReferenceSize.height;
-    float scrollBoundY = self.stickyHeaderFlowLayout.parallaxHeaderReferenceSize.height - self.stickyHeaderFlowLayout.parallaxHeaderMinimumReferenceSize.height;
-    CGPoint offset = self.collectionView.contentOffset;
-    CGRect bounds = self.collectionView.bounds;
-    CGSize size = self.collectionView.contentSize;
-    UIEdgeInsets inset = self.collectionView.contentInset;
-    float y = offset.y + bounds.size.height - inset.bottom;
-    float h = size.height;
-    float cellOffset = (y - h) + 55;
-    CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
-    if (cellOffset > 0 && header.frame.size.height < stickyH) {
-        
-        if (header.frame.origin.y < scrollBoundY) {
-            header.frame = CGRectMake(header.frame.origin.x,
-                                      header.frame.origin.y - cellOffset,
-                                      header.frame.size.width,
-                                      header.frame.size.height + cellOffset);
-        }
-        
-        else    header.frame = CGRectMake(header.frame.origin.x,
-                                          header.frame.origin.y - cellOffset,
-                                          header.frame.size.width,
-                                          header.frame.size.height);
-    }
-
-}
-
--(void)setCurrentArtistWithTrack:(NSDictionary *)track
-{
-    
-    CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
-    header.songTitleLabel.text = track[@"title"];
-    header.songTitleLabel.text = track[@"title"];
-    header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-    NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
-    if (artworkURL == nil) {
-        [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
-    }
-    else {
-        [header.artworkImage sd_setImageWithURL:artworkURL];
-    }
-}
 
 //for formating the tracks durations.
 - (NSString *)timeFormatted:(int)totalSeconds
@@ -1092,7 +1024,6 @@
     [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"skipPressed"    object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"playPausePressed" object:nil];
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:kRemoteSet object:nil];
     
     //close the socket.
     [self.socket close];
@@ -1270,10 +1201,8 @@
         //Rearange tracks and current songs and emit them to the sever.
         NSDictionary *currentTrack = [self.hostQueue objectAtIndex:0];
         self.hostCurrentArtist = [currentTrack mutableCopy];
-        NSIndexPath *firstIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-        [self removeItemFromCollectionViewAtIndexPath:firstIndexPath];
+        [self.hostQueue removeObjectAtIndex:0];
         [self.collectionView reloadData];
-        [self setCurrentArtistWithTrack:currentTrack];
         
         [self playCurrentArtist:self.hostCurrentArtist];
         

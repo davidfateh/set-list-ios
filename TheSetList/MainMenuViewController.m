@@ -45,6 +45,8 @@
     [self.menuView addSubview:visualEffectView];
     self.blurEffectView = visualEffectView;
     
+    
+    
     /////////JOIN ROOM VIEW///////////
     //Create a toolbar to push to the next view.
     UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
@@ -61,9 +63,10 @@
     self.roomCodeTextField.tintColor = [UIColor whiteColor];
 }
 
+
 -(void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewWillAppear:YES];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveInitializeNotification:)
@@ -92,8 +95,6 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
-    
     [UIView animateWithDuration:.5 delay:.6 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.menuView.alpha = 1;
     } completion:^(BOOL finished) {
@@ -141,6 +142,12 @@
             });
             
         }];
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:@"toSetListRoomVC" sender:self];
+        });
     }
 }
 

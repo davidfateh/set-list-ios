@@ -12,7 +12,7 @@
 @implementation CurrentArtistHeader
 
 - (void)applyLayoutAttributes:(CSStickyHeaderFlowLayoutAttributes *)layoutAttributes {
-  
+    
     [UIView beginAnimations:@"" context:nil];
     if (layoutAttributes.progressiveness <= 0.58) {
         self.self.controlsBackgroundView.alpha = .85;
