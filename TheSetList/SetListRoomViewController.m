@@ -58,6 +58,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSLog(@"View Did Load");
     
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.setListBackgroundView addSubview:radiantBackgroundView];
@@ -125,8 +126,8 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:YES];
-    
+    [super viewWillAppear:animated];
+    NSLog(@"View Will Appear");
     
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
@@ -204,20 +205,17 @@
                                                  selector:@selector(receiveInitializeNotification:)
                                                      name:kInitialize
                                                    object:nil];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveRemoteSetNotification:)
                                                      name:kRemoteSet
                                                    object:nil];
         
         
-        CSStickyHeaderFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
-        if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-            layout.parallaxHeaderReferenceSize = CGSizeMake(320, 193);
-        }
-        
-        //Add some animations upon load up. Purple glow and tableview animation.
-        double delay = .4;
-        [self purpleGlowAnimationFromBottomWithDelay:&delay];
+//        CSStickyHeaderFlowLayout *layout = self.stickyHeaderFlowLayout;
+//        if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
+//            layout.parallaxHeaderReferenceSize = CGSizeMake(320, 193);
+//        }
         
         //Set the queue, if there is one.
         NSArray *setListTracks = [[SocketKeeperSingleton sharedInstance]setListTracks];
@@ -242,7 +240,8 @@
 }
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:YES];
+    [super viewDidAppear:animated];
+    NSLog(@"View Did Appear");
     
     //fade animation in for a nice load in effect
     [UIView animateWithDuration:.5 delay:.35 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -252,6 +251,10 @@
     } completion:^(BOOL finished) {
         //completed
     }];
+    
+    //Add some animations upon load up. Purple glow and tableview animation.
+    double delay = .4;
+    [self purpleGlowAnimationFromBottomWithDelay:&delay];
     
     if (self.isHost){
         NSError *sessionError = nil;
@@ -266,10 +269,9 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:YES];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [self resignFirstResponder];
-
+    [super viewWillDisappear:animated];
 }
 -(BOOL)canBecomeFirstResponder
 {
