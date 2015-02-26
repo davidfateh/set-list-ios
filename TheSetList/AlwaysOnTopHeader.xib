@@ -13,7 +13,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="233"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ironAndWineCoverArt.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="AU2-3Q-a5a" userLabel="album art">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AU2-3Q-a5a" userLabel="album art">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z4f-Tp-h2g" userLabel="controls">
@@ -120,6 +120,5 @@
     <resources>
         <image name="Play" width="36" height="47"/>
         <image name="Skip" width="43" height="48"/>
-        <image name="ironAndWineCoverArt.jpg" width="500" height="494"/>
     </resources>
 </document>

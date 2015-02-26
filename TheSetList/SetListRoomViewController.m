@@ -58,6 +58,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSLog(@"View Did Load");
     
     RadialGradiantView *radiantBackgroundView = [[RadialGradiantView alloc] initWithFrame:self.view.bounds];
     [self.setListBackgroundView addSubview:radiantBackgroundView];
@@ -67,8 +68,6 @@
     //Set the text on the search bar to white.
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setKeyboardAppearance:UIKeyboardAppearanceDark];
-    
-    
     
     self.stickyHeaderFlowLayout = (id)self.collectionView.collectionViewLayout;
     if ([self.stickyHeaderFlowLayout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
@@ -123,11 +122,11 @@
     
 }
 
+
 -(void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:YES];
-    
-    
+    [super viewWillAppear:animated];
+    NSLog(@"View Will Appear");
     self.socket = [[SocketKeeperSingleton sharedInstance]socket];
     self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
     
@@ -210,9 +209,10 @@
                                                    object:nil];
         
         
-        CSStickyHeaderFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
+        CSStickyHeaderFlowLayout *layout = self.stickyHeaderFlowLayout;
         if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
             layout.parallaxHeaderReferenceSize = CGSizeMake(320, 193);
+            layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 57);
         }
         
         //Add some animations upon load up. Purple glow and tableview animation.
@@ -242,7 +242,8 @@
 }
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:YES];
+    [super viewDidAppear:animated];
+    NSLog(@"View Did Appear");
     
     //fade animation in for a nice load in effect
     [UIView animateWithDuration:.5 delay:.35 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -250,7 +251,6 @@
         self.setListView.alpha = 1;
         self.sliderView.alpha = 1;
     } completion:^(BOOL finished) {
-        //completed
     }];
     
     if (self.isHost){
@@ -266,7 +266,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:YES];
+    [super viewWillDisappear:animated];
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     [self resignFirstResponder];
 
@@ -362,7 +362,24 @@
         self.collectionView.hidden = NO;
         NSDictionary *currentArtist = [[SocketKeeperSingleton sharedInstance]currentArtist];
         self.currentArtist = currentArtist;
-        [self.collectionView reloadData];
+        CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            header.artistViewVertConst.constant = 10;
+            header.albumArtVertConst.constant = 10;
+            header.controlsView.hidden = YES;
+            header.artistView.hidden = NO;
+            NSDictionary *track = self.currentArtist;
+            header.songTitleLabel.text = track[@"title"];
+            header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
+            NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
+            if (artworkURL == nil) {
+                [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
+            }
+            else {
+                [header.artworkImage sd_setImageWithURL:artworkURL];
+            }
+            
+        });
     }
 }
 
@@ -571,21 +588,6 @@
         else if (self.currentArtist[@"user"])
         {
             dispatch_sync(dispatch_get_main_queue(), ^{
-                header.artistViewVertConst.constant = 10;
-                header.albumArtVertConst.constant = 10;
-                header.controlsView.hidden = YES;
-                header.artistView.hidden = NO;
-                NSDictionary *track = self.currentArtist;
-                header.songTitleLabel.text = track[@"title"];
-                header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-                NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
-                if (artworkURL == nil) {
-                    [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
-                }
-                else {
-                    [header.artworkImage sd_setImageWithURL:artworkURL];
-                }
-                
                 if (self.isRemoteHost) {
                     header.controlsView.hidden = NO;
                     header.progressView.hidden = YES;
@@ -907,7 +909,6 @@
     NSDictionary *simpleTrack = @{@"title" : track[@"title"], @"user" :track[@"user"], @"stream_url": track[@"stream_url"], @"artwork_url" : track[@"artwork_url"], @"UUID" : UUIDString};
     NSArray *arrayWithTrack = @[simpleTrack];
     [self.socket emit:kQueueRequest args:arrayWithTrack];
-    
 }
 
 -(void)deleteSongButtonPressedOnCell:(id)sender

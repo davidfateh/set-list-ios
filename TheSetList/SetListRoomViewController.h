@@ -14,10 +14,12 @@
 #import "CollectionViewCell.h"
 
 
-@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate, UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout, CollectionViewCellDelegate>
+@interface SetListRoomViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, SetListCellDelegate, UITextFieldDelegate, AVAudioPlayerDelegate, UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout, CollectionViewCellDelegate, UINavigationControllerDelegate>
+{
+    UIViewController *_lastVC;
+}
 
-//SET LIST properties and methods. 
-
+//SET LIST properties and methods.
 @property (strong, nonatomic) IBOutlet UIView *setListView;
 @property (strong, nonatomic) NSMutableArray *guestQueue;
 @property (strong, nonatomic) IBOutlet UIView *setListBackgroundView;
