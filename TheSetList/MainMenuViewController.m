@@ -45,8 +45,6 @@
     [self.menuView addSubview:visualEffectView];
     self.blurEffectView = visualEffectView;
     
-    
-    
     /////////JOIN ROOM VIEW///////////
     //Create a toolbar to push to the next view.
     UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
