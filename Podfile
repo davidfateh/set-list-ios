@@ -8,6 +8,4 @@ pod 'SIOSocket', '~> 0.2.0'
 
 pod 'SDWebImage', '~>3.6'
 
-pod 'MarqueeLabel'
-
 pod "CSStickyHeaderFlowLayout"

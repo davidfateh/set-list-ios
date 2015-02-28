@@ -24,11 +24,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-MarqueeLabel.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods-NXOAuth2Client.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -62,57 +57,52 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0BED73356FDD46DBB39D5347</key>
+		<key>0BC30D40D08B4C34A5BF7692</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>26D8FA6AA2A04A1593485E95</key>
+		<key>16AB5A388D614A0EA2A0B709</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>413D621D3DCE4677A6ACF630</key>
+		<key>1F8F4AF59F684F69B0E2DCE0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5746B66B236B4B759204CE85</key>
+		<key>25F52393F4F94BA492FF72CC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5918F2670E8540C09D00D7AD</key>
+		<key>4372E56A061244C8B94F0170</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>8CA5B1333E284B46B3923C0E</key>
+		<key>679211FAD95B45BB83E3C224</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>921C36242BE941D2810A579B</key>
+		<key>9062662ED882427DA3F6B055</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C0A5781A418D474588B16DD0</key>
+		<key>B78DA8B9E0CD4CF0ABEB3B9B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DC218D3EF5424FEA8FB30B04</key>
+		<key>BEBCA9AEEEA24B39A5932529</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>F86C3FEE2F244618BF023341</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FA9B400F98F64F1D9765BF41</key>
+		<key>E8C7BAD1F3534132BCF2DD5D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

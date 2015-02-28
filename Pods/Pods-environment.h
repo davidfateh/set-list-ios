@@ -31,12 +31,6 @@
 // Please contact the author.
 // Version: 1.5pre.
 
-// MarqueeLabel
-#define COCOAPODS_POD_AVAILABLE_MarqueeLabel
-#define COCOAPODS_VERSION_MAJOR_MarqueeLabel 2
-#define COCOAPODS_VERSION_MINOR_MarqueeLabel 2
-#define COCOAPODS_VERSION_PATCH_MarqueeLabel 1
-
 // NXOAuth2Client
 #define COCOAPODS_POD_AVAILABLE_NXOAuth2Client
 #define COCOAPODS_VERSION_MAJOR_NXOAuth2Client 1
