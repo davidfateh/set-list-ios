@@ -134,6 +134,7 @@
     self.socketID = [[SocketKeeperSingleton sharedInstance]socketID];
     
     NSString *roomCodeAsHost = [[SocketKeeperSingleton sharedInstance]hostRoomCode];
+    NSString *roomCodeAsGuest = [[SocketKeeperSingleton sharedInstance]roomCode];
     /////////HOST/////////
     if ([[SocketKeeperSingleton sharedInstance]isHost]) {
         
@@ -166,6 +167,7 @@
         self.isHost = YES;
         self.playerIsPlaying = NO;
         self.hostRoomCodeLabel.text = roomCodeAsHost;
+        self.roomCodeLabel.text = roomCodeAsHost;
         self.hostRoomCodeLabel.hidden = NO;
         self.hostCodeMessageLabel.hidden = NO;
         
@@ -216,6 +218,8 @@
         double delay = .4;
         [self purpleGlowAnimationFromBottomWithDelay:&delay];
         
+        self.roomCodeLabel.text = roomCodeAsGuest;
+        
         CSStickyHeaderFlowLayout *layout = self.stickyHeaderLayout;
         if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
             layout.parallaxHeaderReferenceSize = CGSizeMake(320, 193);
@@ -227,15 +231,9 @@
         NSMutableArray *tracks = [setListTracks mutableCopy];
         if (setListTracks) {
             self.guestQueue = tracks;
+            //reload the collection view to display the data.
+            [self.collectionView reloadData];
         }
-        //if there is a current artist track, set it.
-        NSDictionary *currentTrack = [[SocketKeeperSingleton sharedInstance]currentArtist];
-        if (currentTrack)
-        {
-            self.currentArtist = currentTrack;
-        }
-        //reload the collection view to display the data.
-        [self.collectionView reloadData];
     }
     
     self.setListView.alpha = 0;
@@ -264,6 +262,16 @@
         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
         [self becomeFirstResponder];
         NSLog(@"reciving remote control events and responder set");
+    }
+    else
+    {
+        //if there is a current artist track, set it. This is in viewDidAppear because the collection View does not have a tag yet...I think.
+        NSDictionary *currentTrack = [[SocketKeeperSingleton sharedInstance]currentArtist];
+        if (currentTrack)
+        {
+            self.currentArtist = currentTrack;
+            [self setCurrentArtistWithTrack:currentTrack];
+        }
     }
 }
 
@@ -375,17 +383,29 @@
         int songAddOrDelete = (previousCount - currentCount);
         
         //if the host has deleted or added a song, update the collection view acordingly. if the songAddOrDelete is greater than 0, that means that a song has been deleted or skipped, the previous queue is greater than the updateded queue. Else, a song as been added to the queue.
-        
         if (songAddOrDelete > 0)
         {
-            NSIndexPath *firstIndex = [NSIndexPath indexPathForRow:0 inSection:0];
+            [UIView animateWithDuration:0 animations:^{
+                [self.collectionView performBatchUpdates:^{
+                    [self headerFrameForCellOffset];
+                    self.guestQueue = [setListTracks mutableCopy];
+                    [self.collectionView reloadData];
+                    // Now delete the items from the collection view.
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+                    NSArray *indexPaths = @[indexPath];
+                    [self.collectionView deleteItemsAtIndexPaths:indexPaths];
+                } completion:nil];
+            }];
+        }
+        else if (songAddOrDelete < 0)
+        {
             self.guestQueue = [setListTracks mutableCopy];
-            [self removeItemFromCollectionViewAtIndexPath:firstIndex];
+            [self addItemToCollectionViewAtLastIndexPath];
         }
         else
         {
             self.guestQueue = [setListTracks mutableCopy];
-            [self addItemToCollectionViewAtLastIndexPath];
+            [self.collectionView reloadData];
         }
     }
     
@@ -586,36 +606,21 @@
         
         else if (self.currentArtist[@"user"]) {
             
-            NSDictionary *track = self.currentArtist;
-            if (!self.isRemoteHost)
-            {
-            header.artistViewVertConst.constant = 10;
-            header.albumArtVertConst.constant = 10;
-            }
-            header.controlsView.hidden = YES;
-            header.artistView.hidden = NO;
-            header.songTitleLabel.text = track[@"title"];
-            header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];
-            NSURL *artworkURL = [NSURL URLWithString:track[@"highRes"] ];
-            if (artworkURL == nil) {
-                [header.artworkImage setImage:[UIImage imageNamed:@"noAlbumArt.png"]];
-            }
-            else
-            {
-                [header.artworkImage sd_setImageWithURL:artworkURL];
-            }
-            
             if (self.isRemoteHost) {
                 header.artistViewVertConst.constant = 53;
                 header.albumArtVertConst.constant = 53;
-                [self.view layoutIfNeeded];
-                header.controlsView.hidden = NO;
                 header.progressView.hidden = YES;
+                header.controlsView.hidden = NO;
                 if (self.playerIsPlaying)
                 {
                     header.playPauseImageView.image = [UIImage imageNamed:@"Pause"];
                 }
                 else header.playPauseImageView.image = [UIImage imageNamed:@"Play"];
+            }
+            else
+            {
+                header.artistViewVertConst.constant = 10;
+                header.albumArtVertConst.constant = 10;
             }
         }
         else
@@ -627,8 +632,6 @@
     }
     return nil;
 }
-
-
 
 #pragma mark - Search Bar Configuration
 
@@ -991,7 +994,6 @@
             [self.collectionView insertItemsAtIndexPaths:indexPaths];
         } completion:nil];
     }];
-
 }
 -(void)headerFrameForCellOffset
 {
@@ -1024,9 +1026,14 @@
 
 -(void)setCurrentArtistWithTrack:(NSDictionary *)track
 {
-    
     CurrentArtistHeader *header = (CurrentArtistHeader *)[self.collectionView viewWithTag:50];
-    header.controlsView.hidden = NO;
+    if (self.isHost || self.isRemoteHost) {
+        header.controlsView.hidden = NO;
+    }
+    else
+    {
+        header.controlsView.hidden = YES;
+    }
     header.artistView.hidden = NO;
     header.songTitleLabel.text = track[@"title"];
     header.artistLabel.text = [[track objectForKey:@"user"]objectForKey:@"username"];

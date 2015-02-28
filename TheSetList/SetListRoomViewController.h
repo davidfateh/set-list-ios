@@ -51,6 +51,8 @@
 @property (strong, nonatomic) UIProgressView *progressView;;
 
 //MENU VIEW properties and methods
+@property (strong, nonatomic) IBOutlet UILabel *connectedNumberLabel;
+@property (strong, nonatomic) IBOutlet UILabel *roomCodeLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *sliderImageView;
 @property (strong, nonatomic) IBOutlet UIView *sliderView;
 @property (strong, nonatomic) IBOutlet UIView *menuView;
