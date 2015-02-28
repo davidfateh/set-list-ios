@@ -21,6 +21,7 @@
 #import "CollectionViewCell.h"
 #import "CurrentArtistHeader.h"
 #import <CSStickyHeaderFlowLayout/CSStickyHeaderFlowLayout.h>
+#import <MarqueeLabel/MarqueeLabel.h>
 
 
 #define CLIENT_ID @"40da707152150e8696da429111e3af39"
@@ -1045,8 +1046,6 @@
         [header.artworkImage sd_setImageWithURL:artworkURL];
     }
 }
-
-
 //for formating the tracks durations.
 - (NSString *)timeFormatted:(int)totalSeconds
 {
