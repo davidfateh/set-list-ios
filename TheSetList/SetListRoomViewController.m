@@ -234,6 +234,11 @@
             //reload the collection view to display the data.
             [self.collectionView reloadData];
         }
+        NSDictionary *currentTrack = [[SocketKeeperSingleton sharedInstance]currentArtist];
+        if (currentTrack)
+        {
+            self.currentArtist = currentTrack;
+        }
     }
     
     self.setListView.alpha = 0;
@@ -265,13 +270,7 @@
     }
     else
     {
-        //if there is a current artist track, set it. This is in viewDidAppear because the collection View does not have a tag yet...I think.
-        NSDictionary *currentTrack = [[SocketKeeperSingleton sharedInstance]currentArtist];
-        if (currentTrack)
-        {
-            self.currentArtist = currentTrack;
-            [self setCurrentArtistWithTrack:currentTrack];
-        }
+        [self setCurrentArtistWithTrack:self.currentArtist];
     }
 }
 
